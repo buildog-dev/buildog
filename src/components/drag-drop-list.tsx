@@ -1,12 +1,12 @@
 import update from "immutability-helper";
-import type { FC, ReactNode } from "react";
+import type { FC } from "react";
 import { useCallback } from "react";
-import { Card } from "./dragdropcard";
+import { Card } from "./drag-drop-card";
 import { Textarea } from "./ui/textarea";
 
 export interface Item {
-  id: number;
-  value: any;
+  id: string;
+  value: string;
 }
 
 interface DragDropList {
@@ -27,7 +27,7 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
   }, []);
 
   const textAreaHandler = (
-    index: number,
+    index: string,
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setCards((prevCards: Item[]) => {
@@ -50,7 +50,7 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
     );
   }, []);
 
-  return <div>{cards.map((card, i) => renderCard(card, i))}</div>;
+  return <div className="space-y-4">{cards?.map((card, i) => renderCard(card, i))}</div>;
 };
 
 export default DragDropList;
