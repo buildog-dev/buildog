@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import DragDropList, { Item } from "@/components/drag-drop-list";
@@ -17,7 +17,8 @@ export default function Page() {
         ...prevCards,
         {
           id: create_UUID(),
-          value: ""
+          value: "",
+          lock: false
         }
       ]
     })
@@ -25,29 +26,31 @@ export default function Page() {
 
   return (
     <div className="h-full flex flex-col gap-4">
+      <div className="flex items-center justify-between p-2 border rounded-lg w-full">
+        <Input placeholder="Filename" className="w-[400px]" />
+        <Button>
+          Save
+        </Button>
+      </div>
       <div className="flex h-full gap-6">
         <div className="w-full space-y-4">
-          <div className="flex items-center justify-between">
-            <Input placeholder="Filename" className="w-[400px]" />
+          <div className="w-full p-5 border rounded-lg space-y-4">
             <Button onClick={addMarkdownArea} size="sm" className="text-end" variant="secondary">
               Add Markdown Area
             </Button>
-          </div>
-          <div className="overflow-y-auto w-full p-5 border rounded-lg space-y-4">
-            <DragDropList cards={cards} setCards={setCards} />
+            <div className="max-h-[calc(100vh_-_200px)] overflow-y-auto" >
+              <DragDropList cards={cards} setCards={setCards} />
+            </div>
           </div>
         </div>
 
-        <div className="overflow-y-auto w-full p-5 mt-12 border rounded-lg space-y-4">
+        <div className="overflow-y-auto w-full p-5 border rounded-lg space-y-4">
           <article className="prose dark:prose-invert">
             <Markdown remarkPlugins={[remarkGfm]}>
               {cards?.map((item) => item.value + "\n\n").join("")}
             </Markdown>
           </article>
         </div>
-      </div>
-      <div className="bg-red-100 w-full">
-        Save footer
       </div>
     </div>
   );

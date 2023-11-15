@@ -3,9 +3,6 @@ import type { FC, ReactNode } from "react";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
-const style = {
-};
-
 export interface CardProps {
   id: any;
   children: ReactNode;
@@ -95,7 +92,7 @@ export const Card: FC<CardProps> = ({ id, children, index, moveCard }) => {
   const opacity = isDragging ? 0 : 1;
   drag(drop(ref));
   return (
-    <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+    <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
       {children}
     </div>
   );
