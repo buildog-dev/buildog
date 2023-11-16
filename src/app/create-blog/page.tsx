@@ -4,26 +4,12 @@ import React, { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import DragDropList, { Item } from "@/components/drag-drop-list";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import remarkGfm from "remark-gfm";
+import { create_UUID } from "@/lib/uuid";
+import { Input } from "@/components/ui/input";
 
 export default function Page() {
   const [cards, setCards] = useState<Item[]>([]);
-
-  function create_UUID() {
-    var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-    return uuid;
-  }
-
-  useEffect(() => {
-    console.log(cards)
-  }, [cards])
 
   const addMarkdownArea = () => {
     setCards((prevCards) => {
@@ -31,27 +17,34 @@ export default function Page() {
         ...prevCards,
         {
           id: create_UUID(),
-          value: ""
+          value: "",
+          lock: false
         }
       ]
     })
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex justify-end w-full h-12">
-        <Button>Save</Button>
+    <div className="h-full flex flex-col gap-4">
+      <div className="flex items-center justify-between p-2 border rounded-lg w-full">
+        <Input placeholder="Filename" className="w-[400px]" />
+        <Button>
+          Save
+        </Button>
       </div>
-      <div className="flex gap-6">
+      <div className="flex h-full gap-6">
         <div className="w-full space-y-4">
-          <div className="max-h-[calc(100vh_-_116px)] h-[calc(100%_-_46px)] overflow-y-auto p-4 border rounded-lg space-y-4">
-            <DndProvider backend={HTML5Backend}>
+          <div className="w-full p-5 border rounded-lg space-y-4">
+            <Button onClick={addMarkdownArea} size="sm" className="text-end" variant="secondary">
+              Add Markdown Area
+            </Button>
+            <div className="max-h-[calc(100vh_-_200px)] overflow-y-auto" >
               <DragDropList cards={cards} setCards={setCards} />
-            </DndProvider>
+            </div>
           </div>
-          <Button onClick={addMarkdownArea} size="sm" className="w-full">Add Markdown Area</Button>
         </div>
-        <div className="w-full h-[calc(100vh_-_116px)] overflow-y-auto p-4 border rounded-lg">
+
+        <div className="overflow-y-auto w-full p-5 border rounded-lg space-y-4">
           <article className="prose dark:prose-invert">
             <Markdown remarkPlugins={[remarkGfm]}>
               {cards?.map((item) => item.value + "\n\n").join("")}
