@@ -9,11 +9,11 @@ export function Sidebar({ className }: { className?: string }) {
   const routes = {
     Main: {
       children: [
-        { name: "Blog", icon: "", route: "/blog", key: "main-blog" },
+        { name: "Blog", icon: "", route: "/blog/", key: "main-blog" },
         {
           name: "Create Blog",
           icon: "",
-          route: "/create-blog",
+          route: "/create-blog/",
           key: "main-create-blog",
         },
       ],
