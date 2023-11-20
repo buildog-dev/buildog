@@ -14,8 +14,12 @@ type Blog = {
   text: string;
 };
 
+type Blogs = {
+  [filename: string]: Blog;
+};
+
 export default function Page() {
-  const [blogs, setBlogs] = useState<Blog[]>();
+  const [blogs, setBlogs] = useState<Blogs>();
 
   useEffect(() => {
     const localStorageBlogs = JSON.parse(
