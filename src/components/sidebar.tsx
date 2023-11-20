@@ -19,6 +19,13 @@ export function Sidebar({ className }: { className?: string }) {
       ],
     },
   };
+  // Check if the current route is "/login"
+  const isLoginPage = pathname === "/login/";
+
+  // If it's the login page, don't render the sidebar
+  if (isLoginPage) {
+    return null;
+  }
 
   return (
     <div className={cn("pb-12", className)}>
