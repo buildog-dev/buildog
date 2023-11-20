@@ -16,6 +16,12 @@ export function Sidebar({ className }: { className?: string }) {
           route: "/create-blog/",
           key: "main-create-blog",
         },
+        {
+          name: "Login",
+          icon: "",
+          route: "/login/",
+          key: "main-login",
+        },
       ],
     },
   };
