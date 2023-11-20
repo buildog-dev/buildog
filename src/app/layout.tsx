@@ -27,7 +27,7 @@ export default function RootLayout({
           <div className="bg-background">
             <div className="flex w-full min-h-screen">
               <Sidebar className="w-[300px] hidden lg:block border-r" />
-              <div className="p-5 mx-auto w-[1300px]">{children}</div>
+              {children}
             </div>
           </div>
         </ThemeProvider>
