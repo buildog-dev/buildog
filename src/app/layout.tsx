@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Sidebar } from "@/components/sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -24,11 +23,8 @@ export default function RootLayout({
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <div className="bg-background">
-            <div className="flex w-full min-h-screen">
-              <Sidebar className="w-[300px] hidden lg:block border-r" />
-              {children}
-            </div>
+          <div className="flex w-full min-h-screen justify-center">
+            {children}
           </div>
         </ThemeProvider>
       </body>
