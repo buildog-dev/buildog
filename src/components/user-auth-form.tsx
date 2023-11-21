@@ -3,23 +3,23 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { Icons } from "@/components/icons";
+import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
+  const router = useRouter();
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    /*
+      handle login process
+    */
+    router.push('/blog/')
   }
 
   return (
@@ -39,6 +39,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCorrect="off"
               disabled={isLoading}
             />
+            <Label className="sr-only" htmlFor="password">
+              Password
+            </Label>
             <Input
               id="password"
               placeholder="password"
@@ -47,18 +50,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             />
           </div>
           <Button disabled={isLoading}>
-            {isLoading && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            )}
+            {isLoading && <ReloadIcon />}
             Sign in
           </Button>
         </div>
       </form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-      </div>
     </div>
   );
 }
