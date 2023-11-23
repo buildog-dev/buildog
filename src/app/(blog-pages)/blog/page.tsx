@@ -25,9 +25,12 @@ type Blog = {
   text: string;
 };
 
+type Blogs = {
+  [filename: string]: Blog;
+};
 
 export default function Page() {
-  const [blogs, setBlogs] = useState<Blog[]>();
+  const [blogs, setBlogs] = useState<Blogs>();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -35,23 +38,16 @@ export default function Page() {
       localStorage.getItem("blogs") as string
     );
     setBlogs(localStorageBlogs);
-    
+    console.log(localStorageBlogs);
   }, []);
 
-
 const deleteBlog = (filenameToDelete: string) => {
-    setOpen(!open)
+    setOpen(!open);
     if (blogs) {
-      for (const el in blogs) {
-        if (blogs[el].filename === filenameToDelete) {
-          delete blogs[el];
-        }
-      }
+      delete blogs[filenameToDelete];
     }
-
-    localStorage.setItem("blogs", (JSON.stringify(blogs)));
+    localStorage.setItem("blogs", JSON.stringify(blogs));
 };
-  
   return (
     <div className="space-y-4">
       <Input />
@@ -61,17 +57,22 @@ const deleteBlog = (filenameToDelete: string) => {
             <Card key={key}>
               <CardHeader>
                 <CardTitle>{blog.filename}</CardTitle>
-                <Button variant="destructive" className="w-10 ml-auto" onClick={() => setOpen(!open)} size="sm">
-                   <Cross1Icon />
-                  </Button>
+                <Button
+                  variant="destructive"
+                  className="w-10 ml-auto"
+                  onClick={() => setOpen(!open)}
+                  size="sm"
+                >
+                  <Cross1Icon />
+                </Button>
                 {/* <CardDescription>{blog}</CardDescription> */}
               </CardHeader>
               <Dialog onOpenChange={setOpen} open={open}>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>Delete Blog</DialogTitle>
- 
-          <DialogDescription>
+
+                    <DialogDescription>
                       Are you sure for delete this blog?
                     </DialogDescription>
                   </DialogHeader>
