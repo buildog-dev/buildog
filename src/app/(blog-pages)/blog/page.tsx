@@ -38,7 +38,6 @@ export default function Page() {
       localStorage.getItem("blogs") as string
     );
     setBlogs(localStorageBlogs);
-    console.log(localStorageBlogs);
   }, []);
 
 const deleteBlog = (filenameToDelete: string) => {
