@@ -40,13 +40,16 @@ export default function Page() {
     setBlogs(localStorageBlogs);
   }, []);
 
-const deleteBlog = (filenameToDelete: string) => {
-    setOpen(!open);
-    if (blogs) {
-      delete blogs[filenameToDelete];
-    }
-    localStorage.setItem("blogs", JSON.stringify(blogs));
-};
+  const deleteBlog = (filenameToDelete: string) => {
+    setOpen(!open)
+    setBlogs((prevBlogs) => {
+      const updatedBlogs = { ...prevBlogs };
+      delete updatedBlogs[filenameToDelete];
+      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+      
+      return updatedBlogs;
+    });
+  };
   return (
     <div className="space-y-4">
       <Input />
