@@ -12,16 +12,16 @@ import * as Dialog from "@radix-ui/react-dialog";
 
 interface PreviewBlogProps {
   cards: Item[];
-  modalIsOpen: boolean;
+  filename: string | undefined;
   setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function PreviewBlog({
   cards,
-  modalIsOpen,
+  filename,
   setModalIsOpen,
 }: PreviewBlogProps) {
-  const [filename, setFilename] = useState<string>();
+  console.log(filename);
 
   const save = () => {
     if (filename && cards.length > 0) {

@@ -92,7 +92,11 @@ export default function Page() {
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 bg-black-a9 rounded-[6px]  shadow-2xl" />
             <Dialog.Content className="overflow-scroll bg-white rounded-[6px] shadow-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] p-25">
-              <PreviewBlog cards={cards} setModalIsOpen={setModalIsOpen} />
+              <PreviewBlog
+                cards={cards}
+                setModalIsOpen={setModalIsOpen}
+                filename={filename!}
+              />
             </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>
