@@ -1,6 +1,6 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { cn } from "@repo/ui/lib/utils";
+import { Button } from "@ui/components/button";
 import { usePathname, useRouter } from "next/navigation";
 
 export function Sidebar({ className }: { className?: string }) {

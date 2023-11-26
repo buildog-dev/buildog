@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Markdown from "react-markdown";
-import { Button } from "@/components/ui/button";
+import { Button } from "@ui/components/button";
+import { Input } from "@ui/components/input";
 import DragDropList, { Item } from "@/components/drag-drop-list";
 import remarkGfm from "remark-gfm";
 import { create_UUID } from "@/lib/uuid";
-import { Input } from "@/components/ui/input";
 import { useSearchParams } from "next/navigation";
 
 export default function Page() {

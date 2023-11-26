@@ -2,9 +2,13 @@ import update from "immutability-helper";
 import type { FC } from "react";
 import { useCallback } from "react";
 import { Card } from "./drag-drop-card";
-import { Textarea } from "./ui/textarea";
-import { Cross1Icon, LockClosedIcon, LockOpen2Icon } from "@radix-ui/react-icons";
-import { Button } from "./ui/button";
+import { Button } from "@ui/components/button";
+import { Textarea } from "@ui/components/textarea";
+import {
+  Cross1Icon,
+  LockClosedIcon,
+  LockOpen2Icon,
+} from "@ui/components/react-icons";
 
 export interface Item {
   id: string;
@@ -48,7 +52,7 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
       copyCards.splice(index, 1);
       return copyCards;
     });
-  }
+  };
 
   const toggleLock = (id: string, toggle: boolean) => {
     setCards((prevCards: Item[]) => {
@@ -58,7 +62,7 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
       copyCards[cardIndex].lock = !toggle;
       return copyCards;
     });
-  }
+  };
 
   const renderCard = useCallback((card: Item, index: number) => {
     return (
@@ -85,7 +89,11 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
               className="h-6 w-6"
               onClick={() => toggleLock(card.id, card.lock)}
             >
-              {card.lock ? <LockClosedIcon className="h-3 w-3" /> : <LockOpen2Icon className="h-3 w-3" />}
+              {card.lock ? (
+                <LockClosedIcon className="h-3 w-3" />
+              ) : (
+                <LockOpen2Icon className="h-3 w-3" />
+              )}
             </Button>
           </div>
         </div>
@@ -93,7 +101,11 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
     );
   }, []);
 
-  return <div className="space-y-4">{cards?.map((card, i) => renderCard(card, i))}</div>;
+  return (
+    <div className="space-y-4">
+      {cards?.map((card, i) => renderCard(card, i))}
+    </div>
+  );
 };
 
 export default DragDropList;

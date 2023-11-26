@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ResetIcon } from '@radix-ui/react-icons'
-import { Cross1Icon } from '@radix-ui/react-icons'
+import { Card, CardHeader, CardTitle } from "@ui/components/card";
+import { Input } from "@ui/components/input";
+import { Cross1Icon } from "@ui/components/react-icons";
 import {
   Dialog,
   DialogContent,
@@ -12,8 +11,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button";
+} from "@ui/components/dialog";
+import { Button } from "@ui/components/button";
 
 type Blog = {
   cards: {
@@ -41,12 +40,12 @@ export default function Page() {
   }, []);
 
   const deleteBlog = (filenameToDelete: string) => {
-    setOpen(!open)
+    setOpen(!open);
     setBlogs((prevBlogs) => {
       const updatedBlogs = { ...prevBlogs };
       delete updatedBlogs[filenameToDelete];
       localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
-      
+
       return updatedBlogs;
     });
   };

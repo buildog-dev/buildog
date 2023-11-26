@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
-
-import { cn } from "@/lib/utils";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "@ui/components/label";
+import { cn } from "@repo/ui/lib/utils";
 import { useRouter } from "next/navigation";
+import { Input } from "@ui/components/input";
+import { Button } from "@ui/components/button";
+import { ReloadIcon } from "@ui/components/react-icons";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -19,7 +18,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     /*
       handle login process
     */
-    router.push('/blog/')
+    router.push("/blog/");
   }
 
   return (

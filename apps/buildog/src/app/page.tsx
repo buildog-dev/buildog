@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 export default function Page() {
   const pathname = usePathname();
