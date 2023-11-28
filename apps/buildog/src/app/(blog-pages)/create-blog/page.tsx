@@ -8,6 +8,15 @@ import DragDropList, { Item } from "@/components/drag-drop-list";
 import remarkGfm from "remark-gfm";
 import { create_UUID } from "@/lib/uuid";
 import { useSearchParams } from "next/navigation";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@ui/components/dialog";
 
 export default function Page() {
   const [filename, setFilename] = useState<string>();
@@ -71,7 +80,33 @@ export default function Page() {
           placeholder="Filename"
           className="w-[400px]"
         />
-        <Button onClick={save}>Save</Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>Preview & Save</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[705px]">
+            <DialogHeader>
+              <DialogTitle>Preview</DialogTitle>
+            </DialogHeader>
+            <div className="h-[500px] overflow-y-auto w-full p-5 border rounded-lg space-y-4">
+              <article className="prose dark:prose-invert">
+                <Markdown remarkPlugins={[remarkGfm]}>
+                  {cards?.map((item) => item.value + "\n\n").join("")}
+                </Markdown>
+              </article>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button className="w-full" variant="destructive">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button onClick={save} className="w-full">
+                Save changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="flex h-full gap-6">
         <div className="w-full space-y-4">
