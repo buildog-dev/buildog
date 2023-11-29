@@ -1,81 +1,100 @@
-# Turborepo starter
+# Buildog
 
-This is an official starter Turborepo.
+1. [Getting started](#getting-started)
+   - [Install dependencies](#install-dependencies)
+2. [Local development](#local-development)
+   - [Fork the repo](#fork-the-repo)
+   - [Clone the repo](#clone-the-repo)
+   - [Running turborepo](#running-turborepo)
+     - [Shared components](#shared-components)
+     - [Adding new component on @repo/ui](#adding-new-component-on-@repo/ui)
+     - [Installing packages](#installing-packages)
+3. [Create a pull request](#create-a-pull-request)
 
-## Using this example
+## Getting started
 
-Run the following command:
+Thank you for your interest in Buildog and your willingness to contribute!
+
+### Install dependencies
+
+You will need to install and configure the following dependencies on your machine to build Buildog:
+
+- Git
+- Node.js v18.x (LTS)
+- pnpm version 8.x.x
+
+## Local development
+
+This repo uses [Turborepo](https://turbo.build/repo).
+
+### Fork the repo
+
+To contribute code to Buildog, you must fork the [Buildog](https://github.com/burasibizim/buildog) repo.
+
+### Clone the repo
+
+1. Clone your GitHub forked repo:
 
 ```sh
-npx create-turbo@latest
+git clone https://github.com/<github_username>/supabase.git
 ```
 
-## What's inside?
+2. Go to the Buildog directory:
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```sh
+cd buildog
 ```
 
-### Develop
+### Install dependencies
 
-To develop all apps and packages, run the following command:
+1. Install the dependencies in the root of the repo.
 
+```sh
+pnpm install # install dependencies
 ```
-cd my-turborepo
+
+2. After that you can run the apps simultaneously with the following.
+
+```sh
 pnpm dev
 ```
 
-### Remote Caching
+| Directory       | Description           | Local development server |
+| --------------- | --------------------- | ------------------------ |
+| `/apps/buildog` | The main application. | http://localhost:3000    |
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+#### Shared components
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+The monorepo has a set of shared components under /packages:
 
+- `/packages/ui`: [shadcn/ui](https://ui.shadcn.com) components.
+- `/packages/typescript-config`: Shared Typescript settings
+- `/packages/eslint-config`: Shared eslint settings
+
+#### Adding new component on @repo/ui
+
+Use the pre-made script:
+
+```sh
+pnpm ui:add <shadcn/ui-component-name>
 ```
-cd my-turborepo
-npx turbo login
+
+> This works just like the add command in the `shadcn/ui` CLI.
+
+#### Installing packages
+
+Installing a package with pnpm workspaces requires you to add the `--filter` flag to tell pnpm which workspace you want to install into. Do not install dependencies in their local folder, install them from the route using the --filter flag.
+
+```sh
+pnpm add <package> --filter <workspace>
+pnpm uninstall <package> --filter <workspace>
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+For example:
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- `pnpm add react --filter buildog` installs into ./apps/buildog
 
-```
-npx turbo link
-```
+## Create a pull request
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+After making any changes, open a pull request.
+Once your PR has been merged, you will be proudly listed as a contributor.
