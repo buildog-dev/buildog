@@ -21,6 +21,8 @@ importers:
         specifier: latest
         version: 1.10.16
 
+  apps/api: {}
+
   apps/buildog:
     dependencies:
       '@repo/ui':
