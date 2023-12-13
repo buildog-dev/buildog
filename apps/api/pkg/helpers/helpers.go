@@ -24,6 +24,8 @@ func SafeGetEnv(key string) string {
 }
 
 func WriteJSON(rw http.ResponseWriter, status int, data interface{}) error {
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+
 	js, err := json.Marshal(data)
 	if err != nil {
 		return err

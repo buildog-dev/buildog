@@ -8,7 +8,6 @@ import (
 	"net/http"
 )
 
-
 const (
 	notFoundErrorMessage       = "Not Found"
 	internalServerErrorMessage = "Internal Server Error"
@@ -36,7 +35,6 @@ func PublicApiHandler(rw http.ResponseWriter, r *http.Request) {
 func ProtectedApiHandler(rw http.ResponseWriter, r *http.Request) {
 	sendMessage(rw, r, messages.ProtectedMessage())
 }
-
 
 func AdminApiHandler(rw http.ResponseWriter, r *http.Request) {
 	sendMessage(rw, r, messages.AdminMessage())

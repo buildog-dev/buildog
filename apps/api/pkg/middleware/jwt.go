@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware/v2"
@@ -20,10 +21,9 @@ const (
 	permissionDeniedErrorMessage = "Permission denied"
 )
 
-
 // CustomClaims contains custom data we want from the token.
 type CustomClaims struct {
-	Permissions []string `json:"scope"`
+	Scope string `json:"scope"`
 }
 
 type ErrorMessage struct {
@@ -34,6 +34,19 @@ type ErrorMessage struct {
 // it to satisfy validator.CustomClaims interface.
 func (c CustomClaims) Validate(ctx context.Context) error {
 	return nil
+}
+
+// HasScope checks whether our claims have a specific scope.
+func (c CustomClaims) HasScope(expectedScope string) bool {
+	result := strings.Split(c.Scope, " ")
+	fmt.Print(result)
+	for i := range result {
+		if result[i] == expectedScope {
+			return true
+		}
+	}
+
+	return false
 }
 
 // EnsureValidToken is a middleware that will check the validity of our JWT.
@@ -80,7 +93,7 @@ func EnsureValidToken(audience, domain string) func(next http.Handler) http.Hand
 	}
 }
 
-func ValidatePermissions(expectedClaims []string, next http.Handler) http.Handler {
+func ValidatePermissions(expectedClaims string, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.Context().Value(jwtmiddleware.ContextKey{}).(*validator.ValidatedClaims)
 		claims := token.CustomClaims.(*CustomClaims)
@@ -91,17 +104,4 @@ func ValidatePermissions(expectedClaims []string, next http.Handler) http.Handle
 		}
 		next.ServeHTTP(w, r)
 	})
-}
-
-// HasScope checks whether our claims have a specific scope.
-func (c CustomClaims) HasScope(expectedClaims []string) bool {
-	if len(expectedClaims) == 0 {
-		return false
-	}
-	for _, scope := range expectedClaims {
-		if !helpers.Contains(c.Permissions, scope) {
-			return false
-		}
-	}
-	return true
 }

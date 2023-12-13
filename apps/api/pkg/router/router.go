@@ -7,18 +7,23 @@ import (
 )
 
 func Router(audience, domain string) http.Handler {
-
 	router := http.NewServeMux()
 
-	router.HandleFunc("/api/public", handlers.PublicApiHandler)
+	router.HandleFunc("/auth/login", handlers.LoginHandler)
 
-	router.Handle("/api/private", middleware.EnsureValidToken(audience, domain)(
-		http.HandlerFunc(handlers.AdminApiHandler),
-	))
-	
-	router.Handle("/api/messages/admin", middleware.EnsureValidToken(audience, domain)(
-		middleware.ValidatePermissions([]string{"read:admin-messages"},
-			http.HandlerFunc(handlers.ProtectedApiHandler))))
+	// test
+	router.HandleFunc("/test/api/public", handlers.PublicApiHandler)
+	router.Handle("/test/api/private",
+		middleware.EnsureValidToken(audience, domain)(
+			http.HandlerFunc(handlers.AdminApiHandler),
+		),
+	)
+	router.Handle("/test/api/admin",
+		middleware.EnsureValidToken(audience, domain)(
+			middleware.ValidatePermissions("read:admin-messages",
+				http.HandlerFunc(handlers.ProtectedApiHandler)),
+		),
+	)
 
 	return router
 }
