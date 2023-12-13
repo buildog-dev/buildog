@@ -6,6 +6,7 @@
    - [Fork the repo](#fork-the-repo)
    - [Clone the repo](#clone-the-repo)
    - [Running turborepo](#running-turborepo)
+     - [Environment variables](#environment-variables)
      - [Shared components](#shared-components)
      - [Adding new component on @repo/ui](#adding-new-component-on-@repo/ui)
      - [Installing packages](#installing-packages)
@@ -36,7 +37,7 @@ To contribute code to Buildog, you must fork the [Buildog](https://github.com/bu
 1. Clone your GitHub forked repo:
 
 ```sh
-git clone https://github.com/<github_username>/supabase.git
+git clone https://github.com/<github_username>/buildog.git
 ```
 
 2. Go to the Buildog directory:
@@ -59,9 +60,14 @@ pnpm install # install dependencies
 pnpm dev
 ```
 
-| Directory       | Description           | Local development server |
-| --------------- | --------------------- | ------------------------ |
-| `/apps/buildog` | The main application. | http://localhost:3000    |
+| Directory       | Description                   | Local development server |
+| --------------- | ----------------------------- | ------------------------ |
+| `/apps/buildog` | The main web application.     | http://localhost:3000    |
+| `/apps/api`     | The main backend application. | http://localhost:3010    |
+
+#### Environment variables
+
+Auth0 - In progress -
 
 #### Shared components
 
