@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   output: "export",
   trailingSlash: true,
-  transpilePackages: ["ui"],
+  transpilePackages: ["ui", "web-sdk"],
 };
 
 module.exports = nextConfig;
