@@ -42,7 +42,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		"grant_type":    "password",
 		"username":      email,
 		"password":      password,
-		"audience":      "https://buildog-api.com",
+		"audience":      os.Getenv("AUTH0_AUDIENCE"),
 		"client_id":     os.Getenv("AUTH0_CLIENT_ID"),
 		"client_secret": os.Getenv("AUTH0_CLIENT_SECRET"),
 		"scope":         "offline_access",
@@ -137,7 +137,7 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request) {
 		"refresh_token": refreshToken,
 		"client_id":     os.Getenv("AUTH0_CLIENT_ID"),
 		"client_secret": os.Getenv("AUTH0_CLIENT_SECRET"),
-		"audience":      "https://buildog-api.com",
+		"audience":      os.Getenv("AUTH0_AUDIENCE"),
 	}
 
 	// Prepare form data for the POST request
