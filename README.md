@@ -67,7 +67,7 @@ pnpm dev
 
 #### Environment variables
 
-Auth0 - In progress -
+Auth0 - [How to setup Auth0](https://github.com/burasibizim/buildog/wiki/Auth0-Implementation)
 
 #### Shared components
 
