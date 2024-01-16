@@ -20,13 +20,20 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     const email = event.target[0].value;
     const password = event.target[1].value;
 
-    Auth.authenticate({
-      email: email,
-      password: password,
-    });
+    try {
+      Auth.authenticate({
+        email: email,
+        password: password,
+      });
 
-    router.push("/blog/");
-
+      router.push("/blog/");
+    } catch (error) {
+      console.log(error);
+      /*
+        Handle login error
+      */
+    }
+    
     setIsLoading(true);
   }
 
