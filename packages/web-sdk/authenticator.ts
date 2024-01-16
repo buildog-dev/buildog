@@ -63,6 +63,31 @@ class Authenticator extends EventEmitter {
     }
   }
 
+  emitInitialState() {
+    if (this.accessToken && !this.isTokenExpired()) {
+      this.emit("authenticated");
+    } else {
+      this.emit("authentication_failed");
+    }
+  }
+
+  removeLocalStoragedToken() {
+    localStorage.removeItem("buildog-sdk");
+    this.emit("authentication_failed");
+  }
+
+  onAuthenticationChange(callback: (eventType: string, data?: any) => void) {
+    this.on("authenticated", () => callback("authenticated"));
+    this.on("authentication_failed", () =>
+      callback("authentication_failed", { error: "Authentication failed" })
+    );
+    this.on("refresh", () => callback("refresh"));
+    this.on("refresh_failed", () =>
+      callback("refresh_failed", { error: "Refresh failed" })
+    );
+    this.emitInitialState();
+  }
+
   async logout(): Promise<void> {
     // ... existing logout logic ...
   }
