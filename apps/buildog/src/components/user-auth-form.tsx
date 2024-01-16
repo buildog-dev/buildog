@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
+import { Auth } from "@/web-sdk";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -15,10 +16,18 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const router = useRouter();
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    /*
-      handle login process
-    */
+
+    const email = event.target[0].value;
+    const password = event.target[1].value;
+
+    Auth.authenticate({
+      email: email,
+      password: password,
+    });
+
     router.push("/blog/");
+
+    setIsLoading(true);
   }
 
   return (
