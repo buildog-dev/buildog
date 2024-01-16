@@ -37,13 +37,12 @@ class ServiceClient {
 
       return response.data;
     } catch (error) {
-      // if (axios.isAxiosError(error) && error.response?.status === 401) {
-      //   console.log("Unautorized User");
-      // await this.authenticator.refreshToken();
-      // return this.makeAuthenticatedRequest(endpoint, method, data);
-      // } else {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        this.authenticator.removeLocalStoragedToken();
+        console.log("Unauthorized User");
+      }
+    
       throw error;
-      // }
     }
   }
 }
