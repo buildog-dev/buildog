@@ -7,18 +7,33 @@ import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
+import { Auth } from "@/web-sdk";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
+
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    /*
-      handle login process
-    */
-    router.push("/blog/");
+
+    const email = event.target[0].value;
+    const password = event.target[1].value;
+
+    setLoading(true);
+
+    const authSuccess = await Auth.authenticate({
+      email: email,
+      password: password,
+    });
+
+    if (authSuccess.auth) router.push("/blog/");
+    else {
+      console.log(authSuccess.error);
+
+      setLoading(false);
+    }
   }
 
   return (
@@ -36,7 +51,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading}
+              disabled={loading}
             />
             <Label className="sr-only" htmlFor="password">
               Password
@@ -45,11 +60,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               id="password"
               placeholder="password"
               type="password"
-              disabled={isLoading}
+              disabled={loading}
             />
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && <ReloadIcon />}
+          <Button disabled={loading}>
+            {loading && <ReloadIcon />}
             Sign in
           </Button>
         </div>
