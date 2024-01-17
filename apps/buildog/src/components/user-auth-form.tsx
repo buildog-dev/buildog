@@ -22,6 +22,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     const password = event.target[1].value;
 
     setLoading(true);
+
     const authSuccess = await Auth.authenticate({
       email: email,
       password: password,
@@ -29,10 +30,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     if (authSuccess.auth) router.push("/blog/");
     else {
-      // show error to user.
       console.log(authSuccess.error);
+
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -63,12 +64,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             />
           </div>
           <Button disabled={loading}>
-            {loading && (
-              <React.Fragment>
-                <ReloadIcon />
-                &nbsp;
-              </React.Fragment>
-            )}
+            {loading && <ReloadIcon />}
             Sign in
           </Button>
         </div>
