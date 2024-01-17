@@ -23,7 +23,10 @@ class Authenticator extends EventEmitter {
     this.refreshToken = this.loadRefreshTokenFromLocalStorage();
   }
 
-  async authenticate(credentials: Credentials): Promise<void> {
+  async authenticate(credentials: Credentials): Promise<{
+    auth: boolean;
+    error?: { error?: string; error_description: string };
+  }> {
     try {
       const response = await axios.post(
         this.authEndpoint + "/auth/login",
@@ -34,8 +37,21 @@ class Authenticator extends EventEmitter {
 
       localStorage.setItem("buildog-sdk", JSON.stringify(response.data));
       this.emit("authenticated");
-    } catch (error) {
+
+      return { auth: true };
+    } catch (error: any) {
       this.emit("authentication_failed");
+
+      // Check if the error has the expected structure
+      if (error.response && typeof error.response.code === "string") {
+        return { auth: false, error: error.response.data };
+      } else {
+        // Handle unexpected error formats
+        return {
+          auth: false,
+          error: { error_description: "An unknown error occurred" },
+        };
+      }
     }
   }
 
