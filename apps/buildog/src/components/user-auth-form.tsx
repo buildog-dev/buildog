@@ -12,29 +12,27 @@ import { Auth } from "@/web-sdk";
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
+
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
 
     const email = event.target[0].value;
     const password = event.target[1].value;
 
-    try {
-      Auth.authenticate({
-        email: email,
-        password: password,
-      });
+    setLoading(true);
+    const authSuccess = await Auth.authenticate({
+      email: email,
+      password: password,
+    });
 
-      router.push("/blog/");
-    } catch (error) {
-      console.log(error);
-      /*
-        Handle login error
-      */
+    if (authSuccess.auth) router.push("/blog/");
+    else {
+      // show error to user.
+      console.log(authSuccess.error);
     }
-    
-    setIsLoading(true);
+    setLoading(false);
   }
 
   return (
@@ -52,7 +50,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading}
+              disabled={loading}
             />
             <Label className="sr-only" htmlFor="password">
               Password
@@ -61,11 +59,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               id="password"
               placeholder="password"
               type="password"
-              disabled={isLoading}
+              disabled={loading}
             />
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && <ReloadIcon />}
+          <Button disabled={loading}>
+            {loading && (
+              <React.Fragment>
+                <ReloadIcon />
+                &nbsp;
+              </React.Fragment>
+            )}
             Sign in
           </Button>
         </div>
