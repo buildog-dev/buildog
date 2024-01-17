@@ -1,7 +1,7 @@
 "use client";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@repo/ui/styles/global.css";
 import { useEffect } from "react";
@@ -20,11 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     Auth.onAuthenticationChange((eventMessage) => {
       if (eventMessage === "authentication_failed") {
-        router.push("/login");
+        if(pathname !== '/')
+          router.push("/login");
       }
     });
 
