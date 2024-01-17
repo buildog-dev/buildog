@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@ui/components/button";
+import { useRouter } from "next/navigation";
 export default function Page() {
-  const pathname = usePathname();
   const router = useRouter();
 
   return (
@@ -14,9 +13,9 @@ export default function Page() {
             Welcoming Page
           </h1>
         </div>
-        <Link className="min-w-[19rem]" href="/login">
+        <Button className="min-w-[19rem]" onClick={() => router.push("/login")}>
           Sign in
-        </Link>
+        </Button>
       </div>
     </div>
   );
