@@ -49,7 +49,7 @@ class Authenticator extends EventEmitter {
         // Handle unexpected error formats
         return {
           auth: false,
-          error: { error_description: "An unknown error occurred" },
+          error: { error_description: "An unknown error occurred" }
         };
       }
     }
@@ -69,7 +69,7 @@ class Authenticator extends EventEmitter {
         "buildog-sdk",
         JSON.stringify({
           refresh_token: this.refreshToken,
-          ...response.data,
+          ...response.data
         })
       );
 
@@ -105,7 +105,7 @@ class Authenticator extends EventEmitter {
   }
 
   async logout(): Promise<void> {
-    // ... existing logout logic ...
+    return this.removeLocalStoragedToken();
   }
 
   hasExpired(unixTimestamp: number): boolean {
