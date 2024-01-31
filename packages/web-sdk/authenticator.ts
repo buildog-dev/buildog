@@ -19,19 +19,21 @@ class Authenticator extends EventEmitter {
   constructor(config: AuthenticatorConfig) {
     super();
     this.authEndpoint = config.authEndpoint;
-    this.accessToken = this.loadAccessTokenFromLocalStorage();
-    this.refreshToken = this.loadRefreshTokenFromLocalStorage();
+    this.accessToken =
+      typeof window !== "undefined" ? this.loadAccessTokenFromLocalStorage() : null;
+    this.refreshToken =
+      typeof window !== "undefined" ? this.loadRefreshTokenFromLocalStorage() : null;
   }
 
   async authenticate(credentials: Credentials): Promise<{
     auth: boolean;
-    error?: { error?: string; error_description: string };
+    error?: {
+      error?: string;
+      error_description: string;
+    };
   }> {
     try {
-      const response = await axios.post(
-        this.authEndpoint + "/auth/login",
-        credentials
-      );
+      const response = await axios.post(this.authEndpoint + "/auth/login", credentials);
       this.accessToken = response.data.access_token;
       this.refreshToken = response.data.refresh_token;
 
@@ -44,12 +46,17 @@ class Authenticator extends EventEmitter {
 
       // Check if the error has the expected structure
       if (error.response && typeof error.response.code === "string") {
-        return { auth: false, error: error.response.data };
+        return {
+          auth: false,
+          error: error.response.data,
+        };
       } else {
         // Handle unexpected error formats
         return {
           auth: false,
-          error: { error_description: "An unknown error occurred" }
+          error: {
+            error_description: "An unknown error occurred",
+          },
         };
       }
     }
@@ -60,7 +67,11 @@ class Authenticator extends EventEmitter {
       const response = await axios.post(
         this.authEndpoint + "/auth/refresh",
         { refresh_token: this.refreshToken },
-        { headers: { Authorization: `Bearer ${this.accessToken}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
       );
 
       this.accessToken = response.data.access_token;
@@ -69,7 +80,7 @@ class Authenticator extends EventEmitter {
         "buildog-sdk",
         JSON.stringify({
           refresh_token: this.refreshToken,
-          ...response.data
+          ...response.data,
         })
       );
 
@@ -95,11 +106,15 @@ class Authenticator extends EventEmitter {
   onAuthenticationChange(callback: (eventType: string, data?: any) => void) {
     this.on("authenticated", () => callback("authenticated"));
     this.on("authentication_failed", () =>
-      callback("authentication_failed", { error: "Authentication failed" })
+      callback("authentication_failed", {
+        error: "Authentication failed",
+      })
     );
     this.on("refresh", () => callback("refresh"));
     this.on("refresh_failed", () =>
-      callback("refresh_failed", { error: "Refresh failed" })
+      callback("refresh_failed", {
+        error: "Refresh failed",
+      })
     );
     this.emitInitialState();
   }

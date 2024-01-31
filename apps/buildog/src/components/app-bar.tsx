@@ -4,7 +4,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@ui/components/ui/dropdown-menu";
 import { Auth } from "@/web-sdk";
 import { useRouter } from "next/navigation";
