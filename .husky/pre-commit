@@ -1,2 +1,2 @@
-pnpm format && pnpm build
+pnpm check-format && pnpm build
 
