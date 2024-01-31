@@ -33,10 +33,10 @@ export default function Page() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const localStorageBlogs = JSON.parse(
-      localStorage.getItem("blogs") as string
-    );
-    setBlogs(localStorageBlogs);
+    if (typeof window !== "undefined") {
+      const localStorageBlogs = JSON.parse(localStorage.getItem("blogs") as string);
+      setBlogs(localStorageBlogs);
+    }
   }, []);
 
   const deleteBlog = (filenameToDelete: string) => {
@@ -44,7 +44,9 @@ export default function Page() {
     setBlogs((prevBlogs) => {
       const updatedBlogs = { ...prevBlogs };
       delete updatedBlogs[filenameToDelete];
-      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+      }
 
       return updatedBlogs;
     });
@@ -74,18 +76,13 @@ export default function Page() {
                   <DialogHeader>
                     <DialogTitle>Delete Blog</DialogTitle>
 
-                    <DialogDescription>
-                      Are you sure for delete this blog?
-                    </DialogDescription>
+                    <DialogDescription>Are you sure for delete this blog?</DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
                     <Button variant="ghost" onClick={() => setOpen(!open)}>
                       No
                     </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() => deleteBlog(blog.filename)}
-                    >
+                    <Button variant="destructive" onClick={() => deleteBlog(blog.filename)}>
                       Yes
                     </Button>
                   </DialogFooter>

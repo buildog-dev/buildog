@@ -9,7 +9,12 @@ export function Sidebar({ className }: { className?: string }) {
   const routes = {
     Main: {
       children: [
-        { name: "Blog", icon: "", route: "/blog/", key: "main-blog" },
+        {
+          name: "Blog",
+          icon: "",
+          route: "/blog/",
+          key: "main-blog",
+        },
         {
           name: "Create Blog",
           icon: "",
@@ -26,9 +31,7 @@ export function Sidebar({ className }: { className?: string }) {
         <div className="px-3 py-2">
           {Object.entries(routes).map(([key, route]) => (
             <div key={key}>
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                {key}
-              </h2>
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{key}</h2>
               <div className="space-y-1">
                 {route.children.map((child) => (
                   <Button
