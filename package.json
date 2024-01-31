@@ -7,7 +7,6 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "ui:add": "pnpm --filter ui ui:add",
-    "check": "pnpm format",
     "prepare": "husky"
   },
   "devDependencies": {
