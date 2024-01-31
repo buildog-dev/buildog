@@ -33,8 +33,10 @@ export default function Page() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const localStorageBlogs = JSON.parse(localStorage.getItem("blogs") as string);
-    setBlogs(localStorageBlogs);
+    if (typeof window !== "undefined") {
+      const localStorageBlogs = JSON.parse(localStorage.getItem("blogs") as string);
+      setBlogs(localStorageBlogs);
+    }
   }, []);
 
   const deleteBlog = (filenameToDelete: string) => {
@@ -42,7 +44,9 @@ export default function Page() {
     setBlogs((prevBlogs) => {
       const updatedBlogs = { ...prevBlogs };
       delete updatedBlogs[filenameToDelete];
-      localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("blogs", JSON.stringify(updatedBlogs));
+      }
 
       return updatedBlogs;
     });

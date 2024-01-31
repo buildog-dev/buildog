@@ -26,11 +26,12 @@ export default function Page() {
   useEffect(() => {
     const qsFilename = query.get("filename");
     if (qsFilename) {
-      const localStorageBlogs = JSON.parse(localStorage.getItem("blogs") as string);
-
-      const blog = localStorageBlogs[qsFilename];
-      setFilename(blog.filename);
-      setCards(blog.cards);
+      if (typeof window !== "undefined") {
+        const localStorageBlogs = JSON.parse(localStorage.getItem("blogs") as string);
+        const blog = localStorageBlogs[qsFilename];
+        setFilename(blog.filename);
+        setCards(blog.cards);
+      }
     } else {
       // This is for initial markdown
       addMarkdownArea();
@@ -54,14 +55,16 @@ export default function Page() {
     if (filename && cards.length > 0) {
       const text = cards?.map((item) => item.value + "\n\n").join("");
 
-      const currentLocalStorage = JSON.parse(localStorage.getItem("blogs") as string);
+      if (typeof window !== "undefined") {
+        const currentLocalStorage = JSON.parse(localStorage.getItem("blogs") as string);
 
-      const newLocalStorage = {
-        ...currentLocalStorage,
-        [filename]: { cards, filename, text },
-      };
+        const newLocalStorage = {
+          ...currentLocalStorage,
+          [filename]: { cards, filename, text },
+        };
 
-      localStorage.setItem("blogs", JSON.stringify(newLocalStorage));
+        localStorage.setItem("blogs", JSON.stringify(newLocalStorage));
+      }
     } else {
       // error message
     }

@@ -19,8 +19,10 @@ class Authenticator extends EventEmitter {
   constructor(config: AuthenticatorConfig) {
     super();
     this.authEndpoint = config.authEndpoint;
-    this.accessToken = this.loadAccessTokenFromLocalStorage();
-    this.refreshToken = this.loadRefreshTokenFromLocalStorage();
+    this.accessToken =
+      typeof window !== "undefined" ? this.loadAccessTokenFromLocalStorage() : null;
+    this.refreshToken =
+      typeof window !== "undefined" ? this.loadRefreshTokenFromLocalStorage() : null;
   }
 
   async authenticate(credentials: Credentials): Promise<{
