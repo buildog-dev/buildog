@@ -26,9 +26,7 @@ export default function Page() {
   useEffect(() => {
     const qsFilename = query.get("filename");
     if (qsFilename) {
-      const localStorageBlogs = JSON.parse(
-        localStorage.getItem("blogs") as string
-      );
+      const localStorageBlogs = JSON.parse(localStorage.getItem("blogs") as string);
 
       const blog = localStorageBlogs[qsFilename];
       setFilename(blog.filename);
@@ -56,9 +54,7 @@ export default function Page() {
     if (filename && cards.length > 0) {
       const text = cards?.map((item) => item.value + "\n\n").join("");
 
-      const currentLocalStorage = JSON.parse(
-        localStorage.getItem("blogs") as string
-      );
+      const currentLocalStorage = JSON.parse(localStorage.getItem("blogs") as string);
 
       const newLocalStorage = {
         ...currentLocalStorage,
@@ -111,12 +107,7 @@ export default function Page() {
       <div className="flex h-full gap-6">
         <div className="w-full space-y-4">
           <div className="w-full p-5 border rounded-lg space-y-4">
-            <Button
-              onClick={addMarkdownArea}
-              size="sm"
-              className="text-end"
-              variant="secondary"
-            >
+            <Button onClick={addMarkdownArea} size="sm" className="text-end" variant="secondary">
               Add Markdown Area
             </Button>
             <div className="max-h-[calc(100vh_-_200px)] overflow-y-auto">

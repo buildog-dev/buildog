@@ -31,7 +31,9 @@ class ServiceClient {
       const response = await axios({
         method,
         url: `${this.serviceBaseUrl}/${endpoint}`,
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         data,
       });
 
@@ -41,7 +43,7 @@ class ServiceClient {
         this.authenticator.removeLocalStoragedToken();
         console.log("Unauthorized User");
       }
-    
+
       throw error;
     }
   }

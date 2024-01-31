@@ -18,11 +18,7 @@ interface DragItem {
 
 export const Card: FC<CardProps> = ({ id, children, index, moveCard }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [{ handlerId }, drop] = useDrop<
-    DragItem,
-    void,
-    { handlerId: Identifier | null }
-  >({
+  const [{ handlerId }, drop] = useDrop<DragItem, void, { handlerId: Identifier | null }>({
     accept: "card",
     collect(monitor) {
       return {
@@ -45,8 +41,7 @@ export const Card: FC<CardProps> = ({ id, children, index, moveCard }) => {
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
 
       // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
       // Determine mouse position
       const clientOffset = monitor.getClientOffset();

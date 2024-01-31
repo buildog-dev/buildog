@@ -25,7 +25,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     const authSuccess = await Auth.authenticate({
       email: email,
-      password: password
+      password: password,
     });
 
     if (authSuccess.auth) router.push("/blog/");
