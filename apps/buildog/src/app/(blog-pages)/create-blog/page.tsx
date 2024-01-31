@@ -21,6 +21,7 @@ export default function Page() {
 
   const tabChangeHandler = (value) => {
     setTab(value);
+    console.log(value);
   };
   const markdownInputHandler = (e) => {
     setMarkdownContent(e.target.value);
