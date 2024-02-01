@@ -4,11 +4,7 @@ import { useCallback } from "react";
 import { Card } from "./drag-drop-card";
 import { Button } from "@ui/components/button";
 import { Textarea } from "@ui/components/textarea";
-import {
-  Cross1Icon,
-  LockClosedIcon,
-  LockOpen2Icon,
-} from "@ui/components/react-icons";
+import { Cross1Icon, LockClosedIcon, LockOpen2Icon } from "@ui/components/react-icons";
 
 export interface Item {
   id: string;
@@ -33,10 +29,7 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
     );
   }, []);
 
-  const textAreaHandler = (
-    id: string,
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const textAreaHandler = (id: string, e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCards((prevCards: Item[]) => {
       let copyCards = [...prevCards];
       let cardIndex = prevCards.findIndex((card) => card.id == id);
@@ -101,11 +94,7 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
     );
   }, []);
 
-  return (
-    <div className="space-y-4">
-      {cards?.map((card, i) => renderCard(card, i))}
-    </div>
-  );
+  return <div className="space-y-4">{cards?.map((card, i) => renderCard(card, i))}</div>;
 };
 
 export default DragDropList;

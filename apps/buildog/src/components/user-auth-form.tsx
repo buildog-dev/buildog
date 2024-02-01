@@ -17,9 +17,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-
-    const email = event.target[0].value;
-    const password = event.target[1].value;
+    const formData = new FormData(event.target as HTMLFormElement);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     setLoading(true);
 
@@ -46,6 +46,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </Label>
             <Input
               id="email"
+              name="email"
               placeholder="name@example.com"
               type="email"
               autoCapitalize="none"
@@ -58,6 +59,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </Label>
             <Input
               id="password"
+              name="password"
               placeholder="password"
               type="password"
               disabled={loading}
