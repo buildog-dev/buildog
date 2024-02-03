@@ -1,5 +1,5 @@
 "use client";
-
+import { Fragment } from "react";
 import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,26 +18,45 @@ import {
 import { Input } from "@ui/components/input";
 import { toast } from "@ui/components/use-toast";
 
-const settingsFormSchema = z.object({
+const settingsInformationFormSchema = z.object({
   email: z.string().email().optional(),
+});
+
+const settingsThemeFormSchema = z.object({
   theme: z.enum(["dark", "light"], {
     invalid_type_error: "Select a theme",
     required_error: "Please select a theme.",
   }),
 });
 
-type SettingsFormValues = z.infer<typeof settingsFormSchema>;
+type SettingsInformationFormValues = z.infer<typeof settingsInformationFormSchema>;
+type SettingsThemeFormValues = z.infer<typeof settingsThemeFormSchema>;
 
 // This can come from your database or API.
 export default function Page() {
   const { theme, setTheme } = useTheme();
-  console.log(theme);
-  const form = useForm<SettingsFormValues>({
-    resolver: zodResolver(settingsFormSchema),
+
+  const informationForm = useForm<SettingsInformationFormValues>({
+    resolver: zodResolver(settingsInformationFormSchema),
+    mode: "onChange",
+  });
+  const themeForm = useForm<SettingsThemeFormValues>({
+    resolver: zodResolver(settingsThemeFormSchema),
     mode: "onChange",
   });
 
-  function onSubmit(data: SettingsFormValues) {
+  function onInformationFormSubmit(data: SettingsInformationFormValues) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+  }
+
+  function onThemeChange(data: SettingsThemeFormValues) {
     setTheme(data.theme);
     toast({
       title: "You submitted the following values:",
@@ -50,62 +69,79 @@ export default function Page() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="overflow-y-auto w-full p-5 border rounded-lg space-y-4">
-          <h2 className="text-2xl font-bold tracking-tight">Information</h2>
-          <div className="w-full flex items-center">
-            <span className="w-full border-t" />
+    <Fragment>
+      <Form {...informationForm}>
+        <form
+          onSubmit={informationForm.handleSubmit(onInformationFormSubmit)}
+          className="space-y-8"
+        >
+          <div className="overflow-y-auto w-full border rounded-lg">
+            <div className="w-full p-5 space-y-4">
+              <h2 className="text-2xl font-bold tracking-tight">Information</h2>
+              <div className="w-full flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <FormField
+                control={informationForm.control}
+                name="email"
+                disabled={true}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="buildog@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-full flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="w-full p-5 space-y-4 flex justify-end">
+              <Button type="submit">Update settings</Button>
+            </div>
           </div>
-          <FormField
-            control={form.control}
-            name="email"
-            disabled={true}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="buildog@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="overflow-y-auto w-full p-5 border rounded-lg space-y-4">
-          <h2 className="text-2xl font-bold tracking-tight">Theme</h2>
-          <div className="w-full flex items-center">
-            <span className="w-full border-t" />
+        </form>
+      </Form>
+
+      <Form {...themeForm}>
+        <form onChange={themeForm.handleSubmit(onThemeChange)} className="space-y-8">
+          <div className="overflow-y-auto w-full p-5 border rounded-lg space-y-4 mt-4">
+            <h2 className="text-2xl font-bold tracking-tight">Theme</h2>
+            <div className="w-full flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <FormField
+              control={themeForm.control}
+              name="theme"
+              defaultValue={theme as "dark" | "light"}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Interface theme</FormLabel>
+                  <div className="relative w-max">
+                    <FormControl>
+                      <select
+                        className={cn(
+                          buttonVariants({ variant: "outline" }),
+                          "w-[200px] appearance-none font-normal"
+                        )}
+                        {...field}
+                      >
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                      </select>
+                    </FormControl>
+                    <ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-          <FormField
-            control={form.control}
-            name="theme"
-            defaultValue={theme as "dark" | "light"}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Interface theme</FormLabel>
-                <div className="relative w-max">
-                  <FormControl>
-                    <select
-                      className={cn(
-                        buttonVariants({ variant: "outline" }),
-                        "w-[200px] appearance-none font-normal"
-                      )}
-                      {...field}
-                    >
-                      <option value="dark">Dark</option>
-                      <option value="light">Light</option>
-                    </select>
-                  </FormControl>
-                  <ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <Button type="submit">Update settings</Button>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </Fragment>
   );
 }
