@@ -21,7 +21,7 @@ const Appbar = () => {
       });
   };
   return (
-    <header className="px-10 border-b-2">
+    <header className="lg:px-10 border-b-2">
       <nav className="w-full flex items-center justify-end py-3">
         <DropdownMenu>
           <DropdownMenuTrigger>

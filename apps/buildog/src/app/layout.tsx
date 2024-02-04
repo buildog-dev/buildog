@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "@repo/ui/styles/global.css";
 import { useEffect } from "react";
 import { Auth } from "@/web-sdk";
+import { Toaster } from "@ui/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           <div className="flex w-full min-h-screen justify-center">{children}</div>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
