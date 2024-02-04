@@ -21,6 +21,12 @@ export function Sidebar({ className }: { className?: string }) {
           route: "/create-blog/",
           key: "main-create-blog",
         },
+        {
+          name: "Settings",
+          icon: "",
+          route: "/settings/",
+          key: "main-settings",
+        },
       ],
     },
   };
