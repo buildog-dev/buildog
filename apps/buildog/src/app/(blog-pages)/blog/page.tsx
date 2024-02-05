@@ -106,6 +106,7 @@ export default function Page() {
           },
         ]}
         data={Object.values(blogs || {}).map(createData)}
+        filterColumnId={"fileName"}
       />
     </div>
   );

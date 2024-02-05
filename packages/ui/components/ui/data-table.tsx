@@ -25,9 +25,14 @@ import * as React from "react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterColumnId: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  filterColumnId,
+}: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
@@ -45,8 +50,8 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter Blog Name ..."
-          value={(table.getColumn("fileName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("fileName")?.setFilterValue(event.target.value)}
+          value={(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn(filterColumnId)?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
       </div>
