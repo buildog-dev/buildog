@@ -89,18 +89,21 @@ export default function Page() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="buildog@example.com" {...field} />
+                      <Input
+                        className="w-96"
+                        type="email"
+                        placeholder="buildog@example.com"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <div className="w-full flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="w-full p-5 space-y-4 flex justify-end">
-              <Button type="submit">Update settings</Button>
+            <hr />
+            <div className="w-full p-4 space-y-4 flex justify-end">
+              <Button type="submit">Save</Button>
             </div>
           </div>
         </form>

@@ -27,6 +27,12 @@ export function Sidebar({ className }: { className?: string }) {
           route: "/settings/",
           key: "main-settings",
         },
+        {
+          name: "Web",
+          icon: "",
+          route: "/www/",
+          key: "main-www",
+        },
       ],
     },
   };

@@ -8,6 +8,7 @@ import {
 } from "@ui/components/ui/dropdown-menu";
 import { Auth } from "@/web-sdk";
 import { useRouter } from "next/navigation";
+
 const Appbar = () => {
   const route = useRouter();
 
@@ -20,8 +21,9 @@ const Appbar = () => {
         console.log("Logout Error", error.message);
       });
   };
+
   return (
-    <header className="lg:px-10 border-b-2">
+    <header className="px-10 border-b">
       <nav className="w-full flex items-center justify-end py-3">
         <DropdownMenu>
           <DropdownMenuTrigger>
