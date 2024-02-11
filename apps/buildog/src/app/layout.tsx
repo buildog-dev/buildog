@@ -6,7 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "@repo/ui/styles/global.css";
 import { useEffect } from "react";
 import { Auth } from "@/web-sdk";
-import { Toaster } from "@ui/components/ui/toaster";
+import { Toaster } from "@ui/components/toaster";
+
 const inter = Inter({ subsets: ["latin"] });
 
 /*export const metadata: Metadata = {
