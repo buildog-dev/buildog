@@ -9,13 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.29.1",
     "@hookform/resolvers": "^3.3.4",
+    "@lexical/react": "^0.15.0",
     "@repo/ui": "workspace:*",
     "@repo/web-sdk": "workspace:*",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
     "dnd-core": "^16.0.1",
     "immutability-helper": "^3.1.1",
+    "lexical": "^0.15.0",
     "next": "14.0.2",
     "next-themes": "^0.2.1",
     "react": "^18",

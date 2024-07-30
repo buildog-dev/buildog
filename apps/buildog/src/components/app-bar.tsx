@@ -8,6 +8,7 @@ import {
 } from "@ui/components/ui/dropdown-menu";
 import { Auth } from "@/web-sdk";
 import { useRouter } from "next/navigation";
+
 const Appbar = () => {
   const route = useRouter();
 
@@ -20,19 +21,22 @@ const Appbar = () => {
         console.log("Logout Error", error.message);
       });
   };
+
   return (
-    <header className="lg:px-10 border-b-2">
-      <nav className="w-full flex items-center justify-end py-3">
+    <header className="px-4 border-b">
+      <nav className="w-full flex items-center justify-end py-2">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Avatar>
+            <Avatar className="w-8 h-8">
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+          <DropdownMenuContent align="end" className="min-w-[200px]">
+            <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </nav>

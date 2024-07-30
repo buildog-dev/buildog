@@ -42,6 +42,7 @@
     "@tanstack/react-table": "^8.11.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "react-form-hook": "^0.0.1",
     "react-hook-form": "^7.49.3",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",

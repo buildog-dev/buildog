@@ -1,4 +1,3 @@
-"use client";
 import { cn } from "@repo/ui/lib/utils";
 import { Button } from "@ui/components/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -20,6 +19,12 @@ export function Sidebar({ className }: { className?: string }) {
           icon: "",
           route: "/create-blog/",
           key: "main-create-blog",
+        },
+        {
+          name: "Web",
+          icon: "",
+          route: "/www/",
+          key: "main-www",
         },
         {
           name: "Settings",
