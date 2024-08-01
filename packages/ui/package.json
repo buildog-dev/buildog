@@ -39,7 +39,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@tanstack/react-table": "^8.11.8",
+    "@tanstack/react-table": "^8.19.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "react-form-hook": "^0.0.1",
