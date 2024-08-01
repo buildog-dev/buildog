@@ -37,15 +37,12 @@ importers:
 
   apps/buildog:
     dependencies:
-      '@editorjs/editorjs':
-        specifier: ^2.29.1
-        version: 2.29.1
       '@hookform/resolvers':
         specifier: ^3.3.4
         version: 3.3.4(react-hook-form@7.49.3)
-      '@lexical/react':
-        specifier: ^0.15.0
-        version: 0.15.0(react-dom@18.2.0)(react@18.2.0)(yjs@13.6.15)
+      '@repo/editor':
+        specifier: workspace:*
+        version: link:../../packages/editor
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -64,9 +61,6 @@ importers:
       immutability-helper:
         specifier: ^3.1.1
         version: 3.1.1
-      lexical:
-        specifier: ^0.15.0
-        version: 0.15.0
       next:
         specifier: 14.0.2
         version: 14.0.2(react-dom@18.2.0)(react@18.2.0)
@@ -128,6 +122,112 @@ importers:
       typescript:
         specifier: ^5
         version: 5.3.2
+
+  packages/editor:
+    dependencies:
+      '@hookform/resolvers':
+        specifier: ^3.3.4
+        version: 3.3.4(react-hook-form@7.49.3)
+      '@radix-ui/react-avatar':
+        specifier: ^1.0.4
+        version: 1.0.4(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-dialog':
+        specifier: ^1.0.5
+        version: 1.0.5(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-dropdown-menu':
+        specifier: ^2.0.6
+        version: 2.0.6(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-hover-card':
+        specifier: ^1.0.7
+        version: 1.0.7(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-icons':
+        specifier: ^1.3.0
+        version: 1.3.0(react@17.0.2)
+      '@radix-ui/react-label':
+        specifier: ^2.0.2
+        version: 2.0.2(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-menubar':
+        specifier: ^1.0.4
+        version: 1.0.4(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-scroll-area':
+        specifier: ^1.0.5
+        version: 1.0.5(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-select':
+        specifier: ^2.0.0
+        version: 2.0.0(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-separator':
+        specifier: ^1.0.3
+        version: 1.0.3(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-slot':
+        specifier: ^1.0.2
+        version: 1.0.2(@types/react@18.2.38)(react@17.0.2)
+      '@radix-ui/react-switch':
+        specifier: ^1.0.3
+        version: 1.0.3(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-tabs':
+        specifier: ^1.0.4
+        version: 1.0.4(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@radix-ui/react-toast':
+        specifier: ^1.1.5
+        version: 1.1.5(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2)
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@tanstack/react-table':
+        specifier: ^8.19.3
+        version: 8.19.3(react-dom@18.2.0)(react@17.0.2)
+      class-variance-authority:
+        specifier: ^0.7.0
+        version: 0.7.0
+      clsx:
+        specifier: ^2.0.0
+        version: 2.0.0
+      react-form-hook:
+        specifier: ^0.0.1
+        version: 0.0.1
+      react-hook-form:
+        specifier: ^7.49.3
+        version: 7.49.3(react@17.0.2)
+      tailwind-merge:
+        specifier: ^2.0.0
+        version: 2.0.0
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.3.5)
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
+    devDependencies:
+      '@types/node':
+        specifier: ^17.0.12
+        version: 17.0.45
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.2.38
+      '@types/react-dom':
+        specifier: ^18.2.0
+        version: 18.2.17
+      autoprefixer:
+        specifier: ^10.4.14
+        version: 10.4.16(postcss@8.4.31)
+      eslint:
+        specifier: ^7.32.0
+        version: 7.32.0
+      postcss:
+        specifier: ^8.4.24
+        version: 8.4.31
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      tailwindcss:
+        specifier: ^3.3.2
+        version: 3.3.5
+      typescript:
+        specifier: ^4.5.2
+        version: 4.9.5
 
   packages/eslint-config:
     devDependencies:
@@ -518,10 +618,6 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@editorjs/editorjs@2.29.1:
-    resolution: {integrity: sha512-WRT2pCfikMsvySQJqpCU21LfTZaPuxUWsDO8aFGrPx4MKzOR9D+Ur4mNb3jq0FXx2EMqvIWfTyFixJxtjGHTyQ==, tarball: https://registry.npmjs.org/@editorjs/editorjs/-/editorjs-2.29.1.tgz}
-    dev: false
-
   /@eslint-community/eslint-utils@4.4.0(eslint@8.54.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -609,7 +705,7 @@ packages:
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.49.3(react@17.0.2)
+      react-hook-form: 7.49.3(react@18.2.0)
     dev: false
 
   /@humanwhocodes/config-array@0.11.13:
@@ -671,201 +767,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
-
-  /@lexical/clipboard@0.15.0:
-    resolution: {integrity: sha512-binCltK7KiURQJFogvueYfmDNEKynN/lmZrCLFp2xBjEIajqw4WtOVLJZ33engdqNlvj0JqrxrWxbKG+yvUwrg==, tarball: https://registry.npmjs.org/@lexical/clipboard/-/clipboard-0.15.0.tgz}
-    dependencies:
-      '@lexical/html': 0.15.0
-      '@lexical/list': 0.15.0
-      '@lexical/selection': 0.15.0
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/code@0.15.0:
-    resolution: {integrity: sha512-n185gjinGhz/M4BW1ayNPYAEgwW4T/NEFl2Wey/O+07W3zvh9k9ai7RjWd0c8Qzqc4DLlqvibvWPebWObQHA4w==, tarball: https://registry.npmjs.org/@lexical/code/-/code-0.15.0.tgz}
-    dependencies:
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-      prismjs: 1.29.0
-    dev: false
-
-  /@lexical/devtools-core@0.15.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-kK/IVEiQyqs2DsY4QRYFaFiKQMpaAukAl8PXmNeGTZ7cfFVsP29E4n0/pjY+oxmiRvxbO1s2i14q58nfuhj4VQ==, tarball: https://registry.npmjs.org/@lexical/devtools-core/-/devtools-core-0.15.0.tgz}
-    peerDependencies:
-      react: '>=17.x'
-      react-dom: '>=17.x'
-    dependencies:
-      '@lexical/html': 0.15.0
-      '@lexical/link': 0.15.0
-      '@lexical/mark': 0.15.0
-      '@lexical/table': 0.15.0
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /@lexical/dragon@0.15.0:
-    resolution: {integrity: sha512-hg2rGmxVJF7wmN6psuKw3EyhcNF7DtOYwUCBpjFZVshzAjsNEBfEnqhiMkSVSlN4+WOfM7LS+B88PTKPcnFGbQ==, tarball: https://registry.npmjs.org/@lexical/dragon/-/dragon-0.15.0.tgz}
-    dependencies:
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/hashtag@0.15.0:
-    resolution: {integrity: sha512-EP6KKvS6BY/8Vh1MLQYeOcYaxnvrLsUkvXXr+Fg8N477Us54Ju69pPO563mbWt7/bpnL9Sh0fbk82JtxqPWpSg==, tarball: https://registry.npmjs.org/@lexical/hashtag/-/hashtag-0.15.0.tgz}
-    dependencies:
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/history@0.15.0:
-    resolution: {integrity: sha512-r+pzR2k/51AL6l8UfXeVe/GWPIeWY1kEOuKx9nsYB9tmAkTF66tTFz33DJIMWBVtAHWN7Dcdv0/yy6q8R6CAUQ==, tarball: https://registry.npmjs.org/@lexical/history/-/history-0.15.0.tgz}
-    dependencies:
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/html@0.15.0:
-    resolution: {integrity: sha512-x/sfGvibwo8b5Vso4ppqNyS/fVve6Rn+TmvP/0eWOaa0I3aOQ57ulfcK6p/GTe+ZaEi8vW64oZPdi8XDgwSRaA==, tarball: https://registry.npmjs.org/@lexical/html/-/html-0.15.0.tgz}
-    dependencies:
-      '@lexical/selection': 0.15.0
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/link@0.15.0:
-    resolution: {integrity: sha512-KBV/zWk5FxqZGNcq3IKGBDCcS4t0uteU1osAIG+pefo4waTkOOgibxxEJDop2QR5wtjkYva3Qp0D8ZyJDMMMlw==, tarball: https://registry.npmjs.org/@lexical/link/-/link-0.15.0.tgz}
-    dependencies:
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/list@0.15.0:
-    resolution: {integrity: sha512-JuF4k7uo4rZFOSZGrmkxo1+sUrwTKNBhhJAiCgtM+6TO90jppxzCFNKur81yPzF1+g4GWLC9gbjzKb52QPb6cQ==, tarball: https://registry.npmjs.org/@lexical/list/-/list-0.15.0.tgz}
-    dependencies:
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/mark@0.15.0:
-    resolution: {integrity: sha512-cdePA98sOJRc4/HHqcOcPBFq4UDwzaFJOK1N1E6XUGcXH1GU8zHtV1ElTgmbsGkyjBRwhR+OqKm9eso1PBOUkg==, tarball: https://registry.npmjs.org/@lexical/mark/-/mark-0.15.0.tgz}
-    dependencies:
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/markdown@0.15.0:
-    resolution: {integrity: sha512-wu1EP758l452BovDa7i9ZAeWuFj+YY0bc2mNc08nfZ9GqdGMej1JIguY4CwIROCYVizprL9Ocn0avH1uv9b8fA==, tarball: https://registry.npmjs.org/@lexical/markdown/-/markdown-0.15.0.tgz}
-    dependencies:
-      '@lexical/code': 0.15.0
-      '@lexical/link': 0.15.0
-      '@lexical/list': 0.15.0
-      '@lexical/rich-text': 0.15.0
-      '@lexical/text': 0.15.0
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/offset@0.15.0:
-    resolution: {integrity: sha512-VO1f3m8+RRdRjuXMtCBhi1COVKRC2LhP8AFYxnFlvbV+Waz9R5xB9pqFFUe4RtyqyTLmOUj6+LtsUFhq+23voQ==, tarball: https://registry.npmjs.org/@lexical/offset/-/offset-0.15.0.tgz}
-    dependencies:
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/overflow@0.15.0:
-    resolution: {integrity: sha512-9qKVCvh9Oka+bzR3th+UWdTEeMZXYy1ZxWbjSxefRMgQxzCvqSuVioK/065gPbvGga9EfvgLLLBDXZm8ISbJQA==, tarball: https://registry.npmjs.org/@lexical/overflow/-/overflow-0.15.0.tgz}
-    dependencies:
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/plain-text@0.15.0:
-    resolution: {integrity: sha512-yeK466mXb4xaCCJouGzEHQs59fScHxF8Asq0azNyJmkhQWYrU7WdckHf2xj8ItZFFPyj7lvwKRDYnoy4HQD7Mg==, tarball: https://registry.npmjs.org/@lexical/plain-text/-/plain-text-0.15.0.tgz}
-    dependencies:
-      '@lexical/clipboard': 0.15.0
-      '@lexical/selection': 0.15.0
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/react@0.15.0(react-dom@18.2.0)(react@18.2.0)(yjs@13.6.15):
-    resolution: {integrity: sha512-TWDp/F9cKwjGreLzIdHKlPUeTn275rR6j1VXrBffNwC5ovxWcKLVRg502eY5xvRQH3lkKQpFgIFbJW4KTvhFsQ==, tarball: https://registry.npmjs.org/@lexical/react/-/react-0.15.0.tgz}
-    peerDependencies:
-      react: '>=17.x'
-      react-dom: '>=17.x'
-    dependencies:
-      '@lexical/clipboard': 0.15.0
-      '@lexical/code': 0.15.0
-      '@lexical/devtools-core': 0.15.0(react-dom@18.2.0)(react@18.2.0)
-      '@lexical/dragon': 0.15.0
-      '@lexical/hashtag': 0.15.0
-      '@lexical/history': 0.15.0
-      '@lexical/link': 0.15.0
-      '@lexical/list': 0.15.0
-      '@lexical/mark': 0.15.0
-      '@lexical/markdown': 0.15.0
-      '@lexical/overflow': 0.15.0
-      '@lexical/plain-text': 0.15.0
-      '@lexical/rich-text': 0.15.0
-      '@lexical/selection': 0.15.0
-      '@lexical/table': 0.15.0
-      '@lexical/text': 0.15.0
-      '@lexical/utils': 0.15.0
-      '@lexical/yjs': 0.15.0(yjs@13.6.15)
-      lexical: 0.15.0
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-error-boundary: 3.1.4(react@18.2.0)
-    transitivePeerDependencies:
-      - yjs
-    dev: false
-
-  /@lexical/rich-text@0.15.0:
-    resolution: {integrity: sha512-76tXh/eeEOHl91HpFEXCc/tUiLrsa9RcSyvCzRZahk5zqYvQPXma/AUfRzuSMf2kLwDEoauKAVqNFQcbPhqwpQ==, tarball: https://registry.npmjs.org/@lexical/rich-text/-/rich-text-0.15.0.tgz}
-    dependencies:
-      '@lexical/clipboard': 0.15.0
-      '@lexical/selection': 0.15.0
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/selection@0.15.0:
-    resolution: {integrity: sha512-S+AQC6eJiQYSa5zOPuecN85prCT0Bcb8miOdJaE17Zh+vgdUH5gk9I0tEBeG5T7tkSpq6lFiEqs2FZSfaHflbQ==, tarball: https://registry.npmjs.org/@lexical/selection/-/selection-0.15.0.tgz}
-    dependencies:
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/table@0.15.0:
-    resolution: {integrity: sha512-3IRBg8IoIHetqKozRQbJQ2aPyG0ziXZ+lc8TOIAGs6METW/wxntaV+rTNrODanKAgvk2iJTIyfFkYjsqS9+VFg==, tarball: https://registry.npmjs.org/@lexical/table/-/table-0.15.0.tgz}
-    dependencies:
-      '@lexical/utils': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/text@0.15.0:
-    resolution: {integrity: sha512-WsAkAt9T1RH1iDrVuWeoRUeMCOAWar5oSFtnQ4m9vhT/zuf5b8efK87GiqCH00ZAn4DGzOuAfyXlMFqBVCQdkQ==, tarball: https://registry.npmjs.org/@lexical/text/-/text-0.15.0.tgz}
-    dependencies:
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/utils@0.15.0:
-    resolution: {integrity: sha512-/6954LDmTcVFgexhy5WOZDa4TxNQOEZNrf8z7TRAFiAQkihcME/GRoq1en5cbXoVNF8jv5AvNyyc7x0MByRJ6A==, tarball: https://registry.npmjs.org/@lexical/utils/-/utils-0.15.0.tgz}
-    dependencies:
-      '@lexical/list': 0.15.0
-      '@lexical/selection': 0.15.0
-      '@lexical/table': 0.15.0
-      lexical: 0.15.0
-    dev: false
-
-  /@lexical/yjs@0.15.0(yjs@13.6.15):
-    resolution: {integrity: sha512-Rf4AIu620Cq90li6GU58gkzlGRdntHP4ZeZrbJ3ToW7vEEnkW6Wl9/HhO647GG4OL5w46M0iWvx1b1b8xjYT1w==, tarball: https://registry.npmjs.org/@lexical/yjs/-/yjs-0.15.0.tgz}
-    peerDependencies:
-      yjs: '>=13.5.22'
-    dependencies:
-      '@lexical/offset': 0.15.0
-      lexical: 0.15.0
-      yjs: 13.6.15
-    dev: false
 
   /@microsoft/tsdoc-config@0.16.2:
     resolution: {integrity: sha512-OGiIzzoBLgWWR0UdRJX98oYO+XKGf7tiK4Zk6tQ/E4IJqGCe7dvkTvgDZV5cFJUzLGDOjeAXrnZoA6QkVySuxw==}
@@ -1019,7 +920,7 @@ packages:
     dev: false
 
   /@radix-ui/primitive@1.0.1:
-    resolution: {integrity: sha512-yQ8oGX2GVsEYMWGxcovu1uGWPCxV5BFfeeYxqPmuAzUyLT9qmaMXSAhXpb0WrspIeqYzdJpkh2vHModJPgRIaw==}
+    resolution: {integrity: sha512-yQ8oGX2GVsEYMWGxcovu1uGWPCxV5BFfeeYxqPmuAzUyLT9qmaMXSAhXpb0WrspIeqYzdJpkh2vHModJPgRIaw==, tarball: https://registry.npmjs.org/@radix-ui/primitive/-/primitive-1.0.1.tgz}
     dependencies:
       '@babel/runtime': 7.23.4
     dev: false
@@ -1094,7 +995,7 @@ packages:
     dev: false
 
   /@radix-ui/react-compose-refs@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-fDSBgd44FKHa1FRMU59qBMPFcl2PZE+2nmqunj+BWFyYYjnhIDWL2ItDs3rrbJDQOtzt5nIebLCQc4QRfz6LJw==}
+    resolution: {integrity: sha512-fDSBgd44FKHa1FRMU59qBMPFcl2PZE+2nmqunj+BWFyYYjnhIDWL2ItDs3rrbJDQOtzt5nIebLCQc4QRfz6LJw==, tarball: https://registry.npmjs.org/@radix-ui/react-compose-refs/-/react-compose-refs-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -1108,7 +1009,7 @@ packages:
     dev: false
 
   /@radix-ui/react-context@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-ebbrdFoYTcuZ0v4wG5tedGnp9tzcV8awzsxYph7gXUyvnNLuTIcCk1q17JEbnVhXAKG9oX3KtchwiMIAYp9NLg==}
+    resolution: {integrity: sha512-ebbrdFoYTcuZ0v4wG5tedGnp9tzcV8awzsxYph7gXUyvnNLuTIcCk1q17JEbnVhXAKG9oX3KtchwiMIAYp9NLg==, tarball: https://registry.npmjs.org/@radix-ui/react-context/-/react-context-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -1156,7 +1057,7 @@ packages:
     dev: false
 
   /@radix-ui/react-direction@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-RXcvnXgyvYvBEOhCBuddKecVkoMiI10Jcm5cTI7abJRAHYfFxeu+FBQs/DvdxSYucxR5mna0dNsL6QFlds5TMA==}
+    resolution: {integrity: sha512-RXcvnXgyvYvBEOhCBuddKecVkoMiI10Jcm5cTI7abJRAHYfFxeu+FBQs/DvdxSYucxR5mna0dNsL6QFlds5TMA==, tarball: https://registry.npmjs.org/@radix-ui/react-direction/-/react-direction-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -1170,7 +1071,7 @@ packages:
     dev: false
 
   /@radix-ui/react-dismissable-layer@1.0.5(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-aJeDjQhywg9LBu2t/At58hCvr7pEm0o2Ke1x33B+MhjNmmZ17sy4KImo0KPLgsnc/zN7GPdce8Cnn0SWvwZO7g==}
+    resolution: {integrity: sha512-aJeDjQhywg9LBu2t/At58hCvr7pEm0o2Ke1x33B+MhjNmmZ17sy4KImo0KPLgsnc/zN7GPdce8Cnn0SWvwZO7g==, tarball: https://registry.npmjs.org/@radix-ui/react-dismissable-layer/-/react-dismissable-layer-1.0.5.tgz}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -1222,7 +1123,7 @@ packages:
     dev: false
 
   /@radix-ui/react-focus-guards@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-Rect2dWbQ8waGzhMavsIbmSVCgYxkXLxxR3ZvCX79JOglzdEy4JXMb98lq4hPxUbLr77nP0UOGf4rcMU+s1pUA==}
+    resolution: {integrity: sha512-Rect2dWbQ8waGzhMavsIbmSVCgYxkXLxxR3ZvCX79JOglzdEy4JXMb98lq4hPxUbLr77nP0UOGf4rcMU+s1pUA==, tarball: https://registry.npmjs.org/@radix-ui/react-focus-guards/-/react-focus-guards-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -1236,7 +1137,7 @@ packages:
     dev: false
 
   /@radix-ui/react-focus-scope@1.0.4(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-sL04Mgvf+FmyvZeYfNu1EPAaaxD+aw7cYeIB9L9Fvq8+urhltTRaEo5ysKOpHuKPclsZcSUMKlN05x4u+CINpA==}
+    resolution: {integrity: sha512-sL04Mgvf+FmyvZeYfNu1EPAaaxD+aw7cYeIB9L9Fvq8+urhltTRaEo5ysKOpHuKPclsZcSUMKlN05x4u+CINpA==, tarball: https://registry.npmjs.org/@radix-ui/react-focus-scope/-/react-focus-scope-1.0.4.tgz}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -1296,7 +1197,7 @@ packages:
     dev: false
 
   /@radix-ui/react-id@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-tI7sT/kqYp8p96yGWY1OAnLHrqDgzHefRBKQ2YAkBS5ja7QLcZ9Z/uY7bEjPUatf8RomoXM8/1sMj1IJaE5UzQ==}
+    resolution: {integrity: sha512-tI7sT/kqYp8p96yGWY1OAnLHrqDgzHefRBKQ2YAkBS5ja7QLcZ9Z/uY7bEjPUatf8RomoXM8/1sMj1IJaE5UzQ==, tarball: https://registry.npmjs.org/@radix-ui/react-id/-/react-id-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -1332,7 +1233,7 @@ packages:
     dev: false
 
   /@radix-ui/react-menu@2.0.6(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-BVkFLS+bUC8HcImkRKPSiVumA1VPOOEC5WBMiT+QAVsPzW1FJzI9KnqgGxVDPBcql5xXrHkD3JOVoXWEXD8SYA==}
+    resolution: {integrity: sha512-BVkFLS+bUC8HcImkRKPSiVumA1VPOOEC5WBMiT+QAVsPzW1FJzI9KnqgGxVDPBcql5xXrHkD3JOVoXWEXD8SYA==, tarball: https://registry.npmjs.org/@radix-ui/react-menu/-/react-menu-2.0.6.tgz}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -1400,7 +1301,7 @@ packages:
     dev: false
 
   /@radix-ui/react-popper@1.1.3(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-cKpopj/5RHZWjrbF2846jBNacjQVwkP068DfmgrNJXpvVWrOvlAmE9xSiy5OqeE+Gi8D9fP+oDhUnPqNMY8/5w==}
+    resolution: {integrity: sha512-cKpopj/5RHZWjrbF2846jBNacjQVwkP068DfmgrNJXpvVWrOvlAmE9xSiy5OqeE+Gi8D9fP+oDhUnPqNMY8/5w==, tarball: https://registry.npmjs.org/@radix-ui/react-popper/-/react-popper-1.1.3.tgz}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -1430,7 +1331,7 @@ packages:
     dev: false
 
   /@radix-ui/react-portal@1.0.4(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-Qki+C/EuGUVCQTOTD5vzJzJuMUlewbzuKyUy+/iHM2uwGiru9gZeBJtHAPKAEkB5KWGi9mP/CHKcY0wt1aW45Q==}
+    resolution: {integrity: sha512-Qki+C/EuGUVCQTOTD5vzJzJuMUlewbzuKyUy+/iHM2uwGiru9gZeBJtHAPKAEkB5KWGi9mP/CHKcY0wt1aW45Q==, tarball: https://registry.npmjs.org/@radix-ui/react-portal/-/react-portal-1.0.4.tgz}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -1451,7 +1352,7 @@ packages:
     dev: false
 
   /@radix-ui/react-presence@1.0.1(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-UXLW4UAbIY5ZjcvzjfRFo5gxva8QirC9hF7wRE4U5gz+TP0DbRk+//qyuAQ1McDxBt1xNMBTaciFGvEmJvAZCg==}
+    resolution: {integrity: sha512-UXLW4UAbIY5ZjcvzjfRFo5gxva8QirC9hF7wRE4U5gz+TP0DbRk+//qyuAQ1McDxBt1xNMBTaciFGvEmJvAZCg==, tarball: https://registry.npmjs.org/@radix-ui/react-presence/-/react-presence-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -1473,7 +1374,7 @@ packages:
     dev: false
 
   /@radix-ui/react-primitive@1.0.3(@types/react-dom@18.2.17)(@types/react@18.2.38)(react-dom@18.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-yi58uVyoAcK/Nq1inRY56ZSjKypBNKTa/1mcL8qdl6oJeEaDbOldlzrGn7P6Q3Id5d+SYNGc5AJgc4vGhjs5+g==}
+    resolution: {integrity: sha512-yi58uVyoAcK/Nq1inRY56ZSjKypBNKTa/1mcL8qdl6oJeEaDbOldlzrGn7P6Q3Id5d+SYNGc5AJgc4vGhjs5+g==, tarball: https://registry.npmjs.org/@radix-ui/react-primitive/-/react-primitive-1.0.3.tgz}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -1716,7 +1617,7 @@ packages:
     dev: false
 
   /@radix-ui/react-use-callback-ref@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-D94LjX4Sp0xJFVaoQOd3OO9k7tpBYNOXdVhkltUbGv2Qb9OXdrg/CpsjlZv7ia14Sylv398LswWBVVu5nqKzAQ==}
+    resolution: {integrity: sha512-D94LjX4Sp0xJFVaoQOd3OO9k7tpBYNOXdVhkltUbGv2Qb9OXdrg/CpsjlZv7ia14Sylv398LswWBVVu5nqKzAQ==, tarball: https://registry.npmjs.org/@radix-ui/react-use-callback-ref/-/react-use-callback-ref-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -1730,7 +1631,7 @@ packages:
     dev: false
 
   /@radix-ui/react-use-controllable-state@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-Svl5GY5FQeN758fWKrjM6Qb7asvXeiZltlT4U2gVfl8Gx5UAv2sMR0LWo8yhsIZh2oQ0eFdZ59aoOOMV7b47VA==}
+    resolution: {integrity: sha512-Svl5GY5FQeN758fWKrjM6Qb7asvXeiZltlT4U2gVfl8Gx5UAv2sMR0LWo8yhsIZh2oQ0eFdZ59aoOOMV7b47VA==, tarball: https://registry.npmjs.org/@radix-ui/react-use-controllable-state/-/react-use-controllable-state-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -1760,7 +1661,7 @@ packages:
     dev: false
 
   /@radix-ui/react-use-layout-effect@1.0.1(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-v/5RegiJWYdoCvMnITBkNNx6bCj20fiaJnWtRkU18yITptraXjffz5Qbn05uOiQnOvi+dbkznkoaMltz1GnszQ==}
+    resolution: {integrity: sha512-v/5RegiJWYdoCvMnITBkNNx6bCj20fiaJnWtRkU18yITptraXjffz5Qbn05uOiQnOvi+dbkznkoaMltz1GnszQ==, tarball: https://registry.npmjs.org/@radix-ui/react-use-layout-effect/-/react-use-layout-effect-1.0.1.tgz}
     peerDependencies:
       '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0
@@ -2328,7 +2229,7 @@ packages:
     dev: true
 
   /aria-hidden@1.2.3:
-    resolution: {integrity: sha512-xcLxITLe2HYa1cnYnwCjkOO1PqUHQpozB8x9AR0OgWN2woOBi5kSDVxKfd0b7sb1hw5qFeJhXm9H1nu3xSfLeQ==}
+    resolution: {integrity: sha512-xcLxITLe2HYa1cnYnwCjkOO1PqUHQpozB8x9AR0OgWN2woOBi5kSDVxKfd0b7sb1hw5qFeJhXm9H1nu3xSfLeQ==, tarball: https://registry.npmjs.org/aria-hidden/-/aria-hidden-1.2.3.tgz}
     engines: {node: '>=10'}
     dependencies:
       tslib: 2.6.2
@@ -4414,10 +4315,6 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
-  /isomorphic.js@0.2.5:
-    resolution: {integrity: sha512-PIeMbHqMt4DnUP3MA/Flc0HElYjMXArsw1qwJZcm9sqR8mq3l8NYizFMty0pWwE/tzIGH3EKK5+jes5mAr85yw==, tarball: https://registry.npmjs.org/isomorphic.js/-/isomorphic.js-0.2.5.tgz}
-    dev: false
-
   /iterator.prototype@1.1.2:
     resolution: {integrity: sha512-DR33HMMr8EzwuRL8Y9D3u2BMj8+RqSE850jfGu59kS7tbmPLzGkZmVSfyCFSDxuZiEY6Rzt3T2NA/qU+NwVj1w==}
     dependencies:
@@ -4543,18 +4440,6 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
-
-  /lexical@0.15.0:
-    resolution: {integrity: sha512-/7HrPAmtgsc1F+qpv5bFwoQZ6CbH/w3mPPL2AW5P75/QYrqKz4bhvJrc2jozIX0GxtuT/YUYT7w+1sZMtUWbOg==, tarball: https://registry.npmjs.org/lexical/-/lexical-0.15.0.tgz}
-    dev: false
-
-  /lib0@0.2.94:
-    resolution: {integrity: sha512-hZ3p54jL4Wpu7IOg26uC7dnEWiMyNlUrb9KoG7+xYs45WkQwpVvKFndVq2+pqLYKe1u8Fp3+zAfZHVvTK34PvQ==, tarball: https://registry.npmjs.org/lib0/-/lib0-0.2.94.tgz}
-    engines: {node: '>=16'}
-    hasBin: true
-    dependencies:
-      isomorphic.js: 0.2.5
-    dev: false
 
   /lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
@@ -5530,11 +5415,6 @@ packages:
     hasBin: true
     dev: true
 
-  /prismjs@1.29.0:
-    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==, tarball: https://registry.npmjs.org/prismjs/-/prismjs-1.29.0.tgz}
-    engines: {node: '>=6'}
-    dev: false
-
   /progress@2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
@@ -5615,16 +5495,6 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-error-boundary@3.1.4(react@18.2.0):
-    resolution: {integrity: sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==, tarball: https://registry.npmjs.org/react-error-boundary/-/react-error-boundary-3.1.4.tgz}
-    engines: {node: '>=10', npm: '>=6'}
-    peerDependencies:
-      react: '>=16.13.1'
-    dependencies:
-      '@babel/runtime': 7.23.4
-      react: 18.2.0
-    dev: false
-
   /react-form-hook@0.0.1:
     resolution: {integrity: sha512-uTC837MyrUs4gknm3UAt3ElwV/YUJ/ztUolJORBxb/W1po5NDZJYSTZkJz5Z9Cy9ZPxdfjOmZf+DwvVTm6v70Q==, tarball: https://registry.npmjs.org/react-form-hook/-/react-form-hook-0.0.1.tgz}
     dev: false
@@ -5689,7 +5559,7 @@ packages:
     dev: false
 
   /react-remove-scroll@2.5.5(@types/react@18.2.38)(react@17.0.2):
-    resolution: {integrity: sha512-ImKhrzJJsyXJfBZ4bzu8Bwpka14c/fQt0k+cyFp/PBhTfyDnU5hjOtM4AG/0AMyy8oKzOTR0lDgJIM7pYXI0kw==}
+    resolution: {integrity: sha512-ImKhrzJJsyXJfBZ4bzu8Bwpka14c/fQt0k+cyFp/PBhTfyDnU5hjOtM4AG/0AMyy8oKzOTR0lDgJIM7pYXI0kw==, tarball: https://registry.npmjs.org/react-remove-scroll/-/react-remove-scroll-2.5.5.tgz}
     engines: {node: '>=10'}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -6790,13 +6660,6 @@ packages:
   /yaml@2.3.4:
     resolution: {integrity: sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==}
     engines: {node: '>= 14'}
-
-  /yjs@13.6.15:
-    resolution: {integrity: sha512-moFv4uNYhp8BFxIk3AkpoAnnjts7gwdpiG8RtyFiKbMtxKCS0zVZ5wPaaGpwC3V2N/K8TK8MwtSI3+WO9CHWjQ==, tarball: https://registry.npmjs.org/yjs/-/yjs-13.6.15.tgz}
-    engines: {node: '>=16.0.0', npm: '>=8.0.0'}
-    dependencies:
-      lib0: 0.2.94
-    dev: false
 
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
