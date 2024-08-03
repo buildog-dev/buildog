@@ -16,6 +16,9 @@ func Router(audience, domain string) http.Handler {
 		middleware.CorsMiddlewareFunc(handlers.RefreshHandler),
 	)
 
+	// tenant
+	router.HandleFunc("/test/api/tenants", handlers.CreateTenantHandler)
+
 	// test
 	router.HandleFunc("/test/api/public", handlers.PublicApiHandler)
 	router.Handle("/test/api/private",
