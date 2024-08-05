@@ -13,6 +13,7 @@
     "@hookform/resolvers": "^3.3.4",
     "@lexical/react": "^0.15.0",
     "@repo/ui": "workspace:*",
+    "@repo/editor": "workspace:*",
     "@repo/web-sdk": "workspace:*",
     "axios": "^1.6.2",
     "class-variance-authority": "^0.7.0",
