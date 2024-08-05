@@ -17,7 +17,8 @@ func Router(audience, domain string) http.Handler {
 	)
 
 	// tenant
-	router.HandleFunc("/test/api/tenants", handlers.CreateTenantHandler)
+	router.HandleFunc("/api/tenants", handlers.TenantsHandler)
+	router.HandleFunc("/api/tenant", handlers.TenantHandler)
 
 	// test
 	router.HandleFunc("/test/api/public", handlers.PublicApiHandler)
