@@ -7,32 +7,41 @@ import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
-import { Auth } from "@/web-sdk";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
+  const BASE_URL = "http://localhost:3010";
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const first_name = formData.get("first_name") as string;
+    const last_name = formData.get("last_name") as string;
 
     setLoading(true);
 
-    const authSuccess = await Auth.authenticate({
-      email: email,
-      password: password,
+    const req = fetch(`${BASE_URL}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        first_name: first_name,
+        last_name: last_name,
+      }),
     });
 
-    if (authSuccess.auth) router.push("/blog/");
-    else {
-      console.log(authSuccess.error);
-      setLoading(false);
+    if ((await req).ok) {
+      router.push("/blogs");
     }
+    setLoading(false);
   }
 
   return (
@@ -40,6 +49,32 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       <form onSubmit={onSubmit}>
         <div className="grid gap-2">
           <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="first_name">
+              First Name
+            </Label>
+            <Input
+              id="first_name"
+              name="first_name"
+              placeholder="First Name"
+              type="text"
+              autoCapitalize="none"
+              autoComplete="first_name"
+              autoCorrect="off"
+              disabled={loading}
+            />
+            <Label className="sr-only" htmlFor="last_name">
+              Last Name
+            </Label>
+            <Input
+              id="last_name"
+              name="last_name"
+              placeholder="Last Name"
+              type="text"
+              autoCapitalize="none"
+              autoComplete="last_name"
+              autoCorrect="off"
+              disabled={loading}
+            />
             <Label className="sr-only" htmlFor="email">
               Email
             </Label>
@@ -66,7 +101,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </div>
           <Button disabled={loading}>
             {loading && <ReloadIcon />}
-            Sign in
+            Sign up
           </Button>
         </div>
       </form>

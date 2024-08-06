@@ -14,6 +14,9 @@ export default function Page() {
         <Button className="min-w-[19rem]" onClick={() => router.push("/login")}>
           Sign in
         </Button>
+        <Button className="min-w-[19rem]" onClick={() => router.push("/signup")}>
+          Sign up
+        </Button>
       </div>
     </div>
   );

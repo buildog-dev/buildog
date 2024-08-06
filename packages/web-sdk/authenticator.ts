@@ -43,7 +43,7 @@ class Authenticator extends EventEmitter {
       return { auth: true };
     } catch (error: any) {
       this.emit("authentication_failed");
-
+      console.log(error);
       // Check if the error has the expected structure
       if (error.response && typeof error.response.code === "string") {
         return {

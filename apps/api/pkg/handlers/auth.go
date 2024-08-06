@@ -3,6 +3,7 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -86,11 +87,19 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 	}
 
+	err = CheckEMailVerification(w, r, email)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
 	// Write the authentication service's response to the client
 	_, err = w.Write(bodyBytes)
 	if err != nil {
 		ServerError(w, err)
 	}
+
 }
 
 func RefreshHandler(w http.ResponseWriter, r *http.Request) {
@@ -184,4 +193,53 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ServerError(w, err)
 	}
+}
+
+func CheckEMailVerification(w http.ResponseWriter, r *http.Request, email string) error {
+	//get access token
+	accessToken, err := getAuthToken()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return errors.New("error getting access token")
+	}
+
+	url := "https://dev-be20pqtlw43vme5i.us.auth0.com/api/v2/users-by-email?email=" + email
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return errors.New("error creating request")
+	}
+
+	req.Header.Add("authorization", "Bearer "+accessToken)
+
+	// Send the request using an HTTP client
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return errors.New("error sending request")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+	}
+	bodyString := string(body)
+	bodyString = bodyString[1 : len(bodyString)-1]
+
+	var user map[string]interface{}
+	json.Unmarshal([]byte(bodyString), &user)
+	isVerified := user["email_verified"].(bool)
+
+	if !isVerified {
+		http.Error(w, "Email not verified", http.StatusUnauthorized)
+		return errors.New("email not verified")
+	}
+	return nil
 }
