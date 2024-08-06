@@ -8,8 +8,8 @@ import (
 
 func CreateTenant(db *sql.DB, tenant *models.Tenant) (int64, error) {
 	query := `
-		INSERT INTO tenants (name, created_at)
-		VALUES ($1, $2)
+		INSERT INTO tenants (name, created_at, updated_at)
+		VALUES ($1, $2, $3)
 		RETURNING id
 	`
 	now := time.Now()
@@ -37,7 +37,7 @@ func GetTenantById(db *sql.DB, id string) (*models.Tenant, error) {
 }
 
 func UpdateTenantName(db *sql.DB, id string, newName string) error {
-	query := "UPDATE tenants SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+    query := "UPDATE tenants SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2"
 	_, err := db.Exec(query, newName, id)
 	return err
 }
