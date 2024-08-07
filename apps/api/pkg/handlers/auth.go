@@ -204,7 +204,7 @@ func CheckEMailVerification(w http.ResponseWriter, r *http.Request, email string
 		return errors.New("error getting access token")
 	}
 
-	url := "https://dev-be20pqtlw43vme5i.us.auth0.com/api/v2/users-by-email?email=" + email
+	url := "https://" + os.Getenv("AUTH0_DOMAIN") + "/api/v2/users-by-email?email=" + email
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
