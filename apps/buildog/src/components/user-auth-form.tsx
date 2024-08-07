@@ -31,7 +31,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     if (authSuccess.auth) router.push("/blog/");
     else {
       console.log(authSuccess.error);
-
       setLoading(false);
     }
   }
