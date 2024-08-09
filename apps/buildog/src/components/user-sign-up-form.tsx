@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
+import { signUpService } from "@/web-sdk";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
-  const BASE_URL = "http://localhost:3010";
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
@@ -23,26 +23,40 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     const first_name = formData.get("first_name") as string;
     const last_name = formData.get("last_name") as string;
 
+    if (!email || !password || !first_name || !last_name) {
+      console.error("Please fill in all fields");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      console.error("Please enter a valid email");
+      return;
+    }
+
     setLoading(true);
 
-    const req = fetch(`${BASE_URL}/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      const response = await signUpService.signUp({
+        firstName: first_name,
+        lastName: last_name,
         email: email,
         password: password,
-        first_name: first_name,
-        last_name: last_name,
-      }),
-    });
-
-    if ((await req).ok) {
-      router.push("/blogs");
+      });
+  
+      if (response.isSignedIn) {
+        router.push("/blog/");
+      } else {
+        console.log(response.error);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
     }
-    setLoading(false);
   }
+  
+  
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>

@@ -87,10 +87,15 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 	}
 
-	err = CheckEMailVerification(w, r, email)
+	isVerified, err := isEmailVerified(w, r, email)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	if !isVerified {
+		http.Error(w, "Email not verified", http.StatusUnauthorized)
 		return
 	}
 
@@ -195,13 +200,13 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func CheckEMailVerification(w http.ResponseWriter, r *http.Request, email string) error {
-	//get access token
-	accessToken, err := getAuthToken()
+func isEmailVerified(w http.ResponseWriter, r *http.Request, email string) (bool, error) {
+
+	accessToken, err := GenerateAuth0Token()
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return errors.New("error getting access token")
+		http.Error(w, "Error: Auth0 token"+err.Error(), http.StatusInternalServerError)
+		return false, errors.New("error getting access token")
 	}
 
 	url := "https://" + os.Getenv("AUTH0_DOMAIN") + "/api/v2/users-by-email?email=" + email
@@ -209,7 +214,7 @@ func CheckEMailVerification(w http.ResponseWriter, r *http.Request, email string
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		return errors.New("error creating request")
+		return false, errors.New("Error: Request error Auth0 /api/v2/users-by-email ")
 	}
 
 	req.Header.Add("authorization", "Bearer "+accessToken)
@@ -219,27 +224,34 @@ func CheckEMailVerification(w http.ResponseWriter, r *http.Request, email string
 	resp, err := client.Do(req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return errors.New("error sending request")
+		return false, errors.New("error sending request")
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, "Non-OK HTTP status: "+resp.Status, http.StatusBadRequest)
+		return false, errors.New("non-OK HTTP status: " + resp.Status)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		http.Error(w, "Error reading response body: "+err.Error(), http.StatusInternalServerError)
+		return false, errors.New("error reading response body")
 	}
 	bodyString := string(body)
 	bodyString = bodyString[1 : len(bodyString)-1]
 
 	var user map[string]interface{}
 	json.Unmarshal([]byte(bodyString), &user)
-	isVerified := user["email_verified"].(bool)
-
+	isVerified, ok := user["email_verified"].(bool)
+	if !ok {
+		http.Error(w, "email_verified field not found or is not a boolean", http.StatusInternalServerError)
+		return false, errors.New("email_verified field not found or is not a boolean")
+	}
+	// Check if the email is verified
 	if !isVerified {
 		http.Error(w, "Email not verified", http.StatusUnauthorized)
-		return errors.New("email not verified")
+		return false, errors.New("email not verified")
 	}
-	return nil
+	return true, nil
 }

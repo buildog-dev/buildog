@@ -3,6 +3,7 @@ package handlers
 import (
 	"api/pkg/database"
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -30,8 +31,8 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract email, password, firstName, and lastName from the request data
 	email, emailExists := requestData["email"].(string)
 	password, passwordExists := requestData["password"].(string)
-	firstName, firstNameExists := requestData["first_name"].(string)
-	lastName, lastNameExists := requestData["last_name"].(string)
+	firstName, firstNameExists := requestData["firstName"].(string)
+	lastName, lastNameExists := requestData["lastName"].(string)
 
 	// Check if the required fields exist
 	if !emailExists || !passwordExists || !firstNameExists || !lastNameExists {
@@ -40,43 +41,30 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Construct the JSON payload for Auth0 API
-	data := map[string]string{
+	// usermetadata and appmetadata {} şeklinde olmalı requestte
+	data := map[string]interface{}{
 		"email":          email,
-		"user_metadata":  "{}",
-		"blocked":        "false",
-		"email_verified": "false",
-		"app_metadata":   "{}",
+		"user_metadata":  map[string]interface{}{},
+		"blocked":        false,
+		"email_verified": false,
+		"app_metadata":   map[string]interface{}{},
 		"given_name":     firstName,
 		"family_name":    lastName,
 		"name":           firstName + " " + lastName,
 		"connection":     "Username-Password-Authentication",
 		"password":       password,
-		"verify_email":   "false",
+		"verify_email":   false,
 	}
 
-	formData := new(bytes.Buffer)
-	formData.WriteString("{")
-	for key, value := range data {
-		formData.WriteString("\"")
-		formData.WriteString(key)
-		if value == "false" || value == "true" || value == "{}" {
-			formData.WriteString("\":")
-			formData.WriteString(value)
-			formData.WriteString(",")
-			continue
-
-		}
-		formData.WriteString("\":\"")
-		formData.WriteString(string(value))
-		formData.WriteString("\",")
+	formDataBytes, err := json.Marshal(data)
+	if err != nil {
+		http.Error(w, "Error marshalling JSON", http.StatusInternalServerError)
+		return
 	}
-	formData.Truncate(formData.Len() - 1)
-	formData.WriteString("}")
-	formDataBytes := formData.Bytes()
 
 	// Get AUTH0 Token
 
-	token, err := getAuthToken()
+	token, err := GenerateAuth0Token()
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -120,20 +108,32 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Parse the response body
 	var result map[string]interface{}
-	json.Unmarshal([]byte(bodyBytes), &result)
-	userId := result["user_id"].(string)
-
+	if err := json.Unmarshal(bodyBytes, &result); err != nil {
+		http.Error(w, "Error parsing response data", http.StatusInternalServerError)
+		return
+	}
+	userId, ok := result["user_id"].(string)
+	if !ok {
+		http.Error(w, "Error retrieving user_id", http.StatusInternalServerError)
+		return
+	}
 	// Send verification email
-	SendVerificationEmail(userId, token)
+	if err := SendVerificationEmail(userId, token); err != nil {
+		http.Error(w, "Error sending verification email", http.StatusInternalServerError)
+		return
+	}
 
 	// Add the user to the database
-	AddToDatabase(userId, email, firstName, lastName)
+	if err := AddUserToDatabase(userId, email, firstName, lastName); err != nil {
+		http.Error(w, "Error adding user to database", http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(bodyBytes)
 }
 
-func getAuthToken() (string, error) {
+func GenerateAuth0Token() (string, error) {
 	url := "https://" + os.Getenv("AUTH0_DOMAIN") + "/oauth/token"
 
 	// Construct the JSON payload for Auth0 API
@@ -145,24 +145,10 @@ func getAuthToken() (string, error) {
 	}
 
 	// Prepare form data for the POST request
-	formData := new(bytes.Buffer)
-	formData.WriteString("{")
-	for key, value := range data {
-		formData.WriteString("\"")
-		formData.WriteString(key)
-		if value == "false" || value == "true" || value == "{}" {
-			formData.WriteString("\":")
-			formData.WriteString(value)
-			formData.WriteString(",")
-			continue
-		}
-		formData.WriteString("\":\"")
-		formData.WriteString(string(value))
-		formData.WriteString("\",")
+	formDataBytes, err := json.Marshal(data)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal JSON: %s", err)
 	}
-	formData.Truncate(formData.Len() - 1)
-	formData.WriteString("}")
-	formDataBytes := formData.Bytes()
 
 	// Create a POST request to the authentication service
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(formDataBytes))
@@ -181,13 +167,15 @@ func getAuthToken() (string, error) {
 
 	// Parse the response body
 	var result map[string]interface{}
-	json.Unmarshal([]byte(body), &result)
+	if err := json.Unmarshal([]byte(body), &result); err != nil {
 
+		return "", fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
 	return result["access_token"].(string), nil
 
 }
 
-func AddToDatabase(userId string, email string, firstName string, lastName string) {
+func AddUserToDatabase(userId string, email string, firstName string, lastName string) error {
 
 	// Add the user to the database
 	db := database.GetDB()
@@ -197,44 +185,31 @@ func AddToDatabase(userId string, email string, firstName string, lastName strin
 	// Check for errors
 	var name string
 	err := row.Scan(&name)
-	if err != nil {
-		fmt.Println("Error inserting user into database: ", err)
+	if err != sql.ErrNoRows && err != nil {
+		fmt.Println("Error adding user to database: ", err)
+		return fmt.Errorf("failed to add user to database: %s", err)
 	}
 
+	return nil
 }
 
-func SendVerificationEmail(userId string, token string) {
+func SendVerificationEmail(userId string, token string) error {
 	url := "https://" + os.Getenv("AUTH0_DOMAIN") + "/api/v2/jobs/verification-email"
 
 	// Construct the JSON payload for Auth0 API
-	data := map[string]string{
+	data := map[string]interface{}{
 		"user_id":   userId,
 		"client_id": os.Getenv("AUTH0_CLIENT_ID"),
-		"identity":  `{"user_id": "` + userId[6:] + `","provider": "auth0"}`,
+		"identity":  map[string]interface{}{"user_id": userId[6:], "provider": "auth0"},
 	}
 
 	fmt.Println(data["identity"])
 
 	// Prepare form data for the POST request
-	formData := new(bytes.Buffer)
-	formData.WriteString("{")
-	for key, value := range data {
-		formData.WriteString("\"")
-		formData.WriteString(key)
-		if value == "false" || value == "true" || value[0] == '{' {
-			formData.WriteString("\":")
-			formData.WriteString(value)
-			formData.WriteString(",")
-			continue
-
-		}
-		formData.WriteString("\":\"")
-		formData.WriteString(string(value))
-		formData.WriteString("\",")
+	formDataBytes, err := json.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("failed to marshal JSON: %s", err)
 	}
-	formData.Truncate(formData.Len() - 1)
-	formData.WriteString("}")
-	formDataBytes := formData.Bytes()
 
 	// Create a POST request to the authentication service
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(formDataBytes))
@@ -248,7 +223,9 @@ func SendVerificationEmail(userId string, token string) {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != http.StatusCreated {
 		fmt.Println("Error sending verification email: ", string(body))
+		return fmt.Errorf("failed to send verification email: %s", body)
 	}
+	return nil
 }
