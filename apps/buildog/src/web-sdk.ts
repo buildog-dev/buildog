@@ -5,8 +5,7 @@ export const Auth = new Authenticator({
 });
 
 export const signUpService = new SignUp({
-    signUpBaseUrl: "http://localhost:3010",
-  
+  signUpBaseUrl: "http://localhost:3010",
 });
 
 export const Service = new ServiceClient(
@@ -15,7 +14,5 @@ export const Service = new ServiceClient(
   },
   Auth
 );
-
-
 
 export default { Auth, Service, signUpService };

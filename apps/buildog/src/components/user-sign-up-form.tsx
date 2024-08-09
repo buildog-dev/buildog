@@ -43,7 +43,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
         email: email,
         password: password,
       });
-  
+
       if (response.isSignedIn) {
         router.push("/blog/");
       } else {
@@ -55,8 +55,6 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
       setLoading(false);
     }
   }
-  
-  
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
