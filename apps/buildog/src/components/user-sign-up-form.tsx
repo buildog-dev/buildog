@@ -1,38 +1,51 @@
 "use client";
 
 import * as React from "react";
-import { Label } from "@ui/components/label";
-import { cn } from "@repo/ui/lib/utils";
 import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
 import { signUpService } from "@/web-sdk";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
+import { toast } from "@ui/components/use-toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const profileFormSchema = z.object({
+  first_name: z.string().nonempty(),
+  last_name: z.string().nonempty(),
+  email: z.string().email().nonempty(),
+  password: z.string().min(8),
+});
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const first_name = formData.get("first_name") as string;
-    const last_name = formData.get("last_name") as string;
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
+    mode: "onSubmit",
+  });
 
-    if (!email || !password || !first_name || !last_name) {
-      console.error("Please fill in all fields");
-      return;
-    }
+  async function onSubmit(data: ProfileFormValues) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      console.error("Please enter a valid email");
-      return;
-    }
+    const email = data.email;
+    const password = data.password;
+    const first_name = data.first_name;
+    const last_name = data.last_name;
 
     setLoading(true);
 
@@ -57,66 +70,75 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid gap-2">
           <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="first_name">
-              First Name
-            </Label>
-            <Input
-              id="first_name"
+            <FormField
+              control={form.control}
               name="first_name"
-              placeholder="First Name"
-              type="text"
-              autoCapitalize="none"
-              autoComplete="first_name"
-              autoCorrect="off"
               disabled={loading}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input className="w-96" type="text" placeholder="First Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <Label className="sr-only" htmlFor="last_name">
-              Last Name
-            </Label>
-            <Input
-              id="last_name"
+            <FormField
+              control={form.control}
               name="last_name"
-              placeholder="Last Name"
-              type="text"
-              autoCapitalize="none"
-              autoComplete="last_name"
-              autoCorrect="off"
               disabled={loading}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input className="w-96" type="text" placeholder="Last Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
+            <FormField
+              control={form.control}
               name="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
               disabled={loading}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      className="w-96"
+                      type="email"
+                      placeholder="name@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <Label className="sr-only" htmlFor="password">
-              Password
-            </Label>
-            <Input
-              id="password"
+            <FormField
+              control={form.control}
               name="password"
-              placeholder="password"
-              type="password"
               disabled={loading}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input className="w-96" type="password" placeholder="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
+            <Button disabled={loading}>
+              {loading && <ReloadIcon />}
+              Sign up
+            </Button>
+            <div></div>
           </div>
-          <Button disabled={loading}>
-            {loading && <ReloadIcon />}
-            Sign up
-          </Button>
         </div>
       </form>
-    </div>
+    </Form>
   );
 }

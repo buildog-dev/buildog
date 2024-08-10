@@ -8,18 +8,41 @@ import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
 import { Auth } from "@/web-sdk";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
+import { toast } from "@ui/components/use-toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const loginSchema = z.object({
+  email: z.string().email().nonempty(),
+  password: z.string().min(8),
+});
+
+type LoginFromValues = z.infer<typeof loginSchema>;
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = React.useState<boolean>(false);
   const router = useRouter();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const form = useForm<LoginFromValues>({
+    resolver: zodResolver(loginSchema),
+    mode: "onSubmit",
+  });
+
+  async function onSubmit(data: LoginFromValues) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+    const email = data.email;
+    const password = data.password;
 
     setLoading(true);
 
@@ -36,40 +59,49 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={onSubmit}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid gap-2">
           <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
+            <FormField
+              control={form.control}
               name="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
               disabled={loading}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      className="w-96"
+                      type="email"
+                      placeholder="name@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <Label className="sr-only" htmlFor="password">
-              Password
-            </Label>
-            <Input
-              id="password"
+            <FormField
+              control={form.control}
               name="password"
-              placeholder="password"
-              type="password"
               disabled={loading}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input className="w-96" type="password" placeholder="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
+            <Button disabled={loading}>
+              {loading && <ReloadIcon />}
+              Login
+            </Button>
+            <div></div>
           </div>
-          <Button disabled={loading}>
-            {loading && <ReloadIcon />}
-            Sign in
-          </Button>
         </div>
       </form>
-    </div>
+    </Form>
   );
 }
