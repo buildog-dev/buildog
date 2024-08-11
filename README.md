@@ -16,6 +16,8 @@
 
 Thank you for your interest in Buildog and your willingness to contribute!
 
+Recognizing the challenges bloggers face in managing their content, we’re committed to making the process smoother and more efficient. We are building this tool to provide bloggers with an intuitive platform to streamline their blogging workflow.
+
 To get started, it’s helpful to understand what Buildog is and how it operates:
 
 - **[What is buildog?](https://github.com/buildog-dev/buildog/wiki/What-is-Buildog):**
