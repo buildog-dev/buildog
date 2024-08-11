@@ -3,7 +3,6 @@ package handlers
 import (
 	"api/pkg/database"
 	"bytes"
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -41,7 +40,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Construct the JSON payload for Auth0 API
-	// usermetadata and appmetadata {} şeklinde olmalı requestte
 	data := map[string]interface{}{
 		"email":          email,
 		"user_metadata":  map[string]interface{}{},
@@ -62,8 +60,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get AUTH0 Token
-
 	token, err := GenerateAuth0Token()
 
 	if err != nil {
@@ -72,7 +68,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a POST request to the authentication service
+	// Create a POST request to the users endpoint
 	req, err := http.NewRequest("POST", "https://"+os.Getenv("AUTH0_DOMAIN")+"/api/v2/users", bytes.NewBuffer(formDataBytes))
 	if err != nil {
 		http.Error(w, "Error creating request", http.StatusInternalServerError)
@@ -124,73 +120,13 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Add the user to the database
-	if err := AddUserToDatabase(userId, email, firstName, lastName); err != nil {
+	if err := database.CreateUser(userId, email, firstName, lastName); err != nil {
 		http.Error(w, "Error adding user to database", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(bodyBytes)
-}
-
-func GenerateAuth0Token() (string, error) {
-	url := "https://" + os.Getenv("AUTH0_DOMAIN") + "/oauth/token"
-
-	// Construct the JSON payload for Auth0 API
-	data := map[string]string{
-		"client_id":     os.Getenv("AUTH0_CLIENT_ID"),
-		"client_secret": os.Getenv("AUTH0_CLIENT_SECRET"),
-		"audience":      "https://" + os.Getenv("AUTH0_DOMAIN") + "/api/v2/",
-		"grant_type":    "client_credentials",
-	}
-
-	// Prepare form data for the POST request
-	formDataBytes, err := json.Marshal(data)
-	if err != nil {
-		return "", fmt.Errorf("failed to marshal JSON: %s", err)
-	}
-
-	// Create a POST request to the authentication service
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(formDataBytes))
-
-	req.Header.Add("content-type", "application/json")
-
-	res, _ := http.DefaultClient.Do(req)
-
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-
-	// Check the response status code
-	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("failed to get token: %s", body)
-	}
-
-	// Parse the response body
-	var result map[string]interface{}
-	if err := json.Unmarshal([]byte(body), &result); err != nil {
-
-		return "", fmt.Errorf("failed to unmarshal JSON: %s", err)
-	}
-	return result["access_token"].(string), nil
-
-}
-
-func AddUserToDatabase(userId string, email string, firstName string, lastName string) error {
-
-	// Add the user to the database
-	db := database.GetDB()
-	query := ` INSERT INTO users (id, first_name, last_name, email) VALUES ($1, $2, $3, $4)`
-	row := db.QueryRow(query, userId, firstName, lastName, email)
-
-	// Check for errors
-	var name string
-	err := row.Scan(&name)
-	if err != sql.ErrNoRows && err != nil {
-		fmt.Println("Error adding user to database: ", err)
-		return fmt.Errorf("failed to add user to database: %s", err)
-	}
-
-	return nil
 }
 
 func SendVerificationEmail(userId string, token string) error {
@@ -202,8 +138,6 @@ func SendVerificationEmail(userId string, token string) error {
 		"client_id": os.Getenv("AUTH0_CLIENT_ID"),
 		"identity":  map[string]interface{}{"user_id": userId[6:], "provider": "auth0"},
 	}
-
-	fmt.Println(data["identity"])
 
 	// Prepare form data for the POST request
 	formDataBytes, err := json.Marshal(data)
@@ -224,7 +158,6 @@ func SendVerificationEmail(userId string, token string) error {
 	body, _ := ioutil.ReadAll(res.Body)
 
 	if res.StatusCode != http.StatusCreated {
-		fmt.Println("Error sending verification email: ", string(body))
 		return fmt.Errorf("failed to send verification email: %s", body)
 	}
 	return nil

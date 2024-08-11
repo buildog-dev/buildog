@@ -2,13 +2,24 @@ import axios from "axios";
 import { EventEmitter } from "events";
 import { jwtDecode } from "jwt-decode";
 
-interface Credentials {
+interface LoginCredentials {
   email: string;
   password: string;
 }
 
 interface AuthenticatorConfig {
   authEndpoint: string;
+}
+
+interface SignUpConfig {
+  signUpBaseUrl: string;
+}
+
+interface SignUpCredentials {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
 
 class Authenticator extends EventEmitter {
@@ -25,7 +36,7 @@ class Authenticator extends EventEmitter {
       typeof window !== "undefined" ? this.loadRefreshTokenFromLocalStorage() : null;
   }
 
-  async authenticate(credentials: Credentials): Promise<{
+  async Login(credentials: LoginCredentials): Promise<{
     auth: boolean;
     error?: {
       error?: string;
@@ -54,6 +65,38 @@ class Authenticator extends EventEmitter {
         // Handle unexpected error formats
         return {
           auth: false,
+          error: {
+            error_description: "An unknown error occurred",
+          },
+        };
+      }
+    }
+  }
+
+  async signUp(credentials: SignUpCredentials): Promise<{
+    isSignedIn: boolean;
+    error?: {
+      error?: string;
+      error_description: string;
+    };
+  }> {
+    try {
+      await axios.post(this.authEndpoint + "/auth/signup", credentials);
+
+      return { isSignedIn: true };
+    } catch (error: any) {
+      this.emit("sign up failed", error);
+
+      // Check if the error has the expected structure
+      if (error.response && typeof error.response.code === "string") {
+        return {
+          isSignedIn: false,
+          error: error.response.data,
+        };
+      } else {
+        // Handle unexpected error formats
+        return {
+          isSignedIn: false,
           error: {
             error_description: "An unknown error occurred",
           },

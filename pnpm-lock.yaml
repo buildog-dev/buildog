@@ -17,6 +17,9 @@ importers:
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.0(eslint@9.9.0)
+      eslint-config-turbo:
+        specifier: ^1.13.4
+        version: 1.13.4(eslint@9.9.0)
       eslint-plugin-prettier:
         specifier: ^5.2.1
         version: 5.2.1(eslint-config-prettier@9.1.0)(eslint@9.9.0)(prettier@3.3.3)
@@ -3337,6 +3340,15 @@ packages:
       eslint-plugin-turbo: 1.10.16(eslint@8.57.0)
     dev: true
 
+  /eslint-config-turbo@1.13.4(eslint@9.9.0):
+    resolution: {integrity: sha512-+we4eWdZlmlEn7LnhXHCIPX/wtujbHCS7XjQM/TN09BHNEl2fZ8id4rHfdfUKIYTSKyy8U/nNyJ0DNoZj5Q8bw==}
+    peerDependencies:
+      eslint: '>6.6.0'
+    dependencies:
+      eslint: 9.9.0
+      eslint-plugin-turbo: 1.13.4(eslint@9.9.0)
+    dev: true
+
   /eslint-import-resolver-alias@1.1.2(eslint-plugin-import@2.29.0):
     resolution: {integrity: sha512-WdviM1Eu834zsfjHtcGHtGfcu+F30Od3V7I9Fi57uhBEwPkjDcii7/yW8jAT+gOhn4P/vOxxNAXbFAKsrrc15w==}
     engines: {node: '>= 4'}
@@ -3748,6 +3760,15 @@ packages:
     dependencies:
       dotenv: 16.0.3
       eslint: 8.57.0
+    dev: true
+
+  /eslint-plugin-turbo@1.13.4(eslint@9.9.0):
+    resolution: {integrity: sha512-82GfMzrewI/DJB92Bbch239GWbGx4j1zvjk1lqb06lxIlMPnVwUHVwPbAnLfyLG3JuhLv9whxGkO/q1CL18JTg==}
+    peerDependencies:
+      eslint: '>6.6.0'
+    dependencies:
+      dotenv: 16.0.3
+      eslint: 9.9.0
     dev: true
 
   /eslint-plugin-unicorn@48.0.1(eslint@8.57.0):
@@ -4397,6 +4418,7 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -4610,6 +4632,7 @@ packages:
 
   /inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
@@ -6412,6 +6435,7 @@ packages:
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3

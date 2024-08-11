@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
-import { signUpService } from "@/web-sdk";
+import { Auth } from "@/web-sdk";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
-import { toast } from "@ui/components/use-toast";
+import { Label } from "@ui/components/label";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -25,6 +25,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<String>(null);
   const router = useRouter();
 
   const form = useForm<ProfileFormValues>({
@@ -33,38 +34,21 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   });
 
   async function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-
-    const email = data.email;
-    const password = data.password;
-    const first_name = data.first_name;
-    const last_name = data.last_name;
+    const { first_name, last_name, email, password } = data;
 
     setLoading(true);
 
-    try {
-      const response = await signUpService.signUp({
-        firstName: first_name,
-        lastName: last_name,
-        email: email,
-        password: password,
-      });
+    const response = await Auth.signUp({
+      firstName: first_name,
+      lastName: last_name,
+      email: email,
+      password: password,
+    });
 
-      if (response.isSignedIn) {
-        router.push("/blog/");
-      } else {
-        console.log(response.error);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error(error);
+    if (response.isSignedIn) {
+      router.push("/blog/");
+    } else {
+      setError(response.error.error);
       setLoading(false);
     }
   }
@@ -135,6 +119,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
               {loading && <ReloadIcon />}
               Sign up
             </Button>
+            {error && <Label className="text-red-500">{error}</Label>}
             <div></div>
           </div>
         </div>

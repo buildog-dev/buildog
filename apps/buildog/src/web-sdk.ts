@@ -1,11 +1,7 @@
-import { Authenticator, ServiceClient, SignUp } from "@repo/web-sdk";
+import { Authenticator, ServiceClient } from "@repo/web-sdk";
 
 export const Auth = new Authenticator({
   authEndpoint: "http://localhost:3010",
-});
-
-export const signUpService = new SignUp({
-  signUpBaseUrl: "http://localhost:3010",
 });
 
 export const Service = new ServiceClient(
@@ -15,4 +11,4 @@ export const Service = new ServiceClient(
   Auth
 );
 
-export default { Auth, Service, signUpService };
+export default { Auth, Service };

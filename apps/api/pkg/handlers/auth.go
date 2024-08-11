@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -87,7 +88,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 	}
 
-	isVerified, err := isEmailVerified(w, r, email)
+	isVerified, err := isEmailVerified(email)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -200,12 +201,11 @@ func RefreshHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func isEmailVerified(w http.ResponseWriter, r *http.Request, email string) (bool, error) {
+func isEmailVerified(email string) (bool, error) {
 
 	accessToken, err := GenerateAuth0Token()
 
 	if err != nil {
-		http.Error(w, "Error: Auth0 token"+err.Error(), http.StatusInternalServerError)
 		return false, errors.New("error getting access token")
 	}
 
@@ -213,7 +213,6 @@ func isEmailVerified(w http.ResponseWriter, r *http.Request, email string) (bool
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
 		return false, errors.New("Error: Request error Auth0 /api/v2/users-by-email ")
 	}
 
@@ -223,19 +222,16 @@ func isEmailVerified(w http.ResponseWriter, r *http.Request, email string) (bool
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return false, errors.New("error sending request")
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		http.Error(w, "Non-OK HTTP status: "+resp.Status, http.StatusBadRequest)
 		return false, errors.New("non-OK HTTP status: " + resp.Status)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		http.Error(w, "Error reading response body: "+err.Error(), http.StatusInternalServerError)
 		return false, errors.New("error reading response body")
 	}
 	bodyString := string(body)
@@ -245,13 +241,53 @@ func isEmailVerified(w http.ResponseWriter, r *http.Request, email string) (bool
 	json.Unmarshal([]byte(bodyString), &user)
 	isVerified, ok := user["email_verified"].(bool)
 	if !ok {
-		http.Error(w, "email_verified field not found or is not a boolean", http.StatusInternalServerError)
 		return false, errors.New("email_verified field not found or is not a boolean")
 	}
 	// Check if the email is verified
 	if !isVerified {
-		http.Error(w, "Email not verified", http.StatusUnauthorized)
 		return false, errors.New("email not verified")
 	}
 	return true, nil
+}
+
+func GenerateAuth0Token() (string, error) {
+	url := "https://" + os.Getenv("AUTH0_DOMAIN") + "/oauth/token"
+
+	// Construct the JSON payload for Auth0 API
+	data := map[string]string{
+		"client_id":     os.Getenv("AUTH0_CLIENT_ID"),
+		"client_secret": os.Getenv("AUTH0_CLIENT_SECRET"),
+		"audience":      "https://" + os.Getenv("AUTH0_DOMAIN") + "/api/v2/",
+		"grant_type":    "client_credentials",
+	}
+
+	// Prepare form data for the POST request
+	formDataBytes, err := json.Marshal(data)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal JSON: %s", err)
+	}
+
+	// Create a POST request to the authentication service
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(formDataBytes))
+
+	req.Header.Add("content-type", "application/json")
+
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	// Check the response status code
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to get token: %s", body)
+	}
+
+	// Parse the response body
+	var result map[string]interface{}
+	if err := json.Unmarshal([]byte(body), &result); err != nil {
+
+		return "", fmt.Errorf("failed to unmarshal JSON: %s", err)
+	}
+	return result["access_token"].(string), nil
+
 }

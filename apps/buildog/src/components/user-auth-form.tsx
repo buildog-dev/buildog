@@ -12,7 +12,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
-import { toast } from "@ui/components/use-toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -25,6 +24,7 @@ type LoginFromValues = z.infer<typeof loginSchema>;
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | null>(null);
   const router = useRouter();
 
   const form = useForm<LoginFromValues>({
@@ -33,27 +33,18 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   });
 
   async function onSubmit(data: LoginFromValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-    const email = data.email;
-    const password = data.password;
+    const { email, password } = data;
 
     setLoading(true);
 
-    const authSuccess = await Auth.authenticate({
+    const authSuccess = await Auth.Login({
       email: email,
       password: password,
     });
 
     if (authSuccess.auth) router.push("/blog/");
     else {
-      console.log(authSuccess.error);
+      setError(authSuccess.error.error_description);
       setLoading(false);
     }
   }
@@ -98,6 +89,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               {loading && <ReloadIcon />}
               Login
             </Button>
+            {error && <Label className="text-red-500">{error}</Label>}
             <div></div>
           </div>
         </div>
