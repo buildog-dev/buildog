@@ -16,6 +16,16 @@
 
 Thank you for your interest in Buildog and your willingness to contribute!
 
+Recognizing the challenges bloggers face in managing their content, we’re committed to making the process smoother and more efficient. We are building this tool to provide bloggers with an intuitive platform to streamline their blogging workflow.
+
+To get started, it’s helpful to understand what Buildog is and how it operates:
+
+- **[What is buildog?](https://github.com/buildog-dev/buildog/wiki/What-is-Buildog):**
+Buildog is a web-based application designed to help bloggers write, schedule, and publish their content efficiently. It aims to streamline the blogging process and provide valuable insights into content performance.
+
+- **[How Buildog Works?](https://github.com/buildog-dev/buildog/wiki/How-Buildog-works%3F):**
+This section provides a high-level overview of Buildog's functionality and user interface. It outlines the key features and components that you’ll interact with, offering insight into how the application supports your tasks and workflows. It’s a great starting point to understand how to navigate and utilize Buildog effectively.
+
 ### Install dependencies
 
 You will need to install and configure the following dependencies on your machine to build Buildog:
