@@ -11,8 +11,8 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@repo/eslint-config": "^0.0.0",
-    "@repo/typescript-config": "^0.0.0",
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.4",

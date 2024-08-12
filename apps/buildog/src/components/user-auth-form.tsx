@@ -37,7 +37,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     setLoading(true);
 
-    const authSuccess = await Auth.Login({
+    const authSuccess = await Auth.login({
       email: email,
       password: password,
     });

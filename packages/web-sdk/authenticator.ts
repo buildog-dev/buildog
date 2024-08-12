@@ -11,10 +11,6 @@ interface AuthenticatorConfig {
   authEndpoint: string;
 }
 
-interface SignUpConfig {
-  signUpBaseUrl: string;
-}
-
 interface SignUpCredentials {
   firstName: string;
   lastName: string;
@@ -36,7 +32,7 @@ class Authenticator extends EventEmitter {
       typeof window !== "undefined" ? this.loadRefreshTokenFromLocalStorage() : null;
   }
 
-  async Login(credentials: LoginCredentials): Promise<{
+  async login(credentials: LoginCredentials): Promise<{
     auth: boolean;
     error?: {
       error?: string;

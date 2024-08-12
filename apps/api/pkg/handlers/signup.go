@@ -4,9 +4,7 @@ import (
 	"api/pkg/database"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -44,14 +42,14 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		"email":          email,
 		"user_metadata":  map[string]interface{}{},
 		"blocked":        false,
-		"email_verified": false,
+		"email_verified": false, // is the email verified?
 		"app_metadata":   map[string]interface{}{},
 		"given_name":     firstName,
 		"family_name":    lastName,
 		"name":           firstName + " " + lastName,
 		"connection":     "Username-Password-Authentication",
 		"password":       password,
-		"verify_email":   false,
+		"verify_email":   true, // Send a verification email to the user
 	}
 
 	formDataBytes, err := json.Marshal(data)
@@ -113,11 +111,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error retrieving user_id", http.StatusInternalServerError)
 		return
 	}
-	// Send verification email
-	if err := SendVerificationEmail(userId, token); err != nil {
-		http.Error(w, "Error sending verification email", http.StatusInternalServerError)
-		return
-	}
 
 	// Add the user to the database
 	if err := database.CreateUser(userId, email, firstName, lastName); err != nil {
@@ -127,38 +120,4 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(bodyBytes)
-}
-
-func SendVerificationEmail(userId string, token string) error {
-	url := "https://" + os.Getenv("AUTH0_DOMAIN") + "/api/v2/jobs/verification-email"
-
-	// Construct the JSON payload for Auth0 API
-	data := map[string]interface{}{
-		"user_id":   userId,
-		"client_id": os.Getenv("AUTH0_CLIENT_ID"),
-		"identity":  map[string]interface{}{"user_id": userId[6:], "provider": "auth0"},
-	}
-
-	// Prepare form data for the POST request
-	formDataBytes, err := json.Marshal(data)
-	if err != nil {
-		return fmt.Errorf("failed to marshal JSON: %s", err)
-	}
-
-	// Create a POST request to the authentication service
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(formDataBytes))
-
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("authorization", "Bearer "+token)
-
-	// Send the request using an HTTP client
-	res, _ := http.DefaultClient.Do(req)
-
-	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-
-	if res.StatusCode != http.StatusCreated {
-		return fmt.Errorf("failed to send verification email: %s", body)
-	}
-	return nil
 }

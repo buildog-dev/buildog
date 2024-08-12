@@ -46,7 +46,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     });
 
     if (response.isSignedIn) {
-      router.push("/blog/");
+      router.push("/login/");
     } else {
       setError(response.error.error);
       setLoading(false);
