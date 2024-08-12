@@ -12,6 +12,9 @@ func Router(audience, domain string) http.Handler {
 	router.HandleFunc("/auth/login",
 		middleware.CorsMiddlewareFunc(handlers.LoginHandler),
 	)
+	router.HandleFunc("/auth/signup",
+		middleware.CorsMiddlewareFunc(handlers.SignUpHandler),
+	)
 	router.HandleFunc("/auth/refresh",
 		middleware.CorsMiddlewareFunc(handlers.RefreshHandler),
 	)

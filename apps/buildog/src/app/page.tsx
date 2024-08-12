@@ -11,8 +11,11 @@ export default function Page() {
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-4xl font-semibold tracking-tight">Welcoming Page</h1>
         </div>
-        <Button className="min-w-[19rem]" onClick={() => router.push("/login")}>
+        <Button className="min-w-[304px]" onClick={() => router.push("/login")}>
           Sign in
+        </Button>
+        <Button className="min-w-[304px]" onClick={() => router.push("/signup")}>
+          Sign up
         </Button>
       </div>
     </div>
