@@ -1,0 +1,48 @@
+# Database Configuration
+
+This document outlines the steps for configuring the PostgreSQL database for the Buildog project. We assume that PostgreSQL is already installed on your system.
+
+- PostgreSQL is installed and running on 5432 port. (default)
+
+## Configuration Steps
+
+### Create a New User
+
+First, we need to create a new PostgreSQL user. Execute the following SQL command in the PostgreSQL command line interface (psql):
+
+```sql
+CREATE USER buildog WITH PASSWORD 'your-beautiful-password';
+```
+
+### Create a New Database
+
+Next, create a new database named buildog:
+```sql
+CREATE DATABASE buildog;
+```
+
+### Grant Privileges to the User
+
+Grant the newly created user the necessary privileges on the buildog database:
+```sql
+GRANT ALL PRIVILEGES ON DATABASE buildog TO buildog;
+```
+
+### Update Project Code
+
+You need to update an '.env' file for our backend application under **apps/api**. `your-beautiful-password` needs to be hear.
+
+```env
+/* ... other keys */
+DB_PASSWORD=your-beautiful-password
+```
+
+Navigate to the apps/api/cmd/main.go file in your project. Remove the comment lines and add the following line at line 25 to create the necessary tables:
+
+```go
+createTables(database.GetDB())
+```
+
+This line will call the createTables function to set up the required tables in the database. Make sure that the createTables function is properly defined in your project and that database.GetDB() returns the correct database connection instance.
+
+Your PostgreSQL database is now configured and ready for the Buildog project. You have created the necessary user, database, and tables, and updated your project code to handle table creation.
