@@ -74,10 +74,12 @@ pnpm dev
 | --------------- | ----------------------------- | ------------------------ |
 | `/apps/buildog` | The main web application.     | http://localhost:3000    |
 | `/apps/api`     | The main backend application. | http://localhost:3010    |
+| `/apps/docs`    | The main documentation.       | http://localhost:8080    |
 
 #### Environment variables
 
 Auth0 - [How to setup Auth0](https://github.com/burasibizim/buildog/wiki/Auth0-Implementation)
+Database - [How to setup Database](https://github.com/buildog-dev/buildog/wiki/Database-Schema)
 
 #### Shared components
 
@@ -108,7 +110,7 @@ pnpm uninstall <package> --filter <workspace>
 
 For example:
 
-- `pnpm add react --filter buildog` installs into ./apps/buildog
+- `pnpm add react --filter ./apps/buildog` installs into ./apps/buildog
 
 ## Create a pull request
 
