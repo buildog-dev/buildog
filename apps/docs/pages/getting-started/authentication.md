@@ -3,7 +3,9 @@ Buildog uses Auth0 as a authentication provider.
 
 ## Setting Up Auth0 for Development
 
-Let’s start with creating an Auth0 project to begin development. This project uses Auth0’s embedded login system. The documentation does not contain password-email embedded login. Here is an explanation of how to create a development environment.
+Let’s start with creating an Auth0 project to begin development. This project uses Auth0’s 
+embedded login system. The documentation does not contain password-email embedded login. 
+Here is an explanation of how to create a development environment.
 
 First, you need an Auth0 account. You can create one directly [here](https://auth0.com/signup). After signing in, the dashboard welcomes you. Let’s create an API in the applications section. The image below shows the APIs screen.
 

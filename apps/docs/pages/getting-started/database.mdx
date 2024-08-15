@@ -37,12 +37,11 @@ You need to update an '.env' file for our backend application under **apps/api**
 DB_PASSWORD=your-beautiful-password
 ```
 
-Navigate to the apps/api/cmd/main.go file in your project. Remove the comment lines and add the following line at line 25 to create the necessary tables:
 
-```go
-createTables(database.GetDB())
+Navigate to the apps/api/scripts directory in your project using the terminal. This scripts folder contains a setup-db.sh script for creating tables. The chmod +x command is used to make the script executable. Once the script is executable, you can run it directly.
 ```
-
-This line will call the createTables function to set up the required tables in the database. Make sure that the createTables function is properly defined in your project and that database.GetDB() returns the correct database connection instance.
+chmod +x setup_db.sh
+./setup_db.sh
+```
 
 Your PostgreSQL database is now configured and ready for the Buildog project. You have created the necessary user, database, and tables, and updated your project code to handle table creation.
