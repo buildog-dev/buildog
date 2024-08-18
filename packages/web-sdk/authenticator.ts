@@ -1,6 +1,12 @@
-import axios from "axios";
 import { EventEmitter } from "events";
 import { jwtDecode } from "jwt-decode";
+import { FirebaseError } from "firebase/app";
+import {
+  FirebaseTokenPayload,
+  refreshTokenWithRestAPI,
+  signInWithRestAPI,
+  signUpAndSendVerificationWithRestAPI,
+} from "./firebase";
 
 interface LoginCredentials {
   email: string;
@@ -8,7 +14,7 @@ interface LoginCredentials {
 }
 
 interface AuthenticatorConfig {
-  authEndpoint: string;
+  firebaseApiKey: string;
 }
 
 interface SignUpCredentials {
@@ -19,13 +25,13 @@ interface SignUpCredentials {
 }
 
 class Authenticator extends EventEmitter {
-  private authEndpoint: string;
+  private firebaseApiKey: string;
   private accessToken: string | null;
   private refreshToken: string | null;
 
   constructor(config: AuthenticatorConfig) {
     super();
-    this.authEndpoint = config.authEndpoint;
+    this.firebaseApiKey = config.firebaseApiKey;
     this.accessToken =
       typeof window !== "undefined" ? this.loadAccessTokenFromLocalStorage() : null;
     this.refreshToken =
@@ -40,22 +46,35 @@ class Authenticator extends EventEmitter {
     };
   }> {
     try {
-      const response = await axios.post(this.authEndpoint + "/auth/login", credentials);
-      this.accessToken = response.data.access_token;
-      this.refreshToken = response.data.refresh_token;
+      const { email, password } = credentials;
+      const response = await signInWithRestAPI(email, password, this.firebaseApiKey);
 
-      localStorage.setItem("buildog-sdk", JSON.stringify(response.data));
-      this.emit("authenticated");
-
-      return { auth: true };
-    } catch (error: any) {
-      this.emit("authentication_failed");
-
-      // Check if the error has the expected structure
-      if (error.response && typeof error.response.code === "string") {
+      const decodeJWT: FirebaseTokenPayload = jwtDecode(response.idToken);
+      if (!decodeJWT.email_verified) {
         return {
           auth: false,
-          error: error.response.data,
+          error: {
+            error_description: "Email is not verified.",
+          },
+        };
+      }
+
+      this.accessToken = response.idToken;
+      this.refreshToken = response.refreshToken;
+      this.saveTokensToLocalStorage(this.accessToken, this.refreshToken);
+
+      this.emit("authenticated");
+      return { auth: true };
+    } catch (error: unknown) {
+      this.emit("authentication_failed");
+
+      if (error instanceof FirebaseError) {
+        return {
+          auth: false,
+          error: {
+            error_description: error.message,
+            error: error.code,
+          },
         };
       } else {
         // Handle unexpected error formats
@@ -70,29 +89,30 @@ class Authenticator extends EventEmitter {
   }
 
   async signUp(credentials: SignUpCredentials): Promise<{
-    isSignedIn: boolean;
+    isSignedUp: boolean;
     error?: {
       error?: string;
       error_description: string;
     };
   }> {
     try {
-      await axios.post(this.authEndpoint + "/auth/signup", credentials);
+      const { email, password } = credentials;
+      await signUpAndSendVerificationWithRestAPI(email, password, this.firebaseApiKey);
 
-      return { isSignedIn: true };
+      return { isSignedUp: true };
     } catch (error: any) {
       this.emit("sign up failed", error);
 
       // Check if the error has the expected structure
       if (error.response && typeof error.response.code === "string") {
         return {
-          isSignedIn: false,
+          isSignedUp: false,
           error: error.response.data,
         };
       } else {
         // Handle unexpected error formats
         return {
-          isSignedIn: false,
+          isSignedUp: false,
           error: {
             error_description: "An unknown error occurred",
           },
@@ -101,27 +121,28 @@ class Authenticator extends EventEmitter {
     }
   }
 
-  async getRefreshToken(): Promise<void> {
-    try {
-      const response = await axios.post(
-        this.authEndpoint + "/auth/refresh",
-        { refresh_token: this.refreshToken },
-        {
-          headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      );
-
-      this.accessToken = response.data.access_token;
-
+  private saveTokensToLocalStorage(accessToken: string | null, refreshToken: string | null) {
+    if (accessToken && refreshToken) {
       localStorage.setItem(
         "buildog-sdk",
         JSON.stringify({
-          refresh_token: this.refreshToken,
-          ...response.data,
+          access_token: accessToken,
+          refresh_token: refreshToken,
         })
       );
+    }
+  }
+
+  async getRefreshToken(): Promise<void> {
+    try {
+      const response = await refreshTokenWithRestAPI(
+        this.refreshToken as string,
+        this.firebaseApiKey
+      );
+
+      this.accessToken = response.idToken;
+      this.refreshToken = response.refreshToken;
+      this.saveTokensToLocalStorage(this.accessToken, this.refreshToken);
 
       this.emit("refresh");
     } catch (error) {
@@ -159,6 +180,7 @@ class Authenticator extends EventEmitter {
   }
 
   async logout(): Promise<void> {
+    this.emit("authentication_failed");
     return this.removeLocalStoragedToken();
   }
 

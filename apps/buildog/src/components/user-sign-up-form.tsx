@@ -37,7 +37,6 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     const { first_name, last_name, email, password } = data;
 
     setLoading(true);
-
     const response = await Auth.signUp({
       firstName: first_name,
       lastName: last_name,
@@ -45,7 +44,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
       password: password,
     });
 
-    if (response.isSignedIn) {
+    if (response.isSignedUp) {
       router.push("/login/");
     } else {
       setError(response.error.error);

@@ -22,6 +22,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     Auth.onAuthenticationChange((eventMessage) => {
       if (eventMessage === "authentication_failed" && pathname !== "/signup/") {
         if (pathname !== "/") router.push("/login");
+      } else if (
+        (pathname === "/login/" || pathname === "/signup/") &&
+        eventMessage === "authenticated"
+      ) {
+        router.push("/blog/");
       }
     });
 
