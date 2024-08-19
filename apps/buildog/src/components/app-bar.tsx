@@ -13,13 +13,13 @@ const Appbar = () => {
   const route = useRouter();
 
   const handleLogout = () => {
-    Auth.logout()
-      .then(() => {
-        route.push("/");
-      })
-      .catch((error) => {
-        console.log("Logout Error", error.message);
-      });
+    // Auth.logout()
+    //   .then(() => {
+    //     route.push("/");
+    //   })
+    //   .catch((error) => {
+    //     console.log("Logout Error", error.message);
+    //   });
   };
 
   return (

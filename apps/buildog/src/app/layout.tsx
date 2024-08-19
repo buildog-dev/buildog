@@ -18,22 +18,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    Auth.onAuthenticationChange((eventMessage) => {
-      if (eventMessage === "authentication_failed" && pathname !== "/signup/") {
-        if (pathname !== "/") router.push("/login");
-      } else if (
-        (pathname === "/login/" || pathname === "/signup/") &&
-        eventMessage === "authenticated"
-      ) {
-        router.push("/blog/");
-      }
-    });
+  // useEffect(() => {
+  //   Auth.onAuthenticationChange((eventMessage) => {
+  //     if (eventMessage === "authentication_failed" && pathname !== "/signup/") {
+  //       if (pathname !== "/") router.push("/login");
+  //     } else if (
+  //       (pathname === "/login/" || pathname === "/signup/") &&
+  //       eventMessage === "authenticated"
+  //     ) {
+  //       router.push("/blog/");
+  //     }
+  //   });
 
-    return () => {
-      Auth.removeAllListeners();
-    };
-  }, []);
+  //   return () => {
+  //     Auth.removeAllListeners();
+  //   };
+  // }, []);
 
   return (
     <html lang="en">

@@ -37,19 +37,14 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     const { first_name, last_name, email, password } = data;
 
     setLoading(true);
-    const response = await Auth.signUp({
-      firstName: first_name,
-      lastName: last_name,
-      email: email,
-      password: password,
-    });
+    const response = await Auth.signUp(email, password);
 
-    if (response.isSignedUp) {
-      router.push("/login/");
-    } else {
-      setError(response.error.error);
-      setLoading(false);
-    }
+    // if (response.isSignedUp) {
+    //   router.push("/login/");
+    // } else {
+    //   setError(response.error.error);
+    //   setLoading(false);
+    // }
   }
 
   return (
