@@ -1,84 +1,78 @@
 # Authentication
-Buildog uses Auth0 as a authentication provider.
+Buildog uses Firebase Auth for authentication.
 
 ## Setting Up Auth0 for Development
 
-Let’s start with creating an Auth0 project to begin development. This project uses Auth0’s 
-embedded login system. The documentation does not contain password-email embedded login. 
-Here is an explanation of how to create a development environment.
+Let’s start with creating an Firebase project to begin development. This firebase project only needs and authentication project.
+We need a credentials for client side and server side. For server side we will call Firebase Admin.
+First, you can go to [firebase console](https://console.firebase.google.com/) to create your project.
 
-First, you need an Auth0 account. You can create one directly [here](https://auth0.com/signup). After signing in, the dashboard welcomes you. Let’s create an API in the applications section. The image below shows the APIs screen.
+![Create Firebase Project](../../images/auth/create-firebase-project.png)
 
-![APIs Screen](../../images/auth/1-APIs.png)
+You can directly press the **Get started with a Firebase project** button to create your buildog project. It ask some basic information about project name and Google Analytics. We give "buildog" name to this project and disable the analytics. (In future, we can enable this).
 
-You can directly press the **Create** button to create your first API. There are three inputs here: name, identifier, and signing algorithm. The first two are important. Fill in the blanks and press **Create**. The signing algorithm can remain as RS256.
+![Firebase Project Name](../../images/auth/firebase-give-project-name.png)
 
-![Creating an API](../../images/auth/2-new-api.png)
+![Firebase Disable Analytics](../../images/auth/firebase-disable-analytics.png)
 
-After creating the API, Auth0 redirects you to the created API page. It might show a Quickstart section button, but that doesn’t matter. Just follow this documentation, as Auth0’s documentation can be a bit messy. When we create an API, Auth0 automatically creates an application for that API. You can go to the applications and check it. Press the project created; it will say **(Test Application)** next to it.
+Then, directly press "Create project" button to create. After creation, open the dashboard and go to the **Authentication** page under build dropdown.
 
-![Test Application](../../images/auth/3-applications.png)
+![Firebase Dashboard Initial](../../images/auth/firebase-authentication.png)
 
-Let’s go to the **Settings** section and scroll to the bottom to reach **Advanced Settings**. We need to change the **Grant Types** to enable password login. Open the advanced settings and select the **Grant Types** tab. You will see a couple of **Grants** under this. The important ones right now are **password** and **refresh token**. Select the password and refresh token options. Make sure to save your changes.
+We need to enable authentication with pressing "Get started" button. It generates an authentication system automatically and redirect you to sign-in method tabs. 
 
-![Grant Types](../../images/auth/4-application-privilages.png)
+![Firebase Authentication Sign In Methods](../../images/auth/firebase-authentication-signin-methods.png)
 
-Now that we have enabled the refresh token and password, go back to the APIs page and select our API. Then, in settings, we need to open **Allow Offline Access** to get 'refresh_token' in the response.
+![Firebase Authentication Email/Password](../../images/auth/firebase-authentication-email-password.png)
 
-![Allow Offline Access](../../images/auth/5-api-access-settings.png)
+Enable the "Email/Password" and press save. Then you can use email/password authentication. (In future, we can add some other provider like google, github, apple etc.) Let's continue with the adding client keys to our project. First, we need to create those keys. Let's go to the project settings and add a web project under "Your apps" section.
 
-### API Authorization Settings
+![Firebase Project Settings Redirect](../../images/auth/firebase-settings-redirect.png)
 
-The second step is API authorization settings. We need to specify which database we are using for this application. On the sidebar, go to **Settings > General > API Authorization Settings**.
+![Firebase Project Settings](../../images/auth/firebase-project-settings.png)
 
-![API Authorization Settings](../../images/auth/6-api-authorization.png)
+We have to give a name to your web project. I will name it "buildog-web". Then it generates a web project inside our firebase application and give us a sdk keys. After getting these keys we have to move forward the creating .env file but we need to do one more thing. This keys will used by client side and we have to generate keys for Firebase Admin side which means for our backend.
 
-Here, we need to input our database name into the **Default Directory** field. The default database name is **Username-Password-Authentication**. *You can check the database name under Authentication > Database.* Type your database name in the default directory input and press save.
+![Firebase Web Register](../../images/auth/firebase-web-register-app.png)
 
-![Database Name](../../images/auth/7-databases.png)
+![Firebase Web Register](../../images/auth/firebase-get-sdk-keys.png)
 
-Our Auth0 configuration is now complete! Let’s get our credentials and try to obtain some 'access_tokens'. Let's get our hands dirty. *If you haven't forked the project yet, you need to fork it and clone it to your local environment.*
+Let's redirect to the service account tab on settings page. It directly shows the Firebase Admin SDK section under that tab. We have to generate new private key for Firebase Admin. Press the **Generate new private key** button. It has to give a json file. Don't forget;
 
-### Step Three: Setting Up .env File
+> Your private key gives access to your project's Firebase services. Keep it confidential and never store it in a public repository.
 
-You need to create an '.env' file for our backend application under **apps/api**. This '.env' file must include the following keys. These keys are necessary because we need to reach Auth0 by sending a Go client request.
 
-```env
-AUTH0_CLIENT_SECRET=
-AUTH0_CLIENT_ID=
-AUTH0_DOMAIN=
-AUTH0_AUDIENCE=
+![Firebase Service Account](../../images/auth/firebase-service-accounts.png)
+
+When firebase give you a credentials json file. You have to find the file and move under api folder which I will talk about in a second. We generated our sdk keys and credentials json file. Let's add the sdk keys to our buildog app under apps folder.
+
+```
+cd apps/buildog/
 ```
 
-Let's return to Auth0 to get the client secret, ID, domain, and audience. (Applications > {your project name} (Test Application) > Settings) You can directly copy your client secret, domain, and ID under the **Basic Information** section.
+if it is not created create the .env file and open the .env file in text editor.
 
-![Basic Information](../../images/auth/8-application-infos.png)
+```
+touch .env
+```
 
-You can find the audience in the APIs page.
+if .env file is already exist you can directly add these keys. Go to the firebase console where we created a web application for our project and set these values.
 
-![APIs Audience](../../images/auth/9-api-audience.png)
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=FIREBASE_API_KEY
+NEXT_PUBLIC_AUTH_DOMAIN=AUTH_DOMAIN
+NEXT_PULIC_PROJECT_ID=PROJECT_ID
+NEXT_PUBLIC_STORAGE_BUCKET=STORAGE_BUCKET
+NEXT_PUBLIC_MESSAGING_SENDER_ID=MESSAGING_SENDER_ID
+NEXT_PUBLIC_APP_ID=APP_ID
+```
+these sdk keys will used by our sdk which is under packages/web-sdk. It can be public these keys will used by Firebase SDK.
 
-After creating the API, go to the API settings and copy the identifier. Now, we can use the identifier as an audience parameter.
+Let's continue with the Firebase Admin side. We already generate the credentials json file. Rename the file to firebase-admin.json. _(Also, it is already in .gitignore)_
+And put this file under apps/api folder. Go firebase sdk will reach and initialize the firebase with these credentials. These keys are important and not public be careful. Now, we can test it. Let's go to the terminal, go to the root folder and start the project.
 
-If you followed the steps correctly, your code should now look like this: *(Don’t try to use these keys because they’ve already been removed.)*
+```
+pnpm dev
+```
 
-![Final Code](../../images/auth/10-env-variables.png)
-
-### Creating a User on Auth0
-
-Before making a request to our API, we need to create a user on the Auth0 dashboard. Go to **User Management > Users** and create a test user. I suggest using your own email address to receive the verification email.
-
-![Create Test User](../../images/auth/11-create-user.png)
-
-After creating your email, you will receive a confirmation email from Auth0. Confirm your email.
-
-Now, we are ready to get an 'access_token'. Go to the terminal and run the application with 'pnpm dev'. Our backend runs on [http://localhost:3010/](http://localhost:3010/).
-
-![Backend Running](../../images/auth/12-run-project.png)
-
-### Testing with Postman
-
-Let's experiment with Postman. The login endpoint for our backend is set at 'localhost:3010/auth/login'. To proceed, you'll need to submit your email and password to this specific endpoint.
-
-![Postman Login](../../images/auth/13-access-token.png)
-
+Open your browser and go to the http://localhost:3000/ and try to sign up you email and password. You have to get an email confirmation! You can also check firebase console in this step. You have to see your email under users section. After sign up, system automatically redirect you to the sign in page, verify your email and you can sign in the buildog system.

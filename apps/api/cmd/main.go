@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/pkg/database"
+	"api/pkg/firebase"
 	"api/pkg/router"
 	"log"
 	"net/http"
@@ -15,6 +16,10 @@ import (
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading the .env file: %v", err)
+	}
+
+	if err := firebase.InitFirebase(); err != nil {
+		log.Fatalf("Failed to initialize Firebase: %v", err)
 	}
 
 	database.InitDB()

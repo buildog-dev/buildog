@@ -38,12 +38,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setLoading(true);
     const authSuccess = await Auth.signIn(email, password);
 
-    // if (authSuccess.auth) {
-    //   router.push("/blog/");
-    // } else {
-    //   setError(authSuccess.error.error_description);
-    //   setLoading(false);
-    // }
+    if (authSuccess) {
+      router.push("/blog/");
+    } else {
+      // setError(authSuccess.error.error_description);
+      setLoading(false);
+    }
   }
 
   return (

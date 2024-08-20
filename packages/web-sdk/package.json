@@ -6,6 +6,7 @@
     "@types/events": "^3.0.3",
     "@types/node": "^20.10.5",
     "events": "^3.3.0",
+    "firebase": "^10.13.0",
     "jwt-decode": "^4.0.0",
     "typescript": "latest"
   }

@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   getIdToken,
+  sendEmailVerification,
 } from "firebase/auth";
 
 interface FirebaseConfig {
@@ -29,6 +30,7 @@ class Authenticator {
   async signUp(email: string, password: string): Promise<User> {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      userCredential.user && sendEmailVerification(userCredential.user);
       return userCredential.user;
     } catch (error: any) {
       throw new Error(error.message);

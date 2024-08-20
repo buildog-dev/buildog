@@ -39,12 +39,12 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     setLoading(true);
     const response = await Auth.signUp(email, password);
 
-    // if (response.isSignedUp) {
-    //   router.push("/login/");
-    // } else {
-    //   setError(response.error.error);
-    //   setLoading(false);
-    // }
+    if (response) {
+      router.push("/login/");
+    } else {
+      // setError(response.error.error);
+      setLoading(false);
+    }
   }
 
   return (
