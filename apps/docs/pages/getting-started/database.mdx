@@ -57,7 +57,7 @@ Represents a collection of users and blogs, essentially acting as a tenant in th
 | Column      | Data Type      | Constraints                     | Description                                         |
 |-------------|----------------|---------------------------------|-----------------------------------------------------|
 | id          | SERIAL         | PRIMARY KEY                     | Unique identifier for the organization.             |
-| name        | VARCHAR(255)   | NOT NULL                        | Name of the organization.                           |
+| name        | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique name of the organization.                           |
 | created_at  | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the organization was created.     |
 | updated_at  | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the organization.   |
 
@@ -68,10 +68,10 @@ Represents individuals who can belong to one or more organizations.
 
 | Column        | Data Type      | Constraints                     | Description                                         |
 |---------------|----------------|---------------------------------|-----------------------------------------------------|
-| id            | SERIAL         | PRIMARY KEY                     | Unique identifier for the user.                     |
-| username      | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique username for the user.                       |
-| email         | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique email address of the user.                   |
-| password_hash | VARCHAR(255)   | NOT NULL                        | Hashed password for authentication.                 |
+| id            | VARCHAR(30)    | PRIMARY KEY                     | Unique identifier for the user.                     |
+| first_name    | VARCHAR(255)   | NOT NULL                        | First name for the user                             |
+| last_name     | VARCHAR(255)   | NOT NULL                        | Last name for the user                              |
+| email         | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique email for the user                           |
 | created_at    | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the user was created.             |
 | updated_at    | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the user.           |
 
@@ -82,7 +82,7 @@ A join table that associates users with organizations, including their role with
 | Column            | Data Type      | Constraints                                                | Description                                                            |
 |-------------------|----------------|------------------------------------------------------------|------------------------------------------------------------------------|
 | organization_id   | INTEGER        | FOREIGN KEY REFERENCES Organizations(id) ON DELETE CASCADE | Identifier for the associated organization.                            |
-| user_id           | INTEGER        | FOREIGN KEY REFERENCES Users(id) ON DELETE CASCADE         | Identifier for the associated user.                                    |
+| user_id           | VARCHAR(30)    | FOREIGN KEY REFERENCES Users(id) ON DELETE CASCADE         | Identifier for the associated user.                                    |
 | role              | VARCHAR(50)    | NOT NULL                                                   | Role of the user within the organization (e.g., admin, member).        |
 | created_at        | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of when the association was created.                         |
 | updated_at        | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of the last update to the association.                       |
@@ -96,6 +96,7 @@ Represents blog posts that belong to an organization.
 |------------------|----------------|------------------------------------------------------------|------------------------------------------------------------|
 | id               | SERIAL         | PRIMARY KEY                                                | Unique identifier for the blog post.                       |
 | organization_id  | INTEGER        | FOREIGN KEY REFERENCES Organizations(id) ON DELETE CASCADE | Identifier for the organization to which the blog belongs. |
+| author_id        | VARCHAR(30)    | FOREIGN KEY REFERENCES Users(id)                           | Identifier for the author of the blog post.                |
 | title            | VARCHAR(255)   | NOT NULL                                                   | Title of the blog post.                                    |
 | content          | TEXT           | NOT NULL                                                   | Content of the blog post.                                  |
 | status           | VARCHAR(50)    | NOT NULL                                                   | Status of the blog post (draft, ready, published).         |
