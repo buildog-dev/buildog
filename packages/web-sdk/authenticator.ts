@@ -8,6 +8,8 @@ import {
   createUserWithEmailAndPassword,
   getIdToken,
   sendEmailVerification,
+  signOut,
+  Unsubscribe,
 } from "firebase/auth";
 
 interface FirebaseConfig {
@@ -20,7 +22,7 @@ interface FirebaseConfig {
 }
 
 class Authenticator {
-  private auth: Auth;
+  public auth: Auth;
 
   constructor(firebaseConfig: FirebaseConfig) {
     const app: FirebaseApp = initializeApp(firebaseConfig);
@@ -61,14 +63,26 @@ class Authenticator {
     }
   }
 
-  onAuthStateChange(callback: (isSignedIn: boolean, user: User | null) => void): void {
-    onAuthStateChanged(this.auth, (user) => {
+  onAuthStateChange(callback: (isSignedIn: boolean, user: User | null) => void): Unsubscribe {
+    return onAuthStateChanged(this.auth, (user) => {
       if (user) {
         callback(true, user);
       } else {
         callback(false, null);
       }
     });
+  }
+
+  async signOut(): Promise<void> {
+    try {
+      await signOut(this.auth);
+      // Sign-out successful, you can add any additional logic here if needed
+      console.log("Sign-out successful.");
+    } catch (error: any) {
+      // Handle error during sign-out
+      console.error("Sign-out failed:", error.message);
+      throw new Error("Sign-out failed: " + error.message);
+    }
   }
 }
 

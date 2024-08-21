@@ -7,19 +7,10 @@ import {
   DropdownMenuTrigger,
 } from "@ui/components/ui/dropdown-menu";
 import { Auth } from "@/web-sdk";
-import { useRouter } from "next/navigation";
 
 const Appbar = () => {
-  const route = useRouter();
-
   const handleLogout = () => {
-    // Auth.logout()
-    //   .then(() => {
-    //     route.push("/");
-    //   })
-    //   .catch((error) => {
-    //     console.log("Logout Error", error.message);
-    //   });
+    Auth.signOut();
   };
 
   return (

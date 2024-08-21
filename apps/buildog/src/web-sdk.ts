@@ -1,4 +1,4 @@
-import { Authenticator, ServiceClient } from "@repo/web-sdk";
+import { User, Authenticator, ServiceClient } from "@repo/web-sdk";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,4 +18,5 @@ export const Service = new ServiceClient(
   Auth
 );
 
+export type { User };
 export default { Auth, Service };
