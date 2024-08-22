@@ -99,7 +99,7 @@ export default function Page() {
           {tag}
         </Badge>
       ));
-  
+
       // Map status to icons
       const getStatusIcon = (status: string) => {
         switch (status) {
@@ -113,7 +113,7 @@ export default function Page() {
             return null;
         }
       };
-  
+
       return {
         blogId: "",
         title: blog.title,
@@ -135,7 +135,6 @@ export default function Page() {
       };
     });
   };
-  
 
   const columns = [
     {
