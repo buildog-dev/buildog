@@ -45,3 +45,63 @@ chmod +x setup_db.sh
 ```
 
 Your PostgreSQL database is now configured and ready for the Buildog project. You have created the necessary user, database, and tables, and updated your project code to handle table creation.
+
+## Multi-Tenant Blog Platform Database Design
+
+This database design outlines the structure for a multi-tenant blog platform. The design includes tables for organizations, users, organization-user relationships, and blogs, with appropriate columns and constraints. The design aims to support multiple organizations, each with its own users and blogs.
+
+### Organizations
+
+Represents a collection of users and blogs, essentially acting as a tenant in the multi-tenant system.
+
+| Column      | Data Type      | Constraints                     | Description                                         |
+|-------------|----------------|---------------------------------|-----------------------------------------------------|
+| id          | SERIAL         | PRIMARY KEY                     | Unique identifier for the organization.             |
+| name        | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique name of the organization.                           |
+| created_at  | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the organization was created.     |
+| updated_at  | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the organization.   |
+
+
+### Users
+
+Represents individuals who can belong to one or more organizations.
+
+| Column        | Data Type      | Constraints                     | Description                                         |
+|---------------|----------------|---------------------------------|-----------------------------------------------------|
+| id            | VARCHAR(128)   | PRIMARY KEY                     | Unique identifier for the user.                     |
+| first_name    | VARCHAR(255)   | NOT NULL                        | First name for the user                             |
+| last_name     | VARCHAR(255)   | NOT NULL                        | Last name for the user                              |
+| email         | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique email for the user                           |
+| created_at    | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the user was created.             |
+| updated_at    | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the user.           |
+
+### Organization Users
+
+A join table that associates users with organizations, including their role within the organization.
+
+| Column            | Data Type      | Constraints                                                | Description                                                            |
+|-------------------|----------------|------------------------------------------------------------|------------------------------------------------------------------------|
+| organization_id   | INTEGER        | FOREIGN KEY REFERENCES Organizations(id) ON DELETE CASCADE | Identifier for the associated organization.                            |
+| user_id           | VARCHAR(128)   | FOREIGN KEY REFERENCES Users(id) ON DELETE CASCADE         | Identifier for the associated user.                                    |
+| role              | VARCHAR(50)    | NOT NULL                                                   | Role of the user within the organization (e.g., admin, member).        |
+| created_at        | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of when the association was created.                         |
+| updated_at        | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of the last update to the association.                       |
+| PRIMARY KEY       |                | (organization_id, user_id)                                 | Composite primary key to ensure unique user-organization associations. |
+
+### Blogs
+
+Represents blog posts that belong to an organization.
+
+| Column           | Data Type      | Constraints                                                | Description                                                |
+|------------------|----------------|------------------------------------------------------------|------------------------------------------------------------|
+| id               | SERIAL         | PRIMARY KEY                                                | Unique identifier for the blog post.                       |
+| organization_id  | INTEGER        | FOREIGN KEY REFERENCES Organizations(id) ON DELETE CASCADE | Identifier for the organization to which the blog belongs. |
+| author_id        | VARCHAR(128)   | FOREIGN KEY REFERENCES Users(id)                           | Identifier for the author of the blog post.                |
+| title            | VARCHAR(255)   | NOT NULL                                                   | Title of the blog post.                                    |
+| content          | TEXT           | NOT NULL                                                   | Content of the blog post.                                  |
+| status           | VARCHAR(50)    | NOT NULL                                                   | Status of the blog post (draft, ready, published).         |
+| publish_date     | TIMESTAMP      |                                                            | Scheduled date for publishing the blog.                    |
+| created_at       | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of when the blog post was created.               |
+| updated_at       | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of the last update to the blog post.             |
+
+This design ensures proper isolation and management of data across multiple organizations, supporting role-based access control and efficient management of blog content. The schema can be further extended or customized based on specific application requirements.
