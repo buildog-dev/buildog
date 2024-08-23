@@ -29,22 +29,25 @@ class Authenticator {
     this.auth = getAuth(app);
   }
 
-  async signUp(email: string, password: string): Promise<User> {
+  async signUp(email: string, password: string): Promise<User | { error: string }> {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-      userCredential.user && sendEmailVerification(userCredential.user);
+      userCredential.user &&
+        sendEmailVerification(userCredential.user).then(() => {
+          return this.signOut();
+        });
       return userCredential.user;
     } catch (error: any) {
-      throw new Error(error.message);
+      return { error: error.message };
     }
   }
 
-  async signIn(email: string, password: string): Promise<User> {
+  async signIn(email: string, password: string): Promise<User | { error: string }> {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       return userCredential.user;
     } catch (error: any) {
-      throw new Error(error.message);
+      return { error: error.message };
     }
   }
 
@@ -63,12 +66,12 @@ class Authenticator {
     }
   }
 
-  onAuthStateChange(callback: (isSignedIn: boolean, user: User | null) => void): Unsubscribe {
+  onAuthStateChange(callback: (user: User | null) => void): Unsubscribe {
     return onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        callback(true, user);
+        callback(user);
       } else {
-        callback(false, null);
+        callback(null);
       }
     });
   }

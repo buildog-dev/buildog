@@ -2,31 +2,35 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Auth, User } from "@/web-sdk";
 
-const AuthContext = createContext<{ isSignedIn: boolean; user: User | null }>({
-  isSignedIn: false,
+const AuthContext = createContext<{ user: User | null }>({
   user: null,
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<{ isSignedIn: boolean; user: User | null }>({
-    isSignedIn: false,
+  const [authState, setAuthState] = useState<{ user: User | null }>({
     user: null,
   });
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleAuthStateChange = (isSignedIn: boolean, user: User | null) => {
-      setAuthState({ isSignedIn, user });
+    const handleAuthStateChange = (user: User | null) => {
+      if (user) {
+        if (!user.emailVerified && (pathname === "/login/" || pathname === "/signup/")) {
+          return;
+        }
 
-      // Redirect based on sign-in state and current pathname
-      if (isSignedIn && (pathname === "/login/" || pathname === "/signup/")) {
-        router.push("/blog/");
-      } else if (!isSignedIn && (pathname === "/login/" || pathname === "/signup/")) {
-        // Allow access to login/signup pages if not signed in
+        setAuthState({ user });
+
+        // Redirect based on sign-in state and current pathname
+        if (pathname === "/login/" || pathname === "/signup/") {
+          router.push("/blog/");
+        }
         return;
-      } else if (!isSignedIn) {
-        router.push("/");
+      }
+
+      if (!(pathname === "/login/" || pathname === "/signup/")) {
+        router.push("/login");
       }
     };
 

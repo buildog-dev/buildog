@@ -36,14 +36,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     const { email, password } = data;
 
     setLoading(true);
-    const authSuccess = await Auth.signIn(email, password);
+    const response = await Auth.signIn(email, password);
 
-    if (authSuccess) {
-      router.push("/blog/");
-    } else {
-      // setError(authSuccess.error.error_description);
-      setLoading(false);
+    if ("error" in response) {
+      setError(response.error);
+    } else if (!response.emailVerified) {
+      setError("Please verify your email");
+      Auth.signOut();
     }
+
+    setLoading(false);
   }
 
   return (

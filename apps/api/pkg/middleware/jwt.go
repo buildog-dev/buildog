@@ -3,7 +3,6 @@ package middleware
 import (
 	"api/pkg/firebase"
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -23,7 +22,6 @@ func EnsureValidToken(next http.Handler) http.Handler {
 			return
 		}
 
-        fmt.Print(token)
 		authClient, err := firebase.GetAuthClient()
 		if err != nil {
 			http.Error(w, "Firebase: "+err.Error(), http.StatusUnauthorized)
