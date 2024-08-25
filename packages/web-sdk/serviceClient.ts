@@ -1,5 +1,4 @@
 import Authenticator from "./authenticator";
-import axios, { Method } from "axios";
 
 interface ServiceClientConfig {
   serviceBaseUrl: string;
@@ -17,35 +16,50 @@ class ServiceClient {
 
   async makeAuthenticatedRequest(
     endpoint: string,
-    method: Method = "GET",
+    method: string = "GET",
     data: any = null
   ): Promise<any> {
     try {
-      let token = this.authenticator.getAccessToken();
+      // Retrieve the current user's token using the Authenticator class
+      const token = await this.authenticator.getCurrentUserToken();
 
-      if (this.authenticator.isTokenExpired()) {
-        await this.authenticator.getRefreshToken();
-        token = this.authenticator.getAccessToken();
+      // Check if the token is available
+      if (!token) {
+        throw new Error("User is not authenticated.");
       }
 
-      const response = await axios({
+      // Set up the request options
+      const options: RequestInit = {
         method,
-        url: `${this.serviceBaseUrl}/${endpoint}`,
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        data,
-      });
+      };
 
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        this.authenticator.removeLocalStoragedToken();
-        console.log("Unauthorized User");
+      // If the request method is not GET, add the body
+      if (data && method !== "GET") {
+        options.body = JSON.stringify(data);
       }
 
+      // Make the request using fetch
+      const response = await fetch(`${this.serviceBaseUrl}/${endpoint}`, options);
+
+      // Check for HTTP errors
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.log("Unauthorized User");
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Parse and return the response data
+      return await response.json();
+    } catch (error) {
+      console.error("Error making request:", error);
       throw error;
     }
   }
 }
+
 export default ServiceClient;
