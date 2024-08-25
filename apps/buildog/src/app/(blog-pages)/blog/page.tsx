@@ -22,6 +22,7 @@ type Blog = {
     value: string;
     lock: boolean;
   }[];
+  id: number;
   title: string;
   filename: string;
   text: string;
@@ -30,16 +31,14 @@ type Blog = {
   slug?: string;
 };
 
-// Define the Blogs type as an array of Blog objects
-type Blogs = Blog[];
-
 // Sample data
-const dummyBlogs: Blogs = [
+const dummyBlogs: Blog[] = [
   {
     cards: [
       { id: "card1", value: "Card 1 content", lock: false },
       { id: "card2", value: "Card 2 content", lock: true },
     ],
+    id: 1,
     title: "My first blog",
     filename: "blog1.md",
     text: "This is the text content for blog 1. It provides details about the blog post, discussing its main topics and giving an overview of what the user can expect when reading the full article.",
@@ -51,6 +50,7 @@ const dummyBlogs: Blogs = [
       { id: "card3", value: "Card 3 content", lock: false },
       { id: "card4", value: "Card 4 content", lock: true },
     ],
+    id: 2,
     title: "My third blog",
     filename: "blog2.md",
     text: "This article delves into the core aspects of web development with React, exploring the framework's features, best practices, and common pitfalls. It offers a comprehensive guide to mastering React, complete with examples and tips to enhance your coding skills and build robust applications.",
@@ -62,6 +62,7 @@ const dummyBlogs: Blogs = [
       { id: "card5", value: "Card 5 content", lock: false },
       { id: "card6", value: "Card 6 content", lock: true },
     ],
+    id: 3,
     title: "My second blog",
     filename: "blog3.md",
     text: "In this post, we examine the fundamentals of JavaScript and its role in modern web development. From basic syntax to advanced techniques, this guide covers essential concepts and provides practical advice for writing clean, efficient code and leveraging JavaScript's full potential.",
@@ -71,18 +72,14 @@ const dummyBlogs: Blogs = [
 ];
 
 export default function Page() {
-  const [blogs, setBlogs] = useState<Blogs>(dummyBlogs);
+  const [blogs, setBlogs] = useState<Blog[]>(dummyBlogs);
   const [open, setOpen] = useState(false);
 
-  const deleteBlog = (blogToDelete: string) => {
+  const deleteBlog = (blogId: number) => {
     setOpen(!open);
 
     setBlogs((prevBlogs) => {
-      if (!prevBlogs) return prevBlogs;
-
-      // Filter out the blog to delete
-      const updatedBlogs = prevBlogs.filter((blog) => blog.title !== blogToDelete);
-
+      const updatedBlogs = prevBlogs.filter((blog) => blog.id !== blogId);
       return updatedBlogs;
     });
   };
@@ -115,7 +112,7 @@ export default function Page() {
       };
 
       return {
-        blogId: "",
+        id: blog.id,
         title: blog.title,
         tags: blog.tags.join(", "),
         status: (
@@ -161,7 +158,7 @@ export default function Page() {
       id: "actions",
       enableSorting: false,
       cell: ({ row }) => {
-        const blogTitle = row.original.title;
+        const blogId = row.original.id;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -174,7 +171,7 @@ export default function Page() {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  deleteBlog(blogTitle);
+                  deleteBlog(blogId);
                 }}
               >
                 Delete
@@ -188,7 +185,7 @@ export default function Page() {
 
   return (
     <div className="space-y-4">
-      <DataTable columns={columns} data={tableData()} filterColumnId={"fileName"} />
+      <DataTable columns={columns} data={tableData()} filterColumnId={"title"} />
     </div>
   );
 }
