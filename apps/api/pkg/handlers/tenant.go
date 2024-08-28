@@ -32,21 +32,26 @@ func TenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createTenantHandler(w http.ResponseWriter, r *http.Request) {
-	var createUserRequest models.CreateOrganizationRequest
-	if err := json.NewDecoder(r.Body).Decode(&createUserRequest); err != nil {
+	type Payload struct {
+		OrganizationName string `json:"organization_name"`
+		CreatorId        string `json:"creator_id"`
+	}
+
+	var payload Payload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
 	//get user
-	user, err := database.GetUser(createUserRequest.CreatorId)
+	user, err := database.GetUser(payload.CreatorId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
 	tenant := models.Tenant{
-		Name: createUserRequest.OrganizationName,
+		Name: payload.OrganizationName,
 	}
 
 	//create tenant
@@ -138,4 +143,5 @@ func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Tenant deleted"))
 }
