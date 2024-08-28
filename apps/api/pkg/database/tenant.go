@@ -44,7 +44,7 @@ func UpdateTenantName(db *sql.DB, id string, newName string) error {
 	return err
 }
 
-func DeleteTenant(db *sql.DB, id string) error {
+func DeleteTenant(db *sql.DB, id int64) error {
 	query := "DELETE FROM tenants WHERE id = $1"
 	_, err := db.Exec(query, id)
 	return err

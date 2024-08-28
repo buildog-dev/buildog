@@ -115,16 +115,27 @@ func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
-	var db = database.DB
-	tenantId := r.URL.Query().Get("id")
-	err := database.DeleteTenant(db, tenantId)
-
-	if err != nil {
-		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
+	var reqBody models.TenantUserActionRequest
+	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	response := fmt.Sprintf("Tenant id:%s deleted", tenantId)
+	requestedBy, err := database.GetTenantUser(reqBody.RequestedByUserId)
+	if err != nil {
+		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		return
+	}
+
+	if requestedBy.Role != "admin" {
+		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
+		return
+	}
+
+	if err = database.DeleteTenant(database.DB, reqBody.TenantID); err != nil {
+		http.Error(w, "Failed to delete tenant", http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(response))
 }
