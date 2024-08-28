@@ -3,6 +3,7 @@ package database
 import (
 	"api/pkg/models"
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -17,6 +18,7 @@ func CreateTenant(db *sql.DB, tenant *models.Tenant) (int64, error) {
 	var tenantID int64
 	err := db.QueryRow(query, tenant.Name, now, now).Scan(&tenantID)
 	if err != nil {
+		fmt.Println(err)
 		return 0, err
 	}
 
@@ -37,7 +39,7 @@ func GetTenantById(db *sql.DB, id string) (*models.Tenant, error) {
 }
 
 func UpdateTenantName(db *sql.DB, id string, newName string) error {
-    query := "UPDATE tenants SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2"
+	query := "UPDATE tenants SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2"
 	_, err := db.Exec(query, newName, id)
 	return err
 }

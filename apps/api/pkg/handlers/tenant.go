@@ -32,28 +32,36 @@ func TenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createTenantHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var tenant models.Tenant
-	if err := json.NewDecoder(r.Body).Decode(&tenant); err != nil {
+	var createUserRequest models.CreateOrganizationRequest
+	if err := json.NewDecoder(r.Body).Decode(&createUserRequest); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	tenantID, err := database.CreateTenant(database.DB, &tenant)
+	tenant := models.Tenant{
+		Name: createUserRequest.OrganizationName,
+	}
+
+	//create tenant
+	TenantId, err := database.CreateTenant(database.DB, &tenant)
 	if err != nil {
 		http.Error(w, "Failed to create tenant", http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	response := map[string]interface{}{
-		"id": tenantID,
+	//get user
+	user, err := database.GetUser(createUserRequest.UserId)
+	if err != nil {
+		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		return
 	}
-	json.NewEncoder(w).Encode(response)
+
+	//create tenant user
+	err = database.CreateTenantUser(user, TenantId)
+	if err != nil {
+		http.Error(w, "Failed to create tenant user", http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Tenant created"))

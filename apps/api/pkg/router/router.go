@@ -23,6 +23,8 @@ func Router(audience, domain string) http.Handler {
 	router.HandleFunc("/api/tenants", handlers.TenantsHandler)
 	router.HandleFunc("/api/tenant", handlers.TenantHandler)
 
+	router.HandleFunc("/api/tenant/user", handlers.TenantUserHandler)
+
 	// test
 	router.HandleFunc("/test/api/public", handlers.PublicApiHandler)
 	router.Handle("/test/api/private",
