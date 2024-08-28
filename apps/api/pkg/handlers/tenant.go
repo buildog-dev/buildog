@@ -38,6 +38,13 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//get user
+	user, err := database.GetUser(createUserRequest.CreatorId)
+	if err != nil {
+		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		return
+	}
+
 	tenant := models.Tenant{
 		Name: createUserRequest.OrganizationName,
 	}
@@ -49,15 +56,8 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//get user
-	user, err := database.GetUser(createUserRequest.UserId)
-	if err != nil {
-		http.Error(w, "Failed to get user", http.StatusInternalServerError)
-		return
-	}
-
 	//create tenant user
-	err = database.CreateTenantUser(user, TenantId)
+	err = database.CreateTenantUser(user, TenantId, "admin")
 	if err != nil {
 		http.Error(w, "Failed to create tenant user", http.StatusInternalServerError)
 		return
