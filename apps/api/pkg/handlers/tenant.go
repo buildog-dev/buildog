@@ -99,37 +99,37 @@ func getTenantHandler(w http.ResponseWriter, r *http.Request) {
 
 func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 	type Payload struct {
-		TenantId          string `json:"tenant_id"`
+		TenantId          int64  `json:"tenant_id"`
 		TenantName        string `json:"tenant_name"`
 		RequestedByUserId string `json:"requested_by_id"`
 	}
 
-	reqBody := Payload{}
+	var payload Payload
 
-	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	requestedBy, err := database.GetTenantUser(reqBody.RequestedByUserId)
+	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
-	if requestedBy.Role != "admin" && requestedBy.Role != "writer" {
+	if requestedByUser.Role != "admin" && requestedByUser.Role != "writer" && requestedByUser.TenantId != payload.TenantId {
 		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
 		return
 	}
 
-	err = database.UpdateTenantName(database.DB, reqBody.TenantId, reqBody.TenantName)
+	err = database.UpdateTenantName(database.DB, payload.TenantId, payload.TenantName)
 
 	if err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
 		return
 	}
 
-	response := fmt.Sprintf("Tanant name updated: %s", reqBody.TenantName)
+	response := fmt.Sprintf("Tanant name updated: %s", payload.TenantName)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(response))
 }
@@ -148,13 +148,13 @@ func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestedBy, err := database.GetTenantUser(payload.RequestedByUserId)
+	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
-	if requestedBy.Role != "admin" {
+	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
 		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
 		return
 	}

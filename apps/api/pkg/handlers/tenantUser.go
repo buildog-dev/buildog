@@ -4,7 +4,6 @@ import (
 	"api/pkg/database"
 	"api/pkg/helpers"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -46,8 +45,6 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Print()
-
 	//get Requested By user
 	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
 	if err != nil {
@@ -56,7 +53,7 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if user is authorized to perform this action
-	if requestedByUser.Role != "admin" {
+	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
 		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
 		return
 	}
@@ -111,7 +108,7 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if user is authorized to perform this action
-	if requestedByUser.Role != "admin" {
+	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
 		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
 		return
 	}
@@ -165,7 +162,7 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if requestedByUser.Role != "admin" {
+	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
 		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
 		return
 	}
