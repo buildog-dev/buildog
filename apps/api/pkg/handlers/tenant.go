@@ -135,13 +135,20 @@ func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
-	var reqBody models.TenantUserActionRequest
-	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+	type Payload struct {
+		TenantID          int64  `json:"tenant_id"`
+		RequestedByUserId string `json:"requested_by_id"`
+		TargetUserID      string `json:"target_user_id"`
+		Role              string `json:"role"`
+	}
+
+	var payload Payload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	requestedBy, err := database.GetTenantUser(reqBody.RequestedByUserId)
+	requestedBy, err := database.GetTenantUser(payload.RequestedByUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
@@ -152,7 +159,7 @@ func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = database.DeleteTenant(database.DB, reqBody.TenantID); err != nil {
+	if err = database.DeleteTenant(database.DB, payload.TenantID); err != nil {
 		http.Error(w, "Failed to delete tenant", http.StatusInternalServerError)
 		return
 	}

@@ -3,7 +3,6 @@ package handlers
 import (
 	"api/pkg/database"
 	"api/pkg/helpers"
-	"api/pkg/models"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -23,18 +22,26 @@ func TenantUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addUserToTenant(w http.ResponseWriter, r *http.Request) {
-	var createTenantUserRequest models.TenantUserActionRequest
-	if err := json.NewDecoder(r.Body).Decode(&createTenantUserRequest); err != nil {
+	type Payload struct {
+		TenantID          int64  `json:"tenant_id"`
+		RequestedByUserId string `json:"requested_by_id"`
+		TargetUserID      string `json:"target_user_id"`
+		Role              string `json:"role"`
+	}
+
+	var payload Payload
+
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	if !helpers.IsRoleValid(createTenantUserRequest.Role) {
+	if !helpers.IsRoleValid(payload.Role) {
 		http.Error(w, "Invalid role", http.StatusBadRequest)
 		return
 	}
 
-	if createTenantUserRequest.RequestedByUserId == createTenantUserRequest.TargetUserID {
+	if payload.RequestedByUserId == payload.TargetUserID {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
@@ -42,7 +49,7 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 	fmt.Print()
 
 	//get Requested By user
-	requestedByUser, err := database.GetTenantUser(createTenantUserRequest.RequestedByUserId)
+	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
@@ -55,14 +62,14 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := database.GetUser(createTenantUserRequest.TargetUserID)
+	user, err := database.GetUser(payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get target user", http.StatusInternalServerError)
 		return
 	}
 
 	// add user to tenant
-	if err := database.CreateTenantUser(user, createTenantUserRequest.TenantID, createTenantUserRequest.Role); err != nil {
+	if err := database.CreateTenantUser(user, payload.TenantID, payload.Role); err != nil {
 		http.Error(w, "Failed to add user to tenant", http.StatusInternalServerError)
 		return
 	}
@@ -71,19 +78,27 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 }
 
 func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
-	var deleteTenantUserRequest models.TenantUserActionRequest
-	if err := json.NewDecoder(r.Body).Decode(&deleteTenantUserRequest); err != nil {
+	type Payload struct {
+		TenantID          int64  `json:"tenant_id"`
+		RequestedByUserId string `json:"requested_by_id"`
+		TargetUserID      string `json:"target_user_id"`
+		Role              string `json:"role"`
+	}
+
+	var payload Payload
+
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	if deleteTenantUserRequest.RequestedByUserId == deleteTenantUserRequest.TargetUserID {
+	if payload.RequestedByUserId == payload.TargetUserID {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
 
 	//get Requested By user
-	requestedByUser, err := database.GetTenantUser(deleteTenantUserRequest.RequestedByUserId)
+	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
@@ -102,14 +117,14 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := database.GetUser(deleteTenantUserRequest.TargetUserID)
+	user, err := database.GetUser(payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
 	// remove user from tenant
-	if err := database.DeleteTenantUser(user, deleteTenantUserRequest.TenantID); err != nil {
+	if err := database.DeleteTenantUser(user, payload.TenantID); err != nil {
 		http.Error(w, "Failed to remove user from tenant", http.StatusInternalServerError)
 		return
 	}

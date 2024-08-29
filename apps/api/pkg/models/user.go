@@ -19,10 +19,3 @@ type TenantUser struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
-
-type TenantUserActionRequest struct {
-	TenantID          int64  `json:"tenant_id"`
-	RequestedByUserId string `json:"requested_by_id"`
-	TargetUserID      string `json:"target_user_id"`
-	Role              string `json:"role"`
-}
