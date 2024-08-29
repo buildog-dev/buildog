@@ -98,23 +98,38 @@ func getTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
-	var payload struct {
-		Name string `json:"name"`
-		Id   string `json:"id"`
+	type Payload struct {
+		TenantId          string `json:"tenant_id"`
+		TenantName        string `json:"tenant_name"`
+		RequestedByUserId string `json:"requested_by_id"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+
+	reqBody := Payload{}
+
+	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	err := database.UpdateTenantName(database.DB, payload.Id, payload.Name)
+	requestedBy, err := database.GetTenantUser(reqBody.RequestedByUserId)
+	if err != nil {
+		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		return
+	}
+
+	if requestedBy.Role != "admin" && requestedBy.Role != "writer" {
+		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
+		return
+	}
+
+	err = database.UpdateTenantName(database.DB, reqBody.TenantId, reqBody.TenantName)
 
 	if err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
 		return
 	}
 
-	response := fmt.Sprintf("Tanant name updated: %s", payload.Name)
+	response := fmt.Sprintf("Tanant name updated: %s", reqBody.TenantName)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(response))
 }
