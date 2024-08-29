@@ -174,6 +174,11 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if payload.TenantID != user.TenantId {
+		http.Error(w, "User is not in the tenant", http.StatusUnauthorized)
+		return
+	}
+
 	// update tenant user id
 	if payload.ChangedUserID != "" {
 		if err := database.UpdateTenantUserId(payload.TenantID, user.UserId, payload.ChangedUserID); err != nil {

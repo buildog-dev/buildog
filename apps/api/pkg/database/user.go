@@ -81,7 +81,7 @@ func DeleteTenantUser(user models.User, tenantId int64) error {
 
 func UpdateTenantUserId(tenantId int64, prevUserId string, nextUserId string) error {
 	db := GetDB()
-	query := `UPDATE tenantUsers SET  user_id = $1 WHERE user_id = $2 AND tenant_id = $3`
+	query := `UPDATE tenantUsers SET  user_id = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND tenant_id = $3`
 	_, err := db.Exec(query, nextUserId, prevUserId, tenantId)
 	if err != nil {
 		return fmt.Errorf("failed to update tenant user: %s", err)
@@ -92,7 +92,7 @@ func UpdateTenantUserId(tenantId int64, prevUserId string, nextUserId string) er
 
 func UpdateTenantUserRole(tenantId int64, userId string, role string) error {
 	db := GetDB()
-	query := `UPDATE tenantUsers SET  role = $1 WHERE user_id = $2 AND tenant_id = $3`
+	query := `UPDATE tenantUsers SET  role = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND tenant_id = $3`
 	_, err := db.Exec(query, role, userId, tenantId)
 	if err != nil {
 		return fmt.Errorf("failed to update tenant user: %s", err)
