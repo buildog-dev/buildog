@@ -3,7 +3,6 @@ package database
 import (
 	"api/pkg/models"
 	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -18,7 +17,6 @@ func CreateTenant(db *sql.DB, tenant *models.Tenant) (int64, error) {
 	var tenantID int64
 	err := db.QueryRow(query, tenant.Name, now, now).Scan(&tenantID)
 	if err != nil {
-		fmt.Println(err)
 		return 0, err
 	}
 

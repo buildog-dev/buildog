@@ -45,7 +45,6 @@ func CreateTenantUser(user models.User, tenantId int64, role string) error {
 	query := `INSERT INTO tenantUsers (user_id, tenant_id, role) VALUES ($1, $2, $3)`
 	_, err := db.Exec(query, user.UserId, tenantId, role)
 	if err != nil {
-		fmt.Println(err)
 		return fmt.Errorf("failed to create tenant user: %s", err)
 	}
 
