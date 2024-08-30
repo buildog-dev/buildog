@@ -20,11 +20,7 @@ func Router(audience, domain string) http.Handler {
 	//)
 
 	// tenant
-	router.HandleFunc("/api/tenants",
-		middleware.EnsureUserAuthorized(
-			http.HandlerFunc(handlers.TenantsHandler),
-		),
-	)
+	router.HandleFunc("/api/tenants", http.HandlerFunc(handlers.TenantsHandler))
 	router.HandleFunc("/api/tenant",
 		middleware.EnsureUserAuthorized(
 			http.HandlerFunc(handlers.TenantHandler),
