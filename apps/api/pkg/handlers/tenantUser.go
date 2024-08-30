@@ -3,6 +3,7 @@ package handlers
 import (
 	"api/pkg/database"
 	"api/pkg/helpers"
+	"api/pkg/models"
 	"encoding/json"
 	"net/http"
 )
@@ -21,14 +22,8 @@ func TenantUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addUserToTenant(w http.ResponseWriter, r *http.Request) {
-	type Payload struct {
-		TenantID          int64  `json:"tenant_id"`
-		RequestedByUserId string `json:"requested_by_id"`
-		TargetUserID      string `json:"target_user_id"`
-		Role              string `json:"role"`
-	}
 
-	var payload Payload
+	var payload models.TenantUserDeleteAndAdd
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -42,19 +37,6 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 
 	if payload.RequestedByUserId == payload.TargetUserID {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
-	//get Requested By user
-	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
-	if err != nil {
-		http.Error(w, "Failed to get user", http.StatusInternalServerError)
-		return
-	}
-
-	// check if user is authorized to perform this action
-	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
-		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
 		return
 	}
 
@@ -75,14 +57,8 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 }
 
 func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
-	type Payload struct {
-		TenantID          int64  `json:"tenant_id"`
-		RequestedByUserId string `json:"requested_by_id"`
-		TargetUserID      string `json:"target_user_id"`
-		Role              string `json:"role"`
-	}
 
-	var payload Payload
+	var payload models.TenantUserDeleteAndAdd
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
@@ -91,25 +67,6 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 
 	if payload.RequestedByUserId == payload.TargetUserID {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
-	//get Requested By user
-	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
-	if err != nil {
-		http.Error(w, "Failed to get user", http.StatusInternalServerError)
-		return
-	}
-
-	// check if role is valid
-	if !helpers.IsRoleValid(requestedByUser.Role) {
-		http.Error(w, "Invalid role", http.StatusBadRequest)
-		return
-	}
-
-	// check if user is authorized to perform this action
-	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
-		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
 		return
 	}
 
@@ -131,15 +88,8 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 
 func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 
-	type Payload struct {
-		TenantID          int64  `json:"tenant_id"`
-		RequestedByUserId string `json:"requested_by_id"`
-		TargetUserID      string `json:"target_user_id"`
-		ChangedUserID     string `json:"changed_user_id"`
-		ChangedRole       string `json:"changed_role"`
-	}
+	var payload models.TenantUserUpdate
 
-	var payload Payload
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -155,27 +105,10 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//get Requested By user
-	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
-	if err != nil {
-		http.Error(w, "Failed to get user", http.StatusInternalServerError)
-		return
-	}
-
-	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
-		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
-		return
-	}
-
 	// get user
-	user, err := database.GetTenantUser(payload.TargetUserID)
+	user, err := database.GetTenantUser(payload.TenantID, payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
-		return
-	}
-
-	if payload.TenantID != user.TenantId {
-		http.Error(w, "User is not in the tenant", http.StatusUnauthorized)
 		return
 	}
 

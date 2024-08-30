@@ -36,7 +36,7 @@ func GetTenantById(db *sql.DB, id string) (*models.Tenant, error) {
 	return &tenant, nil
 }
 
-func UpdateTenantName(db *sql.DB, id int64, newName string) error {
+func UpdateTenant(db *sql.DB, id int64, newName string) error {
 	query := "UPDATE tenants SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2"
 	_, err := db.Exec(query, newName, id)
 	return err

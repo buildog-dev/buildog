@@ -32,12 +32,9 @@ func TenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createTenantHandler(w http.ResponseWriter, r *http.Request) {
-	type Payload struct {
-		OrganizationName string `json:"organization_name"`
-		CreatorId        string `json:"creator_id"`
-	}
 
-	var payload Payload
+	var payload models.CreateTenant
+
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
@@ -55,14 +52,14 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create tenant
-	TenantId, err := database.CreateTenant(database.DB, &tenant)
+	tenantId, err := database.CreateTenant(database.DB, &tenant)
 	if err != nil {
 		http.Error(w, "Failed to create tenant", http.StatusInternalServerError)
 		return
 	}
 
 	//create tenant user
-	err = database.CreateTenantUser(user, TenantId, "admin")
+	err = database.CreateTenantUser(user, tenantId, "admin")
 	if err != nil {
 		http.Error(w, "Failed to create tenant user", http.StatusInternalServerError)
 		return
@@ -98,33 +95,15 @@ func getTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
-	type Payload struct {
-		TenantId          int64  `json:"tenant_id"`
-		TenantName        string `json:"tenant_name"`
-		RequestedByUserId string `json:"requested_by_id"`
-	}
 
-	var payload Payload
+	var payload models.UpdateTenant
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
-	if err != nil {
-		http.Error(w, "Failed to get user", http.StatusInternalServerError)
-		return
-	}
-
-	if requestedByUser.Role != "admin" && requestedByUser.Role != "writer" && requestedByUser.TenantId != payload.TenantId {
-		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
-		return
-	}
-
-	err = database.UpdateTenantName(database.DB, payload.TenantId, payload.TenantName)
-
-	if err != nil {
+	if err := database.UpdateTenant(database.DB, payload.TenantId, payload.TenantName); err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
 		return
 	}
@@ -135,31 +114,15 @@ func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
-	type Payload struct {
-		TenantID          int64  `json:"tenant_id"`
-		RequestedByUserId string `json:"requested_by_id"`
-		TargetUserID      string `json:"target_user_id"`
-		Role              string `json:"role"`
-	}
 
-	var payload Payload
+	var payload models.DeleteTenant
+
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	requestedByUser, err := database.GetTenantUser(payload.RequestedByUserId)
-	if err != nil {
-		http.Error(w, "Failed to get user", http.StatusInternalServerError)
-		return
-	}
-
-	if requestedByUser.Role != "admin" || requestedByUser.TenantId != payload.TenantID {
-		http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
-		return
-	}
-
-	if err = database.DeleteTenant(database.DB, payload.TenantID); err != nil {
+	if err := database.DeleteTenant(database.DB, payload.TenantID); err != nil {
 		http.Error(w, "Failed to delete tenant", http.StatusInternalServerError)
 		return
 	}
