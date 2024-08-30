@@ -2,23 +2,33 @@ package middleware
 
 import (
 	"api/pkg/database"
-	"api/pkg/models"
+	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
-// AuthMiddleware checks if the user is authorized to perform the action
+// EnsureUserAuthorized checks if the user is authorized to perform the action
 func EnsureUserAuthorized(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var payload struct {
+			TenantID          int64  `json:"tenant_id"`
+			RequestedByUserId string `json:"requested_by_id"`
+		}
 
-		var payload models.UpdateTenant
+		// Read the body and create a buffer
+		bodyBuffer := new(bytes.Buffer)
+		tee := io.TeeReader(r.Body, bodyBuffer)
 
-		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		if err := json.NewDecoder(tee).Decode(&payload); err != nil {
 			http.Error(w, "Invalid request body", http.StatusBadRequest)
 			return
 		}
 
-		requestedByUser, err := database.GetTenantUser(payload.TenantId, payload.RequestedByUserId)
+		// Reset the body to the original state
+		r.Body = io.NopCloser(bodyBuffer)
+
+		requestedByUser, err := database.GetTenantUser(payload.TenantID, payload.RequestedByUserId)
 		if err != nil {
 			http.Error(w, "Failed to get user", http.StatusInternalServerError)
 			return

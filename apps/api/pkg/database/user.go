@@ -54,7 +54,7 @@ func CreateTenantUser(user models.User, tenantId int64, role string) error {
 func GetTenantUser(tenantId int64, userId string) (models.TenantUser, error) {
 	db := GetDB()
 	query := `SELECT user_id, tenant_id, role FROM tenantUsers WHERE user_id = $1 AND tenant_id=$2`
-	row := db.QueryRow(query, tenantId, userId)
+	row := db.QueryRow(query, userId, tenantId)
 
 	var tenantUser models.TenantUser
 	err := row.Scan(&tenantUser.UserId, &tenantUser.TenantId, &tenantUser.Role)
