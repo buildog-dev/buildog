@@ -20,8 +20,6 @@ import { toast } from "@ui/components/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { Separator } from "@ui/components/separator";
 
-import { Organizations } from "../../../components/organizations";
-
 const settingsInformationFormSchema = z.object({
   email: z.string().email().optional(),
 });
@@ -77,7 +75,7 @@ export default function Page() {
       <Tabs defaultValue="information" className="w-full">
         <TabsList>
           <TabsTrigger value="information">Information</TabsTrigger>
-          <TabsTrigger value="org">Organization</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
         </TabsList>
         <TabsContent value="information">
           <Form {...informationForm}>
@@ -155,15 +153,18 @@ export default function Page() {
             </form>
           </Form>
         </TabsContent>
-        <TabsContent value="org">
+        <TabsContent value="users">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h2 className="text-2xl font-semibold tracking-tight">Your Organizations</h2>
-              <p className="text-sm text-muted-foreground">Manage your organizations.</p>
+              <h2 className="text-2xl font-semibold tracking-tight">Users</h2>
+              <p className="text-sm text-muted-foreground">Users signed in to this organization.</p>
             </div>
           </div>
           <Separator className="my-4" />
-          <Organizations />
+          {/* <Organizations /> */}
+          <p>
+            Users signed in for this organization will appear here after connecting the backend.
+          </p>
         </TabsContent>
       </Tabs>
     </Fragment>
