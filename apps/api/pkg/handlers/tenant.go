@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func TenantsHandler(w http.ResponseWriter, r *http.Request) {
@@ -81,14 +82,13 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTenantHandler(w http.ResponseWriter, r *http.Request) {
-	var payload models.DeleteTenant
-
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+	tenantId, err := strconv.Atoi(r.URL.Query().Get("tenant_id"))
+	if err != nil {
+		http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
 		return
 	}
 
-	tenant, err := database.GetTenantById(payload.TenantID)
+	tenant, err := database.GetTenantById(int64(tenantId))
 
 	if err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)

@@ -6,6 +6,7 @@ import (
 	"api/pkg/models"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 func TenantUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -109,14 +110,15 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
-	var payload models.DeleteTenant
 
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+	tenantId, err := strconv.Atoi(r.URL.Query().Get("tenant_id"))
+	if err != nil {
+		http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
 		return
 	}
+	targetUserId := r.URL.Query().Get("target_user_id")
 
-	user, err := database.GetTenantUser(payload.TenantID, payload.TargetUserID)
+	user, err := database.GetTenantUser(int64(tenantId), targetUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 	}

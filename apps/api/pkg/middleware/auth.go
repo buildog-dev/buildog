@@ -8,27 +8,40 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
 // EnsureUserAuthorized checks if the user is authorized to perform the action
 func EnsureUserAuthorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
 		var payload struct {
 			TenantID int64 `json:"tenant_id"`
 		}
 
-		// Read the body and create a buffer
-		bodyBuffer := new(bytes.Buffer)
-		tee := io.TeeReader(r.Body, bodyBuffer)
+		if r.Method == http.MethodGet {
+			tenantId, err := strconv.Atoi(r.URL.Query().Get("tenant_id"))
+			if err != nil {
+				http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
+				return
+			}
+			payload.TenantID = int64(tenantId)
 
-		if err := json.NewDecoder(tee).Decode(&payload); err != nil {
-			http.Error(w, "Invalid request body", http.StatusBadRequest)
-			return
+		} else {
+			// Read the body and create a buffer
+			bodyBuffer := new(bytes.Buffer)
+			tee := io.TeeReader(r.Body, bodyBuffer)
+
+			if err := json.NewDecoder(tee).Decode(&payload); err != nil {
+				http.Error(w, "Invalid request body", http.StatusBadRequest)
+				return
+			}
+
+			// Reset the body to the original state
+			r.Body = io.NopCloser(bodyBuffer)
+
 		}
-
-		// Reset the body to the original state
-		r.Body = io.NopCloser(bodyBuffer)
 
 		tokenString := ExtractToken(r)
 
