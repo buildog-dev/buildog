@@ -51,18 +51,18 @@ func CreateTenantUser(user models.User, tenantId int64, role string) error {
 	return nil
 }
 
-func GetTenantUser(tenantId int64, userId string) (models.TenantUser, error) {
+func GetTenantUser(tenantId int64, userId string) (models.GetTenantUserFormat, error) {
 	db := GetDB()
-	query := `SELECT user_id, tenant_id, role FROM tenantUsers WHERE user_id = $1 AND tenant_id=$2`
-	row := db.QueryRow(query, userId, tenantId)
+	query := `SELECT u.id, u.first_name, u.last_name, u.email, tu.role, t.name  FROM tenantUsers tu INNER JOIN users u ON tu.user_id = u.id INNER JOIN tenants t ON tu.tenant_id = t.id WHERE tu.tenant_id = $1 AND tu.user_id = $2;`
+	row := db.QueryRow(query, tenantId, userId)
 
-	var tenantUser models.TenantUser
-	err := row.Scan(&tenantUser.UserId, &tenantUser.TenantId, &tenantUser.Role)
+	var tenantUser models.GetTenantUserFormat
+	err := row.Scan(&tenantUser.UserId, &tenantUser.FirstName, &tenantUser.LastName, &tenantUser.Email, &tenantUser.Role, &tenantUser.OrganizationName)
 	if err == sql.ErrNoRows {
-		return models.TenantUser{}, fmt.Errorf("tenant user not found")
+		return models.GetTenantUserFormat{}, fmt.Errorf("tenant user not found")
 	}
 	if err != nil {
-		return models.TenantUser{}, fmt.Errorf("failed to get tenant user from database: %s", err)
+		return models.GetTenantUserFormat{}, fmt.Errorf("failed to get tenant user from database: %s", err)
 	}
 
 	return tenantUser, nil
@@ -79,18 +79,7 @@ func DeleteTenantUser(user models.User, tenantId int64) error {
 	return nil
 }
 
-func UpdateTenantUserId(tenantId int64, prevUserId string, nextUserId string) error {
-	db := GetDB()
-	query := `UPDATE tenantUsers SET  user_id = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND tenant_id = $3`
-	_, err := db.Exec(query, nextUserId, prevUserId, tenantId)
-	if err != nil {
-		return fmt.Errorf("failed to update tenant user: %s", err)
-	}
-
-	return nil
-}
-
-func UpdateTenantUserRole(tenantId int64, userId string, role string) error {
+func UpdateTenantUser(tenantId int64, userId string, role string) error {
 	db := GetDB()
 	query := `UPDATE tenantUsers SET  role = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND tenant_id = $3`
 	_, err := db.Exec(query, role, userId, tenantId)

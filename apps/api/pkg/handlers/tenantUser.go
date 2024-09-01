@@ -16,6 +16,8 @@ func TenantUserHandler(w http.ResponseWriter, r *http.Request) {
 		removeUserFromTenant(w, r)
 	case http.MethodPut:
 		updateTenantUserHandler(w, r)
+	case http.MethodGet:
+		getTenantUserHandler(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -97,11 +99,37 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := database.UpdateTenantUserRole(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
+	if err := database.UpdateTenantUser(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
 		http.Error(w, "Failed to update tenant user", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 
+}
+
+func getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
+	var payload models.DeleteTenant
+
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	user, err := database.GetTenantUser(payload.TenantID, payload.TargetUserID)
+	if err != nil {
+		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	response := map[string]interface{}{
+		"first_name":        user.FirstName,
+		"last_name":         user.LastName,
+		"email":             user.Email,
+		"organization_name": user.OrganizationName,
+	}
+	json.NewEncoder(w).Encode(response)
+
+	w.WriteHeader(http.StatusOK)
 }

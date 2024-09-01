@@ -31,3 +31,11 @@ type TenantUserUpdate struct {
 	ChangedUserID string `json:"changed_user_id"`
 	ChangedRole   string `json:"changed_role"`
 }
+type GetTenantUserFormat struct {
+	UserId           string
+	FirstName        string
+	LastName         string
+	Email            string
+	Role             string
+	OrganizationName string
+}
