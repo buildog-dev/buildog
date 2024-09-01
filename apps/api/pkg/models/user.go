@@ -20,16 +20,14 @@ type TenantUser struct {
 }
 
 type TenantUserDeleteAndAdd struct {
-	TenantID          int64  `json:"tenant_id"`
-	RequestedByUserId string `json:"requested_by_id"`
-	TargetUserID      string `json:"target_user_id"`
-	Role              string `json:"role"`
+	TenantID     int64  `json:"tenant_id"`
+	TargetUserID string `json:"target_user_id"`
+	Role         string `json:"role"`
 }
 
 type TenantUserUpdate struct {
-	TenantID          int64  `json:"tenant_id"`
-	RequestedByUserId string `json:"requested_by_id"`
-	TargetUserID      string `json:"target_user_id"`
-	ChangedUserID     string `json:"changed_user_id"`
-	ChangedRole       string `json:"changed_role"`
+	TenantID      int64  `json:"tenant_id"`
+	TargetUserID  string `json:"target_user_id"`
+	ChangedUserID string `json:"changed_user_id"`
+	ChangedRole   string `json:"changed_role"`
 }

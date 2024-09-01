@@ -35,11 +35,6 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if payload.RequestedByUserId == payload.TargetUserID {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
 	// get user
 	user, err := database.GetUser(payload.TargetUserID)
 	if err != nil {
@@ -62,11 +57,6 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return
-	}
-
-	if payload.RequestedByUserId == payload.TargetUserID {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
 
@@ -100,11 +90,6 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if payload.RequestedByUserId == payload.TargetUserID {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
 	// get user
 	user, err := database.GetTenantUser(payload.TenantID, payload.TargetUserID)
 	if err != nil {
@@ -112,21 +97,9 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// update tenant user id
-	if payload.ChangedUserID != "" {
-		if err := database.UpdateTenantUserId(payload.TenantID, user.UserId, payload.ChangedUserID); err != nil {
-			http.Error(w, "Failed to update tenant user", http.StatusInternalServerError)
-			return
-		}
-
-	}
-
-	// update tenant user role
-	if payload.ChangedRole != "" {
-		if err := database.UpdateTenantUserRole(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
-			http.Error(w, "Failed to update tenant user", http.StatusInternalServerError)
-			return
-		}
+	if err := database.UpdateTenantUserRole(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
+		http.Error(w, "Failed to update tenant user", http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)

@@ -12,17 +12,14 @@ type Tenant struct {
 
 type CreateTenant struct {
 	OrganizationName string `json:"organization_name"`
-	CreatorId        string `json:"creator_id"`
 }
 
 type UpdateTenant struct {
-	TenantId          int64  `json:"tenant_id"`
-	TenantName        string `json:"tenant_name"`
-	RequestedByUserId string `json:"requested_by_id"`
+	TenantId   int64  `json:"tenant_id"`
+	TenantName string `json:"tenant_name"`
 }
 
 type DeleteTenant struct {
-	TenantID          int64  `json:"tenant_id"`
-	RequestedByUserId string `json:"requested_by_id"`
-	TargetUserID      string `json:"target_user_id"`
+	TenantID     int64  `json:"tenant_id"`
+	TargetUserID string `json:"target_user_id"`
 }

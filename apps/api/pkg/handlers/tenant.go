@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"api/pkg/database"
+	"api/pkg/middleware"
 	"api/pkg/models"
 	"encoding/json"
 	"fmt"
@@ -40,8 +41,18 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	tokenString := middleware.ExtractToken(r)
+
+	payloadData, err := middleware.ExtractPayload(tokenString)
+	if err != nil {
+		http.Error(w, "Error extracting payload", http.StatusUnauthorized)
+		return
+	}
+
+	userId := payloadData["user_id"].(string)
+
 	//get user
-	user, err := database.GetUser(payload.CreatorId)
+	user, err := database.GetUser(userId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
