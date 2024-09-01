@@ -82,13 +82,14 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTenantHandler(w http.ResponseWriter, r *http.Request) {
-	tenantId, err := strconv.Atoi(r.URL.Query().Get("tenant_id"))
+	tenantId := r.URL.Query().Get("id")
+	tenantIdInt, err := strconv.Atoi(tenantId)
 	if err != nil {
 		http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
 		return
 	}
 
-	tenant, err := database.GetTenantById(int64(tenantId))
+	tenant, err := database.GetTenantById(int64(tenantIdInt))
 
 	if err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)

@@ -21,13 +21,13 @@ func EnsureUserAuthorized(next http.Handler) http.Handler {
 		}
 
 		if r.Method == http.MethodGet {
-			tenantId, err := strconv.Atoi(r.URL.Query().Get("tenant_id"))
+			tenantId := r.URL.Query().Get("id")
+			tenantIdInt, err := strconv.Atoi(tenantId)
 			if err != nil {
 				http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
 				return
 			}
-			payload.TenantID = int64(tenantId)
-
+			payload.TenantID = int64(tenantIdInt)
 		} else {
 			// Read the body and create a buffer
 			bodyBuffer := new(bytes.Buffer)
@@ -40,7 +40,6 @@ func EnsureUserAuthorized(next http.Handler) http.Handler {
 
 			// Reset the body to the original state
 			r.Body = io.NopCloser(bodyBuffer)
-
 		}
 
 		tokenString := ExtractToken(r)
