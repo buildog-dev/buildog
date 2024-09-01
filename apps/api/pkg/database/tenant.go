@@ -2,11 +2,11 @@ package database
 
 import (
 	"api/pkg/models"
-	"database/sql"
 	"time"
 )
 
-func CreateTenant(db *sql.DB, tenant *models.Tenant) (int64, error) {
+func CreateTenant(tenant *models.Tenant) (int64, error) {
+	db := GetDB()
 	query := `
 		INSERT INTO tenants (name, created_at, updated_at)
 		VALUES ($1, $2, $3)
@@ -23,7 +23,8 @@ func CreateTenant(db *sql.DB, tenant *models.Tenant) (int64, error) {
 	return tenantID, nil
 }
 
-func GetTenantById(db *sql.DB, id string) (*models.Tenant, error) {
+func GetTenantById(id int64) (*models.Tenant, error) {
+	db := GetDB()
 	query := "SELECT id, name, created_at FROM tenants WHERE id = $1"
 	row := db.QueryRow(query, id)
 
@@ -36,13 +37,15 @@ func GetTenantById(db *sql.DB, id string) (*models.Tenant, error) {
 	return &tenant, nil
 }
 
-func UpdateTenant(db *sql.DB, id int64, newName string) error {
+func UpdateTenant(id int64, newName string) error {
+	db := GetDB()
 	query := "UPDATE tenants SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2"
 	_, err := db.Exec(query, newName, id)
 	return err
 }
 
-func DeleteTenant(db *sql.DB, id int64) error {
+func DeleteTenant(id int64) error {
+	db := GetDB()
 	query := "DELETE FROM tenants WHERE id = $1"
 	_, err := db.Exec(query, id)
 	return err

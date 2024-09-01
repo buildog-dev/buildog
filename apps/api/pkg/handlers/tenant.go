@@ -63,7 +63,7 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create tenant
-	tenantId, err := database.CreateTenant(database.DB, &tenant)
+	tenantId, err := database.CreateTenant(&tenant)
 	if err != nil {
 		http.Error(w, "Failed to create tenant", http.StatusInternalServerError)
 		return
@@ -81,14 +81,14 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTenantHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	var payload models.DeleteTenant
+
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	var db = database.DB
-	tenantId := r.URL.Query().Get("id")
-	tenant, err := database.GetTenantById(db, tenantId)
+	tenant, err := database.GetTenantById(payload.TenantID)
 
 	if err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
@@ -114,7 +114,7 @@ func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := database.UpdateTenant(database.DB, payload.TenantId, payload.TenantName); err != nil {
+	if err := database.UpdateTenant(payload.TenantId, payload.TenantName); err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
 		return
 	}
@@ -133,7 +133,7 @@ func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := database.DeleteTenant(database.DB, payload.TenantID); err != nil {
+	if err := database.DeleteTenant(payload.TenantID); err != nil {
 		http.Error(w, "Failed to delete tenant", http.StatusInternalServerError)
 		return
 	}
