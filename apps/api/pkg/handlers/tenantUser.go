@@ -111,7 +111,7 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 
 func getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 
-	tenantId := r.URL.Query().Get("id")
+	tenantId := r.URL.Query().Get("tenant_id")
 	tenantIdInt, err := strconv.Atoi(tenantId)
 	if err != nil {
 		http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
@@ -122,6 +122,7 @@ func getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := database.GetTenantUser(int64(tenantIdInt), targetUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")

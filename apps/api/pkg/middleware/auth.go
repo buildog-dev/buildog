@@ -21,7 +21,7 @@ func EnsureUserAuthorized(next http.Handler) http.Handler {
 		}
 
 		if r.Method == http.MethodGet {
-			tenantId := r.URL.Query().Get("id")
+			tenantId := r.URL.Query().Get("tenant_id")
 			tenantIdInt, err := strconv.Atoi(tenantId)
 			if err != nil {
 				http.Error(w, "Invalid tenant ID", http.StatusBadRequest)

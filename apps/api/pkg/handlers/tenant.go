@@ -82,7 +82,7 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTenantHandler(w http.ResponseWriter, r *http.Request) {
-	tenantId := r.URL.Query().Get("id")
+	tenantId := r.URL.Query().Get("tenant_id")
 	tenantIdInt, err := strconv.Atoi(tenantId)
 	if err != nil {
 		http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
