@@ -161,7 +161,6 @@ export default function Page() {
             </div>
           </div>
           <Separator className="my-4" />
-          {/* <Organizations /> */}
           <p>
             Users signed in for this organization will appear here after connecting the backend.
           </p>
