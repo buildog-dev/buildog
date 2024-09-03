@@ -12,6 +12,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
+import { useToast } from "@ui/components/use-toast";
+import { firebaseErrorMessage } from "../lib/firebase-error-message";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -24,27 +26,47 @@ type LoginFromValues = z.infer<typeof loginSchema>;
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string | null>(null);
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<LoginFromValues>({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
   });
+  //extracts the error code from a firebase error message. => Firebase: Error (auth/invalid-credential)
+  const extractErrorCode = (errorMessage: string): string => {
+    const match = errorMessage.match(/\(auth\/[a-zA-Z0-9\-]+\)/);
+    return match ? match[0].replace(/[()]/g, "") : "unknown-error";
+  };
 
+  // represents the authentication response.
+  interface AuthResponse {
+    email?: string;
+    emailVerified?: boolean;
+    error?: string;
+  }
   async function onSubmit(data: LoginFromValues) {
     const { email, password } = data;
 
     setLoading(true);
-    const response = await Auth.signIn(email, password);
 
-    if ("error" in response) {
-      setError(response.error);
+    // type assertion for the response
+    const response: AuthResponse = await Auth.signIn(email, password);
+
+    const errorCode = response.error ? extractErrorCode(response.error) : "";
+    const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+
+    if (response.error) {
+      toast({
+        title: "Login Failed",
+        description: errMsg,
+      });
     } else if (!response.emailVerified) {
-      setError("Please verify your email");
-      Auth.signOut();
+      toast({
+        title: "Email Not Verified",
+        description: "Please verify your email.",
+      });
     }
-
     setLoading(false);
   }
 
@@ -88,8 +110,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               {loading && <ReloadIcon />}
               Login
             </Button>
-            {error && <Label className="text-red-500">{error}</Label>}
-            <div></div>
           </div>
         </div>
       </form>
