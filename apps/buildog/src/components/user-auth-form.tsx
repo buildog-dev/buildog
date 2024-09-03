@@ -55,6 +55,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     const errorCode = response.error ? extractErrorCode(response.error) : "";
     const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+    // console.log(errorCode);
 
     if (response.error) {
       toast({
