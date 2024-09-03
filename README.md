@@ -20,10 +20,10 @@ Recognizing the challenges bloggers face in managing their content, we’re comm
 
 To get started, it’s helpful to understand what Buildog is and how it operates:
 
-- **[What is buildog?](https://github.com/buildog-dev/buildog/wiki/What-is-Buildog):**
+- **[What is buildog?](https://docs.buildog.dev):**
 Buildog is a web-based application designed to help bloggers write, schedule, and publish their content efficiently. It aims to streamline the blogging process and provide valuable insights into content performance.
 
-- **[How Buildog Works?](https://github.com/buildog-dev/buildog/wiki/How-Buildog-works%3F):**
+- **[How Buildog Works?](https://docs.buildog.dev/how-buildog-works/):**
 This section provides a high-level overview of Buildog's functionality and user interface. It outlines the key features and components that you’ll interact with, offering insight into how the application supports your tasks and workflows. It’s a great starting point to understand how to navigate and utilize Buildog effectively.
 
 ### Install dependencies
@@ -78,8 +78,9 @@ pnpm dev
 
 #### Environment variables
 
-Auth0 - [How to setup Auth0](https://github.com/burasibizim/buildog/wiki/Auth0-Implementation)
-Database - [How to setup Database](https://github.com/buildog-dev/buildog/wiki/Database-Schema)
+Environment variables documentation includes instructions on how to set up Firebase and the database for Buildog. Providing [environment variables documentation](https://docs.buildog.dev/getting-started/environment-variables/) is highly recommended to getting started.
+Firebase - [How to setup Firebase](https://docs.buildog.dev/getting-started/authentication/)
+Database - [How to setup Database](https://docs.buildog.dev/getting-started/database/)
 
 #### Shared components
 
