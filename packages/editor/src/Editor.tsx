@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@ui/components/dropdown-menu";
 import { PlusCircledIcon } from "@ui/components/react-icons";
-import { RichTextEditor } from "./components";
+import { LL, RichTextEditor } from "./components";
 
 // Define types for block data
 interface BlockData {
@@ -163,21 +163,8 @@ export default function Editor() {
 
   return (
     <div className="editor-container">
-      {blocks.map((block, index) => (
-        <BlockWrapper
-          key={index}
-          block={block}
-          index={index}
-          updateBlockType={updateBlockType}
-          updateBlockData={updateBlockData}
-        />
-      ))}
-      <div>
-        <button onClick={() => addBlock("paragraph")}>Add Paragraph</button>
-        <button onClick={() => addBlock("header")}>Add Header</button>
-        <button onClick={() => addBlock("image")}>Add Image</button>
-      </div>
-      <RichTextEditor />
+      <br />
+      <LL />
     </div>
   );
 }
