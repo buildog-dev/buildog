@@ -114,7 +114,7 @@ export default function Page() {
               <Card
                 key={org.id}
                 className="p-6 cursor-pointer h-36 w-full max-w-lg flex items-center justify-between border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
-                onClick={() => router.push(`/organizations/${org.id}/blog`)}
+                onClick={() => router.push(`/organizations/${org.id}/`)}
               >
                 <div className="flex flex-col w-full">
                   <div className="text-xl font-semibold mb-2">{org.name}</div>

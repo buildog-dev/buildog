@@ -25,19 +25,19 @@ export function Sidebar({ className, organizationId }: SidebarProps) {
         {
           name: "Create Blog",
           icon: "",
-          route: `/organizations/${organizationId}/create-blog`, // Dynamic route
+          route: `/organizations/${organizationId}/create-blog`, 
           key: "main-create-blog",
         },
         {
           name: "Web",
           icon: "",
-          route: `/organizations/${organizationId}/www`, // Dynamic route
+          route: `/organizations/${organizationId}/www`, 
           key: "main-www",
         },
         {
           name: "Settings",
           icon: "",
-          route: `/organizations/${organizationId}/settings`, // Dynamic route
+          route: `/organizations/${organizationId}/settings`, 
           key: "main-settings",
         },
       ],
