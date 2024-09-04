@@ -6,10 +6,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 interface SidebarProps {
   className?: string;
-  organizationName: string; // Accept organizationName as a prop
+  organizationId: string; // Accept organizationName as a prop
 }
 
-export function Sidebar({ className, organizationName }: SidebarProps) {
+export function Sidebar({ className, organizationId }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -19,25 +19,25 @@ export function Sidebar({ className, organizationName }: SidebarProps) {
         {
           name: "Blog",
           icon: "",
-          route: `/organizations/${organizationName}/blog`, // Dynamic route
+          route: `/organizations/${organizationId}/blog`, // Dynamic route
           key: "main-blog",
         },
         {
           name: "Create Blog",
           icon: "",
-          route: `/organizations/${organizationName}/create-blog`, // Dynamic route
+          route: `/organizations/${organizationId}/create-blog`, // Dynamic route
           key: "main-create-blog",
         },
         {
           name: "Web",
           icon: "",
-          route: `/organizations/${organizationName}/www`, // Dynamic route
+          route: `/organizations/${organizationId}/www`, // Dynamic route
           key: "main-www",
         },
         {
           name: "Settings",
           icon: "",
-          route: `/organizations/${organizationName}/settings`, // Dynamic route
+          route: `/organizations/${organizationId}/settings`, // Dynamic route
           key: "main-settings",
         },
       ],

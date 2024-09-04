@@ -17,14 +17,14 @@ export default function Layout({
   params,
 }: {
   children: React.ReactNode;
-  params: { organizationName: string };
+  params: { organizationId: string };
 }) {
-  const { organizationName } = params;
+  const { organizationId } = params;
 
   return (
     <div className="flex w-full">
       {/* Pass organizationName to Sidebar */}
-      <Sidebar className="w-[300px] border-r" organizationName={organizationName} />
+      <Sidebar className="w-[300px] border-r" organizationId={organizationId} />
       <div className="flex flex-col w-full">
         <Appbar />
         <div className="flex-grow p-5 mx-auto overflow-auto w-full">

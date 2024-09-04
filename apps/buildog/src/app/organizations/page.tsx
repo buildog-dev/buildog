@@ -34,8 +34,6 @@ export default function Page() {
 
   const handleCreateOrganization = async () => {
     console.log("Creating organization:", newOrgName);
-
-    // We will add creating tenants here when the backend is ready - Furkan
   };
 
   return (
@@ -97,7 +95,7 @@ export default function Page() {
                       id="orgName"
                       value={newOrgName}
                       onChange={(e) => setNewOrgName(e.target.value)}
-                      placeholder="My Unique Organization"
+                      placeholder="Organization Name"
                     />
                   </div>
                 </div>
@@ -116,7 +114,7 @@ export default function Page() {
               <Card
                 key={org.id}
                 className="p-6 cursor-pointer h-36 w-full max-w-lg flex items-center justify-between border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
-                onClick={() => router.push(`/organizations/${org.name}/blog`)}
+                onClick={() => router.push(`/organizations/${org.id}/blog`)}
               >
                 <div className="flex flex-col w-full">
                   <div className="text-xl font-semibold mb-2">{org.name}</div>

@@ -15,10 +15,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@ui/components/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@ui/components/dialog";
 import { Input } from "@ui/components/input";
 import { toast } from "@ui/components/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/components/tabs";
 import { Separator } from "@ui/components/separator";
+import { Label } from "@ui/components/label";
+import { PersonIcon } from "@ui/components/react-icons";
 
 const settingsInformationFormSchema = z.object({
   email: z.string().email().optional(),
@@ -161,9 +172,38 @@ export default function Page() {
             </div>
           </div>
           <Separator className="my-4" />
-          <p>
-            Users signed in for this organization will appear here after connecting the backend.
-          </p>
+          <div className="flex h-[450px] shrink-0 items-center justify-center rounded-md border border-dashed">
+            <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
+              <PersonIcon className="h-10 w-10 text-muted-foreground" />
+
+              <h3 className="mt-4 text-lg font-semibold">No Users Found</h3>
+              <p className="mb-4 mt-2 text-sm text-muted-foreground">
+                This organizations currently doesn't have any users.
+              </p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="relative">
+                    Add User
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add User</DialogTitle>
+                    <DialogDescription>Write the name of the user you want add.</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="url">Name of the User</Label>
+                      <Input id="url" placeholder="John Doe" />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button>Add User</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </Fragment>
