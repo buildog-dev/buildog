@@ -17,6 +17,13 @@ import { firebaseErrorMessage } from "../lib/firebase-error-message";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+// represents the authentication response.
+interface AuthResponse {
+  email?: string;
+  emailVerified?: boolean;
+  error?: string;
+}
+
 const loginSchema = z.object({
   email: z.string().email().nonempty(),
   password: z.string().min(8),
@@ -39,35 +46,32 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     return match ? match[0].replace(/[()]/g, "") : "unknown-error";
   };
 
-  // represents the authentication response.
-  interface AuthResponse {
-    email?: string;
-    emailVerified?: boolean;
-    error?: string;
-  }
   async function onSubmit(data: LoginFromValues) {
     const { email, password } = data;
 
     setLoading(true);
 
-    // type assertion for the response
+    // sign in and get the response
     const response: AuthResponse = await Auth.signIn(email, password);
 
-    const errorCode = response.error ? extractErrorCode(response.error) : "";
-    const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
-    // console.log(errorCode);
-
+    // If there's an error, handle it
     if (response.error) {
+      const errorCode = extractErrorCode(response.error);
+      const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+
       toast({
         title: "Login Failed",
         description: errMsg,
       });
-    } else if (!response.emailVerified) {
+    }
+    // Check if the email is verified
+    else if (!response.emailVerified) {
       toast({
         title: "Email Not Verified",
         description: "Please verify your email.",
       });
     }
+
     setLoading(false);
   }
 
