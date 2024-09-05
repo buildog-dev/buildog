@@ -1,12 +1,6 @@
-"use client";
 import Link from "next/link";
-import { ReactNode } from "react";
 
-interface AuthLayoutProps {
-  children: ReactNode;
-}
-
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="container relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
