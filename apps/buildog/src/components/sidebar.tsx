@@ -31,8 +31,8 @@ export function Sidebar({ className, organizationId }: SidebarProps) {
         {
           name: "Web",
           icon: "",
-          route: `/organizations/${organizationId}/www`,
-          key: "main-www",
+          route: `/organizations/${organizationId}/web`,
+          key: "main-web",
         },
         {
           name: "Settings",
