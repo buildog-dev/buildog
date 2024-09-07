@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Redirect based on sign-in state and current pathname
         if (pathname === "/login/" || pathname === "/signup/") {
-          router.push("/blog/");
+          router.push("/organizations/");
         }
         return;
       }
