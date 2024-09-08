@@ -7,7 +7,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@ui/components/ui/dropdown-menu";
+import { ExitIcon, GearIcon } from "@ui/components/react-icons";
 import { Auth } from "@/web-sdk";
 
 const Appbar = () => {
@@ -26,9 +28,14 @@ const Appbar = () => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[200px]">
-            <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <GearIcon className="mr-1 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-              Logout
+              <ExitIcon className="mr-1 h-4 w-4" />
+              <span>Logout</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
