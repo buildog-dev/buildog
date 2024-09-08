@@ -16,15 +16,15 @@ import {
 } from "@ui/components/dropdown-menu";
 
 export default function DropdownMenuCheckboxes() {
-  const [header, setHeader] = useState<string>("1");
+  const [header, setHeader] = useState<string>("DefaultHeader");
 
-  const getHeaderComponents = (headerType: string) => {
+  const selectHeader = (headerType: string) => {
     switch (headerType) {
-      case "1":
+      case "DefaultHeader":
         return <DefaultHeader />;
-      case "2":
+      case "LinksCenterHeader":
         return <LinksCenterHeader />;
-      case "3":
+      case "NameCenterHeader":
         return <NameCenterHeader />;
       default:
         return null;
@@ -44,22 +44,22 @@ export default function DropdownMenuCheckboxes() {
             <DropdownMenuLabel>Choose the Header You Want</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
-              checked={header === "1"}
-              onCheckedChange={() => setHeader("1")}
+              checked={header === "DefaultHeader"}
+              onCheckedChange={() => setHeader("DefaultHeader")}
               className="cursor-pointer"
             >
               Do you Prefer Simplicity?
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
-              checked={header === "2"}
-              onCheckedChange={() => setHeader("2")}
+              checked={header === "LinksCenterHeader"}
+              onCheckedChange={() => setHeader("LinksCenterHeader")}
               className="cursor-pointer"
             >
               Perhaps Links Center?
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
-              checked={header === "3"}
-              onCheckedChange={() => setHeader("3")}
+              checked={header === "NameCenterHeader"}
+              onCheckedChange={() => setHeader("NameCenterHeader")}
               className="cursor-pointer"
             >
               Or u Prefer Header Center?
@@ -67,7 +67,7 @@ export default function DropdownMenuCheckboxes() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="w-full rounded-lg p-4 border">{getHeaderComponents(header)}</div>
+      <div className="w-full rounded-lg p-4 border">{selectHeader(header)}</div>
     </div>
   );
 }
