@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/ui/avatar";
 import {
   DropdownMenu,
@@ -28,12 +29,14 @@ const Appbar = () => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[200px]">
-            <DropdownMenuItem className="cursor-pointer">
-              <GearIcon className="mr-1 h-4 w-4" />
-              <span>Settings</span>
-            </DropdownMenuItem>
+            <Link href="/account/settings">
+              <DropdownMenuItem className="cursor-pointer">
+                <GearIcon className="mr-1 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+            <DropdownMenuItem className="cursor-pointer text-red-600" onClick={handleLogout}>
               <ExitIcon className="mr-1 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>
