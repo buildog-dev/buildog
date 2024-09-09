@@ -74,11 +74,6 @@ export function Sidebar({ className, organizationId }: SidebarProps) {
             </div>
           ))}
         </div>
-        <div className="flex justify-center mt-4 px-4">
-          <Button onClick={() => router.push("/organizations")} className="w-full">
-            Back to Organizations
-          </Button>
-        </div>
       </div>
     </div>
   );

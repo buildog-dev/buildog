@@ -12,7 +12,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function Layout({
+export default async function Layout({
   children,
   params,
 }: {
@@ -21,16 +21,16 @@ export default function Layout({
 }) {
   const { organizationId } = params;
 
+  const organizations = await getOrganizations();
+
+  const currentOrganization = organizations.find((org) => org.id === organizationId);
+
   return (
     <div className="flex w-full">
-      {/* Pass organizationName to Sidebar */}
       <Sidebar className="w-[300px] border-r" organizationId={organizationId} />
       <div className="flex flex-col w-full">
-        <Appbar />
-        <div className="flex-grow p-5 mx-auto overflow-auto w-full">
-          {/* Render the children (nested pages) */}
-          {children}
-        </div>
+        <Appbar organizations={organizations} currentOrganization={currentOrganization} />
+        <div className="flex-grow p-5 mx-auto overflow-auto w-full">{children}</div>
       </div>
     </div>
   );
