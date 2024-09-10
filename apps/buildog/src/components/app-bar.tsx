@@ -12,6 +12,7 @@ import {
 } from "@ui/components/ui/dropdown-menu";
 import { ExitIcon, GearIcon } from "@ui/components/react-icons";
 import { Auth } from "@/web-sdk";
+import OrgNavigation from "./org-navigation";
 
 const Appbar = () => {
   const handleLogout = () => {
@@ -20,7 +21,8 @@ const Appbar = () => {
 
   return (
     <header className="px-4 border-b">
-      <nav className="w-full flex items-center justify-end py-2">
+      <nav className="w-full flex items-center justify-between py-2">
+        <OrgNavigation />
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar className="w-8 h-8">
