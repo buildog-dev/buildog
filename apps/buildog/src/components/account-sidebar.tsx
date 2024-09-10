@@ -6,45 +6,37 @@ import { usePathname, useRouter } from "next/navigation";
 
 interface SidebarProps {
   className?: string;
-  organizationId: string; // Accept organizationName as a prop
 }
-
-export function Sidebar({ className, organizationId }: SidebarProps) {
+import { PersonIcon, Half2Icon, LockClosedIcon } from "@ui/components/react-icons";
+export function AccountSidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
   const routes = {
-    Main: {
+    Settings: {
       children: [
         {
-          name: "Blog",
-          icon: "",
-          route: `/organizations/${organizationId}/blog`, // Dynamic route
-          key: "main-blog",
+          name: "Profile",
+          icon: <PersonIcon className="mr-1 h-4 w-4" />,
+          route: `/account/settings/profile`,
+          key: "account-profile",
         },
         {
-          name: "Create Blog",
-          icon: "",
-          route: `/organizations/${organizationId}/create-blog`,
-          key: "main-create-blog",
+          name: "Security",
+          icon: <LockClosedIcon className="mr-1 h-4 w-4" />,
+          route: `/account/settings/security`,
+          key: "account-security",
         },
         {
-          name: "Web",
-          icon: "",
-          route: `/organizations/${organizationId}/web`,
-          key: "main-web",
-        },
-        {
-          name: "Settings",
-          icon: "",
-          route: `/organizations/${organizationId}/settings`,
-          key: "main-settings",
+          name: "Appearance",
+          icon: <Half2Icon className="mr-1 h-4 w-4" />,
+          route: `/account/settings/appearance`,
+          key: "account-appearance",
         },
       ],
     },
   };
 
-  // Normalize pathnames
   const normalizePath = (path: string) => path.replace(/\/$/, "");
 
   return (
@@ -66,6 +58,7 @@ export function Sidebar({ className, organizationId }: SidebarProps) {
                       variant={normalizedPathname === normalizedRoute ? "secondary" : "ghost"}
                       className="w-full justify-start"
                     >
+                      {child.icon}
                       {child.name}
                     </Button>
                   );
@@ -73,6 +66,11 @@ export function Sidebar({ className, organizationId }: SidebarProps) {
               </div>
             </div>
           ))}
+        </div>
+        <div className="flex justify-center mt-4 px-4">
+          <Button onClick={() => router.push("/organizations")} className="w-full">
+            Back to Home
+          </Button>
         </div>
       </div>
     </div>
