@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"api/pkg/database"
+	"api/pkg/middleware"
 	"api/pkg/models"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func TenantsHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,42 +34,62 @@ func TenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createTenantHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
-	}
 
-	var tenant models.Tenant
-	if err := json.NewDecoder(r.Body).Decode(&tenant); err != nil {
+	var payload models.CreateTenant
+
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	tenantID, err := database.CreateTenant(database.DB, &tenant)
+	tokenString := middleware.ExtractToken(r)
+
+	payloadData, err := middleware.ExtractPayload(tokenString)
+	if err != nil {
+		http.Error(w, "Error extracting payload", http.StatusUnauthorized)
+		return
+	}
+
+	userId := payloadData["user_id"].(string)
+
+	//get user
+	user, err := database.GetUser(userId)
+	if err != nil {
+		http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		return
+	}
+
+	tenant := models.Tenant{
+		Name: payload.OrganizationName,
+	}
+
+	//create tenant
+	tenantId, err := database.CreateTenant(&tenant)
 	if err != nil {
 		http.Error(w, "Failed to create tenant", http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	response := map[string]interface{}{
-		"id": tenantID,
+	//create tenant user
+	err = database.CreateTenantUser(user, tenantId, "admin")
+	if err != nil {
+		http.Error(w, "Failed to create tenant user", http.StatusInternalServerError)
+		return
 	}
-	json.NewEncoder(w).Encode(response)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Tenant created"))
 }
 
 func getTenantHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	tenantId := r.URL.Query().Get("tenant_id")
+	tenantIdInt, err := strconv.Atoi(tenantId)
+	if err != nil {
+		http.Error(w, "Invalid tenant ID", http.StatusBadRequest)
 		return
 	}
 
-	var db = database.DB
-	tenantId := r.URL.Query().Get("id")
-	tenant, err := database.GetTenantById(db, tenantId)
+	tenant, err := database.GetTenantById(int64(tenantIdInt))
 
 	if err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
@@ -85,38 +107,38 @@ func getTenantHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
-	var payload struct {
-		Name string `json:"name"`
-		Id   string `json:"id"`
-	}
+
+	var payload models.UpdateTenant
+
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	err := database.UpdateTenantName(database.DB, payload.Id, payload.Name)
-
-	if err != nil {
+	if err := database.UpdateTenant(payload.TenantId, payload.TenantName); err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
 		return
 	}
 
-	response := fmt.Sprintf("Tanant name updated: %s", payload.Name)
+	response := fmt.Sprintf("Tanant name updated: %s", payload.TenantName)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(response))
 }
 
 func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
-	var db = database.DB
-	tenantId := r.URL.Query().Get("id")
-	err := database.DeleteTenant(db, tenantId)
 
-	if err != nil {
-		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
+	var payload models.DeleteTenant
+
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	response := fmt.Sprintf("Tenant id:%s deleted", tenantId)
+	if err := database.DeleteTenant(payload.TenantID); err != nil {
+		http.Error(w, "Failed to delete tenant", http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(response))
+	w.Write([]byte("Tenant deleted"))
 }
