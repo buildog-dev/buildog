@@ -12,7 +12,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function Layout({
+export default function Layout({
   children,
   params,
 }: {
@@ -21,15 +21,11 @@ export default async function Layout({
 }) {
   const { organizationId } = params;
 
-  const organizations = await getOrganizations();
-
-  const currentOrganization = organizations.find((org) => org.id === organizationId);
-
   return (
     <div className="flex w-full">
       <Sidebar className="w-[300px] border-r" organizationId={organizationId} />
       <div className="flex flex-col w-full">
-        <Appbar organizations={organizations} currentOrganization={currentOrganization} />
+        <Appbar/>
         <div className="flex-grow p-5 mx-auto overflow-auto w-full">{children}</div>
       </div>
     </div>
