@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"api/pkg/database"
+	"api/internal/repository"
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
@@ -52,7 +52,7 @@ func EnsureUserAuthorized(next http.Handler) http.Handler {
 
 		userId := payloadData["user_id"].(string)
 
-		requestedByUser, err := database.GetTenantUser(payload.TenantID, userId)
+		requestedByUser, err := repository.GetTenantUser(payload.TenantID, userId)
 		if err != nil {
 			http.Error(w, "Failed to get user", http.StatusInternalServerError)
 			return

@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"api/internal/messages"
+	"api/internal/models"
 	"api/pkg/helpers"
-	"api/pkg/messages"
-	"api/pkg/models"
 	"log"
 	"net/http"
 )

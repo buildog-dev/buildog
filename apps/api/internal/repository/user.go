@@ -1,13 +1,12 @@
-package database
+package repository
 
 import (
-	"api/pkg/models"
+	"api/internal/models"
 	"database/sql"
 	"fmt"
 )
 
 func CreateUser(userId string, email string, firstName string, lastName string) error {
-
 	// Add the user to the database
 	db := GetDB()
 	query := ` INSERT INTO users (id, first_name, last_name, email) VALUES ($1, $2, $3, $4)`

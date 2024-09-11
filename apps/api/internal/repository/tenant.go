@@ -1,7 +1,7 @@
-package database
+package repository
 
 import (
-	"api/pkg/models"
+	"api/internal/models"
 	"time"
 )
 
@@ -50,3 +50,5 @@ func DeleteTenant(id int64) error {
 	_, err := db.Exec(query, id)
 	return err
 }
+
+// Experiance full stack engineer mid to senior level and or web devepment roles.

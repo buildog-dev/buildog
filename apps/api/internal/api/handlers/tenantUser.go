@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"api/pkg/database"
+	"api/internal/models"
+	"api/internal/repository"
 	"api/pkg/helpers"
-	"api/pkg/models"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -39,14 +39,14 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := database.GetUser(payload.TargetUserID)
+	user, err := repository.GetUser(payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get target user", http.StatusInternalServerError)
 		return
 	}
 
 	// add user to tenant
-	if err := database.CreateTenantUser(user, payload.TenantID, payload.Role); err != nil {
+	if err := repository.CreateTenantUser(user, payload.TenantID, payload.Role); err != nil {
 		http.Error(w, "Failed to add user to tenant", http.StatusInternalServerError)
 		return
 	}
@@ -64,14 +64,14 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := database.GetUser(payload.TargetUserID)
+	user, err := repository.GetUser(payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
 	// remove user from tenant
-	if err := database.DeleteTenantUser(user, payload.TenantID); err != nil {
+	if err := repository.DeleteTenantUser(user, payload.TenantID); err != nil {
 		http.Error(w, "Failed to remove user from tenant", http.StatusInternalServerError)
 		return
 	}
@@ -94,13 +94,13 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := database.GetTenantUser(payload.TenantID, payload.TargetUserID)
+	user, err := repository.GetTenantUser(payload.TenantID, payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
-	if err := database.UpdateTenantUser(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
+	if err := repository.UpdateTenantUser(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
 		http.Error(w, "Failed to update tenant user", http.StatusInternalServerError)
 		return
 	}
@@ -119,7 +119,7 @@ func getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	targetUserId := r.URL.Query().Get("target_user_id")
 
-	user, err := database.GetTenantUser(int64(tenantIdInt), targetUserId)
+	user, err := repository.GetTenantUser(int64(tenantIdInt), targetUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return

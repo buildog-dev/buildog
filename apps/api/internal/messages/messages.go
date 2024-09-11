@@ -1,6 +1,6 @@
 package messages
 
-import "api/pkg/models"
+import "api/internal/models"
 
 func PublicMessage() models.ApiResponse {
 	return models.ApiResponse{
