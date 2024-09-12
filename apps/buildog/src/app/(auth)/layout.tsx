@@ -1,13 +1,6 @@
-import { Metadata } from "next";
 import Link from "next/link";
-import { SignUpForm } from "@/components/user-sign-up-form";
 
-export const metadata: Metadata = {
-  title: "Sign Up",
-  description: "Sign up for a new account on Buildog",
-};
-
-export default function SignUpPage() {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="container relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -40,16 +33,7 @@ export default function SignUpPage() {
         </div>
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-            <div className="flex flex-col space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">Get started</h1>
-              <p className="text-sm text-muted-foreground">Enter your information to sign up</p>
-            </div>
-            <SignUpForm />
-            <div className="flex justify-center">
-              <Link href="/login">
-                <p className="text-sm text-primary underline ">Already have an account? <span className="underline">Sign in.</span></p>
-              </Link>
-            </div>
+            {children}
             <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <Link href="/terms" className="underline underline-offset-4 hover:text-primary">

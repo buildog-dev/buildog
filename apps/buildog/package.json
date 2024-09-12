@@ -12,6 +12,7 @@
     "@editorjs/editorjs": "^2.29.1",
     "@hookform/resolvers": "^3.3.4",
     "@lexical/react": "^0.15.0",
+    "@radix-ui/react-toast": "^1.1.5",
     "@repo/editor": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/web-sdk": "workspace:*",

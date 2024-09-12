@@ -1,7 +1,7 @@
 # Authentication
 Buildog uses Firebase Auth for authentication.
 
-## Setting Up Auth0 for Development
+## Setting Up Firebase for Development
 
 Let’s start with creating an Firebase project to begin development. This firebase project only needs and authentication project.
 We need a credentials for client side and server side. For server side we will call Firebase Admin.
