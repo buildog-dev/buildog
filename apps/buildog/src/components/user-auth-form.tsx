@@ -86,7 +86,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             />
             <Button disabled={loading}>
               {loading && <ReloadIcon />}
-              Login
+              Sign in
             </Button>
             {error && <Label className="text-red-500">{error}</Label>}
             <div></div>

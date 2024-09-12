@@ -45,6 +45,11 @@ export default function SignUpPage() {
               <p className="text-sm text-muted-foreground">Enter your information to sign up</p>
             </div>
             <SignUpForm />
+            <div className="flex justify-center">
+              <Link href="/login">
+                <p className="text-sm text-primary underline ">Already have an account? <span className="underline">Sign in.</span></p>
+              </Link>
+            </div>
             <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <Link href="/terms" className="underline underline-offset-4 hover:text-primary">

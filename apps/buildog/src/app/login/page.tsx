@@ -45,6 +45,11 @@ export default function AuthenticationPage() {
               <p className="text-sm text-muted-foreground">Enter your email below to sign in</p>
             </div>
             <UserAuthForm />
+            <div className="flex justify-center">
+              <Link href="/signup">
+                <p className="text-sm text-primary underline">Don't have an account? <span className="underline">Sign up.</span></p>
+              </Link>
+            </div>
             <p className="px-8 text-center text-sm text-muted-foreground">
               By clicking continue, you agree to our{" "}
               <Link href="/terms" className="underline underline-offset-4 hover:text-primary">

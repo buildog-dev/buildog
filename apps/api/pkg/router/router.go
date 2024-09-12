@@ -6,8 +6,21 @@ import (
 	"net/http"
 )
 
+type CustomMux struct {
+	*http.ServeMux
+}
+
+func (mux *CustomMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	_, pattern := mux.ServeMux.Handler(r)
+	if pattern == "" {
+		http.NotFound(w, r)
+		return
+	}
+	mux.ServeMux.ServeHTTP(w, r)
+}
+
 func Router(audience, domain string) http.Handler {
-	router := http.NewServeMux()
+	router := &CustomMux{http.NewServeMux()}
 
 	//router.HandleFunc("/auth/login",
 	//middleware.CorsMiddlewareFunc(handlers.LoginHandler),
@@ -20,6 +33,7 @@ func Router(audience, domain string) http.Handler {
 	//)
 
 	// tenant
+
 	router.HandleFunc("/api/tenants", handlers.TenantsHandler)
 	router.HandleFunc("/api/tenant", handlers.TenantHandler)
 
