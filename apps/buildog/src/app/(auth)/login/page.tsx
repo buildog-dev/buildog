@@ -15,7 +15,7 @@ export default function AuthenticationPage() {
         <p className="text-sm text-muted-foreground">Enter your email below to sign in</p>
       </div>
       <UserAuthForm />
-      <div className="flex gap-1 items-center justify-center w-full text-sm text-primary">
+      <div className="flex gap-1 items-center justify-center w-full text-sm">
         <p> Don't have an account?</p>
         <Link href="/signup" className="underline">
           Sign Up
