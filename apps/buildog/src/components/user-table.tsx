@@ -27,6 +27,7 @@ type User = {
   id: number;
   first_name: string;
   last_name: string;
+  role: string;
   email: string;
   created_at: string;
   updated_at: string;
@@ -37,6 +38,7 @@ const dummyUsers: User[] = [
     id: 1,
     first_name: "John",
     last_name: "Doe",
+    role: "admin",
     email: "john.doe@example.com",
     created_at: "2023-07-15T10:15:30Z",
     updated_at: "2023-09-10T14:20:45Z",
@@ -45,6 +47,7 @@ const dummyUsers: User[] = [
     id: 2,
     first_name: "Jane",
     last_name: "Smith",
+    role: "writer",
     email: "jane.smith@example.com",
     created_at: "2023-06-20T09:05:20Z",
     updated_at: "2023-09-12T16:10:55Z",
@@ -53,6 +56,7 @@ const dummyUsers: User[] = [
     id: 3,
     first_name: "Michael",
     last_name: "Brown",
+    role: "reader",
     email: "michael.brown@example.com",
     created_at: "2023-08-01T11:25:40Z",
     updated_at: "2023-09-11T18:30:35Z",
@@ -61,6 +65,7 @@ const dummyUsers: User[] = [
     id: 4,
     first_name: "Emily",
     last_name: "Davis",
+    role: "writer",
     email: "emily.davis@example.com",
     created_at: "2023-07-30T12:45:50Z",
     updated_at: "2023-09-12T19:45:15Z",
@@ -84,8 +89,8 @@ export default function UserTable() {
     return users.map((user) => {
       const date = new Date(user.created_at);
 
-      const formattedDate = date.toLocaleDateString("en-GB");
-      const formattedTime = date.toLocaleTimeString("en-GB", {
+      const formattedDate = date.toLocaleDateString("en-US");
+      const formattedTime = date.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
       });
@@ -94,8 +99,9 @@ export default function UserTable() {
         id: user.id,
         first_name: user.first_name,
         last_name: user.last_name,
+        role: user.role,
         email: user.email,
-        created_at: `${formattedDate} - ${formattedTime}`, // Combine date and time
+        created_at: `${formattedDate} ${formattedTime}`, // Combine date and time
       };
     });
   };
@@ -110,12 +116,18 @@ export default function UserTable() {
     {
       accessorKey: "last_name",
       header: "Last Name",
-      enableSorting: false,
+      enableSorting: true,
       cell: ({ getValue }) => <div>{getValue()}</div>,
     },
     {
       accessorKey: "email",
       header: "E-Mail",
+      enableSorting: true,
+      cell: ({ getValue }) => <div>{getValue()}</div>,
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
       enableSorting: true,
       cell: ({ getValue }) => <div>{getValue()}</div>,
     },
@@ -142,13 +154,7 @@ export default function UserTable() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem>Edit</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  deleteUser(userId);
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => deleteUser(userId)}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
