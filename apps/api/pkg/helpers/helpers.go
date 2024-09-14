@@ -39,3 +39,8 @@ func WriteJSON(rw http.ResponseWriter, status int, data interface{}) error {
 	}
 	return nil
 }
+
+func IsRoleValid(role string) bool {
+	roles := []string{"admin", "writer", "reader"}
+	return Contains(roles, role)
+}

@@ -23,14 +23,10 @@ export default function Layout({
 
   return (
     <div className="flex w-full">
-      {/* Pass organizationName to Sidebar */}
       <Sidebar className="w-[300px] border-r" organizationId={organizationId} />
       <div className="flex flex-col w-full">
         <Appbar />
-        <div className="flex-grow p-5 mx-auto overflow-auto w-full">
-          {/* Render the children (nested pages) */}
-          {children}
-        </div>
+        <div className="flex-grow p-5 mx-auto overflow-auto w-full">{children}</div>
       </div>
     </div>
   );
