@@ -1,5 +1,3 @@
-// File: /internal/config/config.go
-
 package config
 
 import (
@@ -13,8 +11,12 @@ import (
 type Config struct {
 	ServerPort       int
 	DatabasePort     int
+	DatabaseHost     string
+	DatabaseUser     string
 	DatabaseURL      string
+	DatabaseName     string
 	DatabasePassword string
+	DatabaseSSLMode  string
 }
 
 func Load() (*Config, error) {
@@ -30,10 +32,22 @@ func Load() (*Config, error) {
 	cfg.ServerPort = serverPort
 
 	// Database
-	cfg.DatabasePassword = getEnv("DB_PASSWORD", "")
-	if cfg.DatabasePassword == "" {
+	databasePassword := getEnv("DB_PASSWORD", "")
+	if databasePassword == "" {
 		return nil, fmt.Errorf("DB_PASSWORD is required")
 	}
+
+	databasePort, err := strconv.Atoi(getEnv("DB_PORT", "5432"))
+	if err != nil {
+		return nil, fmt.Errorf("invalid DB_PORT: %w", err)
+	}
+
+	cfg.DatabaseHost = getEnv("DB_HOST", "localhost")
+	cfg.DatabasePort = databasePort
+	cfg.DatabaseUser = getEnv("DB_USER", "buildog")
+	cfg.DatabasePassword = databasePassword
+	cfg.DatabaseName = getEnv("DB_NAME", "buildog")
+	cfg.DatabaseSSLMode = getEnv("DB_SLL_MODE", "disable")
 
 	return cfg, nil
 }

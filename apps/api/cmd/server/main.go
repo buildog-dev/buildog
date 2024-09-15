@@ -35,12 +35,12 @@ func NewApp() (*App, error) {
 	}
 
 	databaseConfig := database.Config{
-		Host:     "localhost",
-		Port:     5432,
-		User:     "buildog",
+		Host:     cfg.DatabaseHost,
+		Port:     cfg.DatabasePort,
+		User:     cfg.DatabaseUser,
 		Password: cfg.DatabasePassword,
-		DBName:   "buildog",
-		SSLMode:  "disable",
+		DBName:   cfg.DatabaseName,
+		SSLMode:  cfg.DatabaseSSLMode,
 	}
 
 	db, err := database.New(&databaseConfig)
