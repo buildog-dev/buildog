@@ -2,29 +2,28 @@ package handlers
 
 import (
 	"api/internal/models"
-	"api/internal/repository"
 	"api/pkg/helpers"
 	"encoding/json"
 	"net/http"
 	"strconv"
 )
 
-func TenantUserHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) TenantUserHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		addUserToTenant(w, r)
+		h.addUserToTenant(w, r)
 	case http.MethodDelete:
-		removeUserFromTenant(w, r)
+		h.removeUserFromTenant(w, r)
 	case http.MethodPut:
-		updateTenantUserHandler(w, r)
+		h.updateTenantUserHandler(w, r)
 	case http.MethodGet:
-		getTenantUserHandler(w, r)
+		h.getTenantUserHandler(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
-func addUserToTenant(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) addUserToTenant(w http.ResponseWriter, r *http.Request) {
 
 	var payload models.TenantUserDeleteAndAdd
 
@@ -39,14 +38,14 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := repository.GetUser(payload.TargetUserID)
+	user, err := h.UserRepo.GetUser(payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get target user", http.StatusInternalServerError)
 		return
 	}
 
 	// add user to tenant
-	if err := repository.CreateTenantUser(user, payload.TenantID, payload.Role); err != nil {
+	if err := h.UserRepo.CreateTenantUser(user, payload.TenantID, payload.Role); err != nil {
 		http.Error(w, "Failed to add user to tenant", http.StatusInternalServerError)
 		return
 	}
@@ -54,7 +53,7 @@ func addUserToTenant(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 
 	var payload models.TenantUserDeleteAndAdd
 
@@ -64,14 +63,14 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := repository.GetUser(payload.TargetUserID)
+	user, err := h.UserRepo.GetUser(payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
 	// remove user from tenant
-	if err := repository.DeleteTenantUser(user, payload.TenantID); err != nil {
+	if err := h.UserRepo.DeleteTenantUser(user, payload.TenantID); err != nil {
 		http.Error(w, "Failed to remove user from tenant", http.StatusInternalServerError)
 		return
 	}
@@ -79,7 +78,7 @@ func removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	var payload models.TenantUserUpdate
 
@@ -94,13 +93,13 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get user
-	user, err := repository.GetTenantUser(payload.TenantID, payload.TargetUserID)
+	user, err := h.UserRepo.GetTenantUser(payload.TenantID, payload.TargetUserID)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
 	}
 
-	if err := repository.UpdateTenantUser(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
+	if err := h.UserRepo.UpdateTenantUser(payload.TenantID, user.UserId, payload.ChangedRole); err != nil {
 		http.Error(w, "Failed to update tenant user", http.StatusInternalServerError)
 		return
 	}
@@ -109,7 +108,7 @@ func updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	tenantId := r.URL.Query().Get("tenant_id")
 	tenantIdInt, err := strconv.Atoi(tenantId)
@@ -119,7 +118,7 @@ func getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	targetUserId := r.URL.Query().Get("target_user_id")
 
-	user, err := repository.GetTenantUser(int64(tenantIdInt), targetUserId)
+	user, err := h.UserRepo.GetTenantUser(int64(tenantIdInt), targetUserId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return

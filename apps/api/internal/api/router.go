@@ -7,38 +7,26 @@ import (
 	"api/internal/middleware"
 )
 
-func Routes() http.Handler {
+func Routes(h *handlers.Handlers) http.Handler {
 	router := http.NewServeMux()
 
 	// tenant routes
 	router.Handle("/api/tenants", middleware.Chain(
 		middleware.CorsMiddleware,
 		middleware.EnsureValidToken,
-	)(http.HandlerFunc(handlers.TenantsHandler)))
+	)(http.HandlerFunc(h.TenantsHandler)))
 
 	router.Handle("/api/tenant", middleware.Chain(
 		middleware.CorsMiddleware,
 		middleware.EnsureValidToken,
 		middleware.EnsureUserAuthorized,
-	)(http.HandlerFunc(handlers.TenantHandler)))
+	)(http.HandlerFunc(h.TenantHandler)))
 
 	router.Handle("/api/tenant/user", middleware.Chain(
 		middleware.CorsMiddleware,
 		middleware.EnsureValidToken,
 		middleware.EnsureUserAuthorized,
-	)(http.HandlerFunc(handlers.TenantUserHandler)))
-
-	// test routes
-	router.HandleFunc("/test/api/public", handlers.PublicApiHandler)
-
-	router.Handle("/test/api/private", middleware.Chain(
-		middleware.CorsMiddleware,
-		middleware.EnsureValidToken,
-	)(http.HandlerFunc(handlers.AdminApiHandler)))
-
-	router.Handle("/test/api/admin", middleware.Chain(
-		middleware.EnsureValidToken,
-	)(http.HandlerFunc(handlers.ProtectedApiHandler)))
+	)(http.HandlerFunc(h.TenantUserHandler)))
 
 	return router
 }

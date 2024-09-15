@@ -3,37 +3,36 @@ package handlers
 import (
 	"api/internal/middleware"
 	"api/internal/models"
-	"api/internal/repository"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 )
 
-func TenantsHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) TenantsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		createTenantHandler(w, r)
+		h.createTenantHandler(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 // tenantHandler handles requests to /tenants/{tenantID}.
-func TenantHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) TenantHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		getTenantHandler(w, r)
+		h.getTenantHandler(w, r)
 	case http.MethodPut:
-		updateTenantHandler(w, r)
+		h.updateTenantHandler(w, r)
 	case http.MethodDelete:
-		deleteTenantHandler(w, r)
+		h.deleteTenantHandler(w, r)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
-func createTenantHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) createTenantHandler(w http.ResponseWriter, r *http.Request) {
 
 	var payload models.CreateTenant
 
@@ -53,7 +52,7 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 	userId := payloadData["user_id"].(string)
 
 	//get user
-	user, err := repository.GetUser(userId)
+	user, err := h.UserRepo.GetUser(userId)
 	if err != nil {
 		http.Error(w, "Failed to get user", http.StatusInternalServerError)
 		return
@@ -64,14 +63,14 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create tenant
-	tenantId, err := repository.CreateTenant(&tenant)
+	tenantId, err := h.TenantRepo.CreateTenant(&tenant)
 	if err != nil {
 		http.Error(w, "Failed to create tenant", http.StatusInternalServerError)
 		return
 	}
 
 	//create tenant user
-	err = repository.CreateTenantUser(user, tenantId, "admin")
+	err = h.UserRepo.CreateTenantUser(user, tenantId, "admin")
 	if err != nil {
 		http.Error(w, "Failed to create tenant user", http.StatusInternalServerError)
 		return
@@ -81,7 +80,7 @@ func createTenantHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Tenant created"))
 }
 
-func getTenantHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) getTenantHandler(w http.ResponseWriter, r *http.Request) {
 	tenantId := r.URL.Query().Get("tenant_id")
 	tenantIdInt, err := strconv.Atoi(tenantId)
 	if err != nil {
@@ -89,7 +88,7 @@ func getTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tenant, err := repository.GetTenantById(int64(tenantIdInt))
+	tenant, err := h.TenantRepo.GetTenantById(int64(tenantIdInt))
 
 	if err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
@@ -106,7 +105,7 @@ func getTenantHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 
 	var payload models.UpdateTenant
 
@@ -115,7 +114,7 @@ func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := repository.UpdateTenant(payload.TenantId, payload.TenantName); err != nil {
+	if err := h.TenantRepo.UpdateTenant(payload.TenantId, payload.TenantName); err != nil {
 		http.Error(w, "Failed to get tenant", http.StatusInternalServerError)
 		return
 	}
@@ -125,7 +124,7 @@ func updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
-func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
 
 	var payload models.DeleteTenant
 
@@ -134,7 +133,7 @@ func deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := repository.DeleteTenant(payload.TenantID); err != nil {
+	if err := h.TenantRepo.DeleteTenant(payload.TenantID); err != nil {
 		http.Error(w, "Failed to delete tenant", http.StatusInternalServerError)
 		return
 	}

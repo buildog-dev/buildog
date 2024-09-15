@@ -13,16 +13,19 @@ import (
 	"time"
 
 	"api/internal/api"
+	"api/internal/api/handlers"
 	"api/internal/config"
+	"api/internal/repository"
 	"api/pkg/database"
 	"api/pkg/firebase"
 )
 
 type App struct {
-	config *config.Config
-	db     *database.DB
-	router http.Handler
-	server *http.Server
+	config   *config.Config
+	db       *database.DB
+	router   http.Handler
+	server   *http.Server
+	handlers *handlers.Handlers
 }
 
 func NewApp() (*App, error) {
@@ -32,12 +35,12 @@ func NewApp() (*App, error) {
 	}
 
 	databaseConfig := database.Config{
-		Host:     "",
-		Port:     3010,
-		User:     "",
+		Host:     "localhost",
+		Port:     5432,
+		User:     "buildog",
 		Password: cfg.DatabasePassword,
-		DBName:   "",
-		SSLMode:  "",
+		DBName:   "buildog",
+		SSLMode:  "disable",
 	}
 
 	db, err := database.New(&databaseConfig)
@@ -49,25 +52,30 @@ func NewApp() (*App, error) {
 		return nil, fmt.Errorf("initializing Firebase: %w", err)
 	}
 
-	router := api.Routes()
+	// Handlers
+	tenantRepo := repository.NewTenantRepository(db)
+	userRepo := repository.NewUserRepository(db)
+	handlers := handlers.NewHandlers(tenantRepo, userRepo)
 
+	router := api.Routes(handlers)
 	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", cfg.Port),
+		Addr:    fmt.Sprintf(":%d", cfg.ServerPort),
 		Handler: router,
 	}
 
 	return &App{
-		config: cfg,
-		db:     db,
-		router: router,
-		server: server,
+		config:   cfg,
+		db:       db,
+		router:   router,
+		server:   server,
+		handlers: handlers,
 	}, nil
 }
 
 func (app *App) Run() error {
 	// Start server
 	go func() {
-		log.Printf("Server listening on http://localhost:%d", app.config.Port)
+		log.Printf("Server listening on http://localhost:%d", app.config.ServerPort)
 		if err := app.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server error: %v", err)
 		}

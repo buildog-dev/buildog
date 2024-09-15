@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"api/internal/repository"
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
@@ -42,26 +41,26 @@ func EnsureUserAuthorized(next http.Handler) http.Handler {
 			r.Body = io.NopCloser(bodyBuffer)
 		}
 
-		tokenString := ExtractToken(r)
+		// tokenString := ExtractToken(r)
 
-		payloadData, err := ExtractPayload(tokenString)
-		if err != nil {
-			http.Error(w, "Error extracting payload", http.StatusUnauthorized)
-			return
-		}
+		// payloadData, err := ExtractPayload(tokenString)
+		// if err != nil {
+		// 	http.Error(w, "Error extracting payload", http.StatusUnauthorized)
+		// 	return
+		// }
 
-		userId := payloadData["user_id"].(string)
+		// userId := payloadData["user_id"].(string)
 
-		requestedByUser, err := repository.GetTenantUser(payload.TenantID, userId)
-		if err != nil {
-			http.Error(w, "Failed to get user", http.StatusInternalServerError)
-			return
-		}
+		// // requestedByUser, err := repository.GetTenantUser(payload.TenantID, userId)
+		// if err != nil {
+		// 	http.Error(w, "Failed to get user", http.StatusInternalServerError)
+		// 	return
+		// }
 
-		if requestedByUser.Role != "admin" {
-			http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
-			return
-		}
+		// if requestedByUser.Role != "admin" {
+		// 	http.Error(w, "User is not authorized to perform this action", http.StatusUnauthorized)
+		// 	return
+		// }
 
 		// Call the next handler if the user is authorized
 		next.ServeHTTP(w, r)

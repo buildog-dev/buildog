@@ -11,10 +11,10 @@ import (
 )
 
 type Config struct {
-	Port             int
+	ServerPort       int
+	DatabasePort     int
 	DatabaseURL      string
 	DatabasePassword string
-	// Add other configuration fields as needed
 }
 
 func Load() (*Config, error) {
@@ -23,19 +23,14 @@ func Load() (*Config, error) {
 
 	cfg := &Config{}
 
-	// Port
-	port, err := strconv.Atoi(getEnv("PORT", "3010"))
+	serverPort, err := strconv.Atoi(getEnv("PORT", "3010"))
 	if err != nil {
 		return nil, fmt.Errorf("invalid PORT: %w", err)
 	}
-	cfg.Port = port
+	cfg.ServerPort = serverPort
 
 	// Database
-	cfg.DatabaseURL = getEnv("DATABASE_URL", "")
-
-	if cfg.DatabaseURL == "" {
-		return nil, fmt.Errorf("DATABASE_URL is required")
-	}
+	cfg.DatabasePassword = getEnv("DB_PASSWORD", "")
 	if cfg.DatabasePassword == "" {
 		return nil, fmt.Errorf("DB_PASSWORD is required")
 	}
