@@ -14,6 +14,14 @@ func NewTenantRepository(db *database.DB) *TenantRepository {
 	return &TenantRepository{db: db}
 }
 
+func (r *TenantRepository) GetAllTenants(userID string) error {
+	query := `
+		SELECT * FROM TENANTS;
+	`
+	_, err := r.db.Exec(query, userID)
+	return err
+}
+
 func (r *TenantRepository) CreateTenant(tenant *models.Tenant) (int64, error) {
 	query := `
 		INSERT INTO tenants (name, created_at, updated_at)

@@ -24,7 +24,6 @@ func (h *Handlers) TenantUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) addUserToTenant(w http.ResponseWriter, r *http.Request) {
-
 	var payload models.TenantUserDeleteAndAdd
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -54,7 +53,6 @@ func (h *Handlers) addUserToTenant(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
-
 	var payload models.TenantUserDeleteAndAdd
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -79,7 +77,6 @@ func (h *Handlers) removeUserFromTenant(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *Handlers) updateTenantUserHandler(w http.ResponseWriter, r *http.Request) {
-
 	var payload models.TenantUserUpdate
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -109,7 +106,6 @@ func (h *Handlers) updateTenantUserHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *Handlers) getTenantUserHandler(w http.ResponseWriter, r *http.Request) {
-
 	tenantId := r.URL.Query().Get("tenant_id")
 	tenantIdInt, err := strconv.Atoi(tenantId)
 	if err != nil {

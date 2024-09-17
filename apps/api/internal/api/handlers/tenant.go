@@ -11,6 +11,8 @@ import (
 
 func (h *Handlers) TenantsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	case http.MethodGet:
+		h.getTenantsHandler(w, r)
 	case http.MethodPost:
 		h.createTenantHandler(w, r)
 	default:
@@ -32,8 +34,29 @@ func (h *Handlers) TenantHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handlers) createTenantHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) getTenantsHandler(w http.ResponseWriter, r *http.Request) {
+	claims, ok := r.Context().Value("tokenClaims").(map[string]any)
+	if !ok {
+		return
+	}
+	if claims == nil {
+		return
+	}
 
+	userIDInterface := claims["user_id"]
+	userID, ok := userIDInterface.(string)
+	if !ok {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	// get all tenants
+	h.TenantRepo.GetAllTenants(userID)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Tenants"))
+}
+
+func (h *Handlers) createTenantHandler(w http.ResponseWriter, r *http.Request) {
 	var payload models.CreateTenant
 
 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
