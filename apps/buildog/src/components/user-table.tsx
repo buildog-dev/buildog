@@ -21,6 +21,7 @@ import {
 } from "@ui/components/dialog";
 import { Label } from "@ui/components/label";
 import { PersonIcon } from "@ui/components/react-icons";
+import { CaretDownIcon } from "@ui/components/react-icons";
 import { Input } from "@ui/components/input";
 
 type User = {
@@ -101,7 +102,7 @@ export default function UserTable() {
         last_name: user.last_name,
         role: user.role,
         email: user.email,
-        created_at: `${formattedDate} ${formattedTime}`, // Combine date and time
+        created_at: `${formattedDate} ${formattedTime}`,
       };
     });
   };
@@ -143,20 +144,90 @@ export default function UserTable() {
       id: "actions",
       enableSorting: false,
       cell: ({ row }) => {
-        const userId = row.original.id;
+        const user = row.original;
+
+        const [firstName, setFirstName] = useState(user.first_name);
+        const [lastName, setLastName] = useState(user.last_name);
+        const [role, setRole] = useState(user.role);
+
+        const saveUserChanges = () => {
+          setUsers((prevUsers) =>
+            prevUsers.map((u) =>
+              u.id === user.id ? { ...u, first_name: firstName, last_name: lastName, role } : u
+            )
+          );
+          setOpen(false);
+        };
+
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                ...
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="relative">
+                Edit
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => deleteUser(userId)}>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit User</DialogTitle>
+                <DialogDescription>
+                  Change the name and role of the user or delete the user
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-4 py-4">
+                <div className="flex space-x-4">
+                  <div className="w-1/2">
+                    <Label htmlFor="first_name">First Name</Label>
+                    <Input
+                      id="first_name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <Label htmlFor="last_name">Last Name</Label>
+                    <Input
+                      id="last_name"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <div className="flex items-center space-x-2">
+                    <span>User Role:</span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="flex items-center justify-between">
+                          {role || "Select role"}
+                          <CaretDownIcon className="w-4 h-4 ml-2" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => setRole("admin")}>admin</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setRole("writer")}>
+                          writer
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setRole("reader")}>
+                          reader
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button className="bg-red-500 hover:bg-red-600" onClick={() => deleteUser(user.id)}>
+                  Delete
+                </Button>
+                <Button onClick={saveUserChanges}>Save</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         );
       },
     },
