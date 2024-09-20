@@ -10,7 +10,6 @@ const firebaseConfig = {
 };
 
 export const Auth = new Authenticator(firebaseConfig);
-
 export const Service = new ServiceClient(
   {
     serviceBaseUrl: process.env.NEXT_PUBLIC_SERVICE_BASE_URL,

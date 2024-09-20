@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
-import { Auth } from "@/web-sdk";
+import { Auth, Service } from "@/web-sdk";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -42,7 +42,16 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     if ("error" in response) {
       setError(response.error);
     } else {
-      setVerifyYourEmail(true);
+      const createUserResponse = await Service.makeAuthenticatedRequest("users", "POST", {
+        first_name,
+        last_name,
+        email,
+      });
+      console.log(createUserResponse);
+
+      if (createUserResponse) {
+        setVerifyYourEmail(true);
+      }
     }
 
     setLoading(false);
