@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
 import { Label } from "@ui/components/label";
 import { Card, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
+import { useToast } from "@ui/components/use-toast";
+import { firebaseErrorMessage } from "../lib/firebase-error-message";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -27,20 +29,32 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [verifyYourEmail, setVerifyYourEmail] = useState<boolean>(false);
   const [error, setError] = useState<String>(null);
+  const { toast } = useToast();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     mode: "onSubmit",
   });
+  //extracts the error code
+  const extractErrorCode = (errorMessage: string): string => {
+    const match = errorMessage.match(/\(auth\/[a-zA-Z0-9\-]+\)/);
+    return match ? match[0].replace(/[()]/g, "") : "unknown-error";
+  };
 
   async function onSubmit(data: ProfileFormValues) {
     const { first_name, last_name, email, password } = data;
 
     setLoading(true);
     const response = await Auth.signUp(email, password);
-
+    //error handle
     if ("error" in response) {
-      setError(response.error);
+      const errorCode = extractErrorCode(response.error);
+      const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+
+      toast({
+        title: "Sign Up Failed",
+        description: errMsg,
+      });
     } else {
       setVerifyYourEmail(true);
     }
