@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/compone
 import { Label } from "@ui/components/label";
 import { Card, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
 import { useToast } from "@ui/components/use-toast";
-import { firebaseErrorMessage } from "../lib/buildog-error-message";
+import { buildogErrorMessage } from "../lib/buildog-error-message";
 import { extractErrorCode } from "@/lib/buildog-helper";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -45,7 +45,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
 
     if ("error" in response) {
       const errorCode = extractErrorCode(response.error);
-      const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+      const errMsg = buildogErrorMessage[errorCode] || "An unknown error occurred.";
 
       toast({
         title: "Sign Up Failed",
