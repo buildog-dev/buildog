@@ -14,9 +14,9 @@ import {
 import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
 import { useRouter } from "next/navigation";
-import getOrganizations from "@/lib/get-organizations";
 import { Card } from "@repo/ui/components/ui/card";
 import { ArrowRightIcon, PlusCircledIcon } from "@ui/components/ui/react-icons";
+import { Auth, Service } from "@/web-sdk";
 
 export default function Page() {
   const [organizations, setOrganizations] = useState([]);
@@ -24,12 +24,10 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchOrganizations() {
-      const orgs = await getOrganizations();
-      setOrganizations(orgs);
-    }
-
-    fetchOrganizations();
+    (async () => {
+      const response = await Service.makeAuthenticatedRequest("orgs");
+      setOrganizations(response);
+    })();
   }, []);
 
   const handleCreateOrganization = async () => {
@@ -112,14 +110,14 @@ export default function Page() {
           <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
             {organizations.map((org) => (
               <Card
-                key={org.id}
+                key={org.OrganizationId}
                 className="p-6 cursor-pointer h-36 w-full max-w-lg flex items-center justify-between border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
-                onClick={() => router.push(`/organizations/${org.id}/`)}
+                onClick={() => router.push(`/organizations/${org.OrganizationId}/`)}
               >
                 <div className="flex flex-col w-full">
-                  <div className="text-xl font-semibold mb-2">{org.name}</div>
+                  <div className="text-xl font-semibold mb-2">{org.OrganizationName}</div>
                   <div className="text-sm text-gray-600 mb-4">
-                    <div className="mb-1">{org.description}</div>
+                    <div className="mb-1">{org.OrganizationDescription}</div>
                   </div>
                 </div>
                 <div className="text-xl text-gray-500">

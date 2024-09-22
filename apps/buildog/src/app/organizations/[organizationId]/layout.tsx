@@ -1,16 +1,5 @@
 import Appbar from "@/components/app-bar";
 import { Sidebar } from "@/components/sidebar";
-import getOrganizations from "@/lib/get-organizations";
-
-export async function generateStaticParams() {
-  const organizations = getOrganizations();
-
-  // Return an array of objects with the dynamic parameters
-  return organizations.map((org) => ({
-    organizationName: org.name,
-    organizationId: org.id,
-  }));
-}
 
 export default function Layout({
   children,

@@ -5,13 +5,19 @@ import (
 )
 
 type Handlers struct {
-	TenantRepo *repository.TenantRepository
-	UserRepo   *repository.UserRepository
+	OrganizationsRepo     *repository.OrganizationRepository
+	OrganizationUsersRepo *repository.OrganizationUserRepository
+	UserRepo              *repository.UserRepository
 }
 
-func NewHandlers(tenantRepo *repository.TenantRepository, userRepo *repository.UserRepository) *Handlers {
+func NewHandlers(
+	OrganizationRepo *repository.OrganizationRepository,
+	OrganizationUserRepo *repository.OrganizationUserRepository,
+	userRepo *repository.UserRepository,
+) *Handlers {
 	return &Handlers{
-		TenantRepo: tenantRepo,
-		UserRepo:   userRepo,
+		OrganizationsRepo:     OrganizationRepo,
+		OrganizationUsersRepo: OrganizationUserRepo,
+		UserRepo:              userRepo,
 	}
 }

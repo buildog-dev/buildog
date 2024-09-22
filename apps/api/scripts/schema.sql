@@ -1,7 +1,3 @@
-ALTER TABLE organizations
-ALTER COLUMN organization_id SET DATA TYPE SERIAL,
-ADD CONSTRAINT unique_organization_id UNIQUE (organization_id);
-
 -- CREATE TABLE IF NOT EXISTS tenants (
 --     id SERIAL PRIMARY KEY,
 --     name VARCHAR(255) UNIQUE NOT NULL,
@@ -18,14 +14,23 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- CREATE TABLE IF NOT EXISTS tenantUsers (
---     tenant_id INTEGER REFERENCES tenants(id) ON DELETE CASCADE,
---     user_id VARCHAR(30) REFERENCES users(id) ON DELETE CASCADE,
---     role VARCHAR(50) NOT NULL,
---     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
---     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
---     PRIMARY KEY (tenant_id, user_id)
--- );
+CREATE TABLE IF NOT EXISTS organizations (
+    organization_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    organization_name VARCHAR(255) NOT NULL,
+    organization_description TEXT,
+    created_by VARCHAR(30),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+
+CREATE TABLE IF NOT EXISTS organization_users (
+    organization_id UUID REFERENCES organizations(organization_id) ON DELETE CASCADE,
+    user_id VARCHAR(30) REFERENCES users(user_id) ON DELETE CASCADE,
+    role VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (organization_id, user_id)
+);
 
 -- CREATE TABLE IF NOT EXISTS blogs (
 --     id SERIAL PRIMARY KEY,

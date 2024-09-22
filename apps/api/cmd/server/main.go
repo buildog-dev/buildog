@@ -52,10 +52,11 @@ func NewApp() (*App, error) {
 		return nil, fmt.Errorf("initializing Firebase: %w", err)
 	}
 
-	// Handlers
-	tenantRepo := repository.NewTenantRepository(db)
+	organizationRepo := repository.NewOrganizationRepository(db)
+	organizationUserRepo := repository.NewOrganizationUserRepository(db)
 	userRepo := repository.NewUserRepository(db)
-	handlers := handlers.NewHandlers(tenantRepo, userRepo)
+
+	handlers := handlers.NewHandlers(organizationRepo, organizationUserRepo, userRepo)
 
 	router := api.Routes(handlers)
 	server := &http.Server{

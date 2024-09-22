@@ -1,23 +1,21 @@
 package handlers
 
-import "net/http"
+// func (h *Handlers) OrganizationUserHandler(w http.ResponseWriter, r *http.Request) {
+// 	switch r.Method {
+// 	case http.MethodPost:
+// 		h.addUserToOrganization(w, r)
+// 	// case http.MethodDelete:
+// 	// 	h.removeUserFromTenant(w, r)
+// 	// case http.MethodPut:
+// 	// 	h.updateTenantUserHandler(w, r)
+// 	// case http.MethodGet:
+// 	// 	h.getTenantUserHandler(w, r)
+// 	default:
+// 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+// 	}
+// }
 
-func (h *Handlers) TenantUserHandler(w http.ResponseWriter, r *http.Request) {
-	// switch r.Method {
-	// case http.MethodPost:
-	// 	h.addUserToTenant(w, r)
-	// case http.MethodDelete:
-	// 	h.removeUserFromTenant(w, r)
-	// case http.MethodPut:
-	// 	h.updateTenantUserHandler(w, r)
-	// case http.MethodGet:
-	// 	h.getTenantUserHandler(w, r)
-	// default:
-	// 	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	// }
-}
-
-// func (h *Handlers) addUserToTenant(w http.ResponseWriter, r *http.Request) {
+// func (h *Handlers) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
 // 	var payload models.TenantUserDeleteAndAdd
 
 // 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {

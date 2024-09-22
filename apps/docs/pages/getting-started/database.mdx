@@ -67,13 +67,14 @@ Represents individuals who can belong to one or more organizations.
 
 Represents a collection of users and blogs, essentially acting as a tenant in the multi-tenant system.
 
-| Column              | Data Type      | Constraints                     | Description                                         |
-|---------------------|----------------|---------------------------------|-----------------------------------------------------|
-| organization_id     | SERIAL         | PRIMARY KEY                     | Unique identifier for the organization.             |
-| organization_name   | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique name of the organization.                    |
-| created_by          | VARCHAR(255)   | NOT NULL, UNIQUE                | Email for the organization creator.                 |
-| created_at          | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the organization was created.     |
-| updated_at          | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the organization.   |
+| Column                     | Data Type      | Constraints                     | Description                                         |
+|----------------------------|----------------|---------------------------------|-----------------------------------------------------|
+| organization_id            | SERIAL         | PRIMARY KEY                     | Unique identifier for the organization.             |
+| organization_name          | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique name of the organization.                    |
+| organization_description   | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique name of the organization.                    |
+| created_by                 | VARCHAR(255)   | NOT NULL, UNIQUE                | Email for the organization creator.                 |
+| created_at                 | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the organization was created.     |
+| updated_at                 | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the organization.   |
 
 
 ### Organization Users
