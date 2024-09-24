@@ -13,8 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
 import { useToast } from "@ui/components/use-toast";
-import { buildogErrorMessage } from "../lib/buildog-error-message";
-import { extractErrorCode } from "@/lib/buildog-helper";
+import { buildogErrorMessage } from "../lib/firebase-error-message";
+import { extractErrorCode } from "@/lib/firebase-helper";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 

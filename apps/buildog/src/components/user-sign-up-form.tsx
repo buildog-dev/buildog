@@ -12,8 +12,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/compone
 import { Label } from "@ui/components/label";
 import { Card, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
 import { useToast } from "@ui/components/use-toast";
-import { buildogErrorMessage } from "../lib/buildog-error-message";
-import { extractErrorCode } from "@/lib/buildog-helper";
+import { buildogErrorMessage } from "../lib/firebase-error-message";
+import { extractErrorCode } from "@/lib/firebase-helper";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 

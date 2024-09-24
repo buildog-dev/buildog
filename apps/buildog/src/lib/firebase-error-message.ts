@@ -1,4 +1,4 @@
-export const firebaseErrorMessage = {
+export const buildogErrorMessage = {
   "auth/wrong-password": "The password is invalid or the user does not have a password.",
   "auth/claims-too-large":
     "The claims payload provided to setCustomUserClaims() exceeds the maximum allowed size of 1000 bytes.",
