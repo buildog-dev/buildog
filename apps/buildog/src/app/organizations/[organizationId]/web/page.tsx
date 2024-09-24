@@ -14,22 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@ui/components/dropdown-menu";
+import DefaultCard from "@/components/cards/default-card";
+import RichCard from "@/components/cards/feature-rich-card";
+import ImageCard from "@/components/cards/image-card";
 
 export default function DropdownMenuCheckboxes() {
   const [header, setHeader] = useState<string>("DefaultHeader");
-
-  const selectHeader = (headerType: string) => {
-    switch (headerType) {
-      case "DefaultHeader":
-        return <DefaultHeader />;
-      case "LinksCenterHeader":
-        return <LinksCenterHeader />;
-      case "NameCenterHeader":
-        return <NameCenterHeader />;
-      default:
-        return null;
-    }
-  };
+  const [card, setCard] = useState<string>("DefaultCard");
 
   return (
     <div className="flex gap-4 h-full">
@@ -48,26 +39,74 @@ export default function DropdownMenuCheckboxes() {
               onCheckedChange={() => setHeader("DefaultHeader")}
               className="cursor-pointer"
             >
-              Do you Prefer Simplicity?
+              Default Header
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={header === "LinksCenterHeader"}
               onCheckedChange={() => setHeader("LinksCenterHeader")}
               className="cursor-pointer"
             >
-              Perhaps Links Center?
+              Links Center Header
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={header === "NameCenterHeader"}
               onCheckedChange={() => setHeader("NameCenterHeader")}
               className="cursor-pointer"
             >
-              Or u Prefer Header Center?
+              Name Center Header
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <div className="mt-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-slate-800 text-white" variant="outline">
+                Choose Blog Card
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Select a Blog Card</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={card === "DefaultCard"}
+                onCheckedChange={() => setCard("DefaultCard")}
+                className="cursor-pointer"
+              >
+                Default Blog Card
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={card === "RichCard"}
+                onCheckedChange={() => setCard("RichCard")}
+                className="cursor-pointer"
+              >
+                Rich Blog Card
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={card === "ImageCard"}
+                onCheckedChange={() => setCard("ImageCard")}
+                className="cursor-pointer"
+              >
+                Image Card
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
-      <div className="w-full rounded-lg p-4 border">{selectHeader(header)}</div>
+
+      <div className="w-full rounded-lg p-4 border">
+        {/* Header rendering */}
+        {header === "DefaultHeader" && <DefaultHeader />}
+        {header === "LinksCenterHeader" && <LinksCenterHeader />}
+        {header === "NameCenterHeader" && <NameCenterHeader />}
+
+        {/* Blog card rendering */}
+        <div className="mt-8">
+          {card === "DefaultCard" && <DefaultCard />}
+          {card === "RichCard" && <RichCard />}
+          {card === "ImageCard" && <ImageCard />}
+        </div>
+      </div>
     </div>
   );
 }
