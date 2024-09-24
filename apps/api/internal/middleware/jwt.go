@@ -19,7 +19,7 @@ import (
 // EnsureValidToken is a middleware that will check the validity of our JWT.
 func EnsureValidToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token := ExtractToken(r)
+		token := extractToken(r)
 		if token == "" {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
@@ -30,7 +30,7 @@ func EnsureValidToken(next http.Handler) http.Handler {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(tokenClaims)
+
 		ctx := context.WithValue(r.Context(), "tokenClaims", tokenClaims)
 		r = r.WithContext(ctx)
 
@@ -46,7 +46,7 @@ func EnsureValidToken(next http.Handler) http.Handler {
 }
 
 // extractToken extracts the token from the Authorization header
-func ExtractToken(r *http.Request) string {
+func extractToken(r *http.Request) string {
 	authHeader := r.Header.Get("Authorization")
 	if strings.HasPrefix(authHeader, "Bearer ") {
 		return strings.TrimPrefix(authHeader, "Bearer ")

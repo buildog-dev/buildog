@@ -1,4 +1,4 @@
-package handlers
+package api
 
 import (
 	"api/internal/models"
@@ -8,20 +8,7 @@ import (
 	"net/http"
 )
 
-func (h *Handlers) OrganizationsHandler(w http.ResponseWriter, r *http.Request) {
-	log.Print('a')
-	switch r.Method {
-	case http.MethodGet:
-		h.getOrganizationsHandler(w, r)
-	case http.MethodPost:
-		h.createOrganizationHandler(w, r)
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
-
-func (h *Handlers) getOrganizationsHandler(w http.ResponseWriter, r *http.Request) {
-	log.Print('a')
+func (a *api) getOrganizationsHandler(w http.ResponseWriter, r *http.Request) {
 	claims, ok := r.Context().Value("tokenClaims").(map[string]any)
 	if !ok {
 		return
@@ -35,7 +22,7 @@ func (h *Handlers) getOrganizationsHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	// get all tenants
-	organizations, err := h.OrganizationsRepo.GetAllOrganizations(userID)
+	organizations, err := a.organizationsRepo.GetAllOrganizations(userID)
 
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
@@ -48,7 +35,7 @@ func (h *Handlers) getOrganizationsHandler(w http.ResponseWriter, r *http.Reques
 	utils.JSONResponse(w, http.StatusCreated, organizations)
 }
 
-func (h *Handlers) createOrganizationHandler(w http.ResponseWriter, r *http.Request) {
+func (a *api) createOrganizationHandler(w http.ResponseWriter, r *http.Request) {
 	claims, ok := utils.GetTokenClaims(r)
 	if !ok {
 		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
@@ -73,7 +60,7 @@ func (h *Handlers) createOrganizationHandler(w http.ResponseWriter, r *http.Requ
 		CreatedBy:               userID,
 	}
 
-	organization, err := h.OrganizationsRepo.CreateOrganization(&org)
+	organization, err := a.organizationsRepo.CreateOrganization(&org)
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
@@ -86,7 +73,7 @@ func (h *Handlers) createOrganizationHandler(w http.ResponseWriter, r *http.Requ
 		Role:           "owner",
 	}
 
-	organizationUser, err := h.OrganizationsRepo.CreateOrganizationUser(user)
+	organizationUser, err := a.organizationsRepo.CreateOrganizationUser(user)
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
@@ -99,7 +86,7 @@ func (h *Handlers) createOrganizationHandler(w http.ResponseWriter, r *http.Requ
 }
 
 // tenantHandler handles requests to /tenants/{tenantID}.
-// func (h *Handlers) TenantHandler(w http.ResponseWriter, r *http.Request) {
+// func (a *api) TenantHandler(w http.ResponseWriter, r *http.Request) {
 // 	switch r.Method {
 // 	case http.MethodPost:
 // 		h.createTenantHandler(w, r)
@@ -114,7 +101,7 @@ func (h *Handlers) createOrganizationHandler(w http.ResponseWriter, r *http.Requ
 // 	}
 // }
 
-// func (h *Handlers) getTenantHandler(w http.ResponseWriter, r *http.Request) {
+// func (a *api) getTenantHandler(w http.ResponseWriter, r *http.Request) {
 // 	tenantId := r.URL.Query().Get("tenant_id")
 // 	tenantIdInt, err := strconv.Atoi(tenantId)
 // 	if err != nil {
@@ -139,7 +126,7 @@ func (h *Handlers) createOrganizationHandler(w http.ResponseWriter, r *http.Requ
 // 	w.WriteHeader(http.StatusOK)
 // }
 
-// func (h *Handlers) updateTenantHandler(w http.ResponseWriter, r *http.Request) {
+// func (a *api) updateTenantHandler(w http.ResponseWriter, r *http.Request) {
 // 	var payload models.UpdateTenant
 
 // 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
@@ -157,7 +144,7 @@ func (h *Handlers) createOrganizationHandler(w http.ResponseWriter, r *http.Requ
 // 	w.Write([]byte(response))
 // }
 
-// func (h *Handlers) deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
+// func (a *api) deleteTenantHandler(w http.ResponseWriter, r *http.Request) {
 // 	var payload models.DeleteTenant
 
 // 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {

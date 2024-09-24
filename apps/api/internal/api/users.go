@@ -1,4 +1,4 @@
-package handlers
+package api
 
 import (
 	"api/internal/models"
@@ -8,16 +8,7 @@ import (
 	"time"
 )
 
-func (h *Handlers) UsersHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodPost:
-		h.createUserHandler(w, r)
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
-
-func (h *Handlers) createUserHandler(w http.ResponseWriter, r *http.Request) {
+func (a *api) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	claims, ok := utils.GetTokenClaims(r)
 	if !ok {
 		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
@@ -46,7 +37,7 @@ func (h *Handlers) createUserHandler(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: now,
 	}
 
-	success, err := h.UserRepo.CreateUser(user)
+	success, err := a.userRepo.CreateUser(user)
 	if err != nil {
 		log.Printf("Error creating user: %v", err) // Use logging instead of fmt.Println
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create user")

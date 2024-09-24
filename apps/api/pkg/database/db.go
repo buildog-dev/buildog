@@ -5,6 +5,8 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -25,10 +27,30 @@ type Config struct {
 	SSLMode  string
 }
 
-// New creates a new database connection
-func New(cfg *Config) (*DB, error) {
+func New() (*DB, error) {
+	config := Config{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     5432, // Default to 5432 if DB_PORT is not set
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   os.Getenv("DB_NAME"),
+		SSLMode:  os.Getenv("DB_SLL_MODE"),
+	}
+
+	// Parse DB_PORT if it's set
+	if portStr := os.Getenv("DB_PORT"); portStr != "" {
+		if port, err := strconv.Atoi(portStr); err == nil {
+			config.Port = port
+		} else {
+			fmt.Printf("Warning: Invalid DB_PORT value '%s', using default 5432\n", portStr)
+		}
+	}
+
+	// Log the configuration (make sure to not log the password in a production environment)
+	fmt.Printf("Attempting to connect to database with config: %+v\n", config)
+
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.SSLMode)
+		config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
 
 	sqlDB, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -46,22 +68,7 @@ func New(cfg *Config) (*DB, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
+	fmt.Println("Successfully connected to the database")
+
 	return &DB{sqlDB}, nil
 }
-
-// Close closes the database connection
-func (db *DB) Close() error {
-	return db.DB.Close()
-}
-
-// Example of a custom method that could be added to DB
-func (db *DB) GetUserByID(id int) (string, error) {
-	var name string
-	err := db.QueryRow("SELECT name FROM users WHERE id = $1", id).Scan(&name)
-	if err != nil {
-		return "", fmt.Errorf("failed to get user: %w", err)
-	}
-	return name, nil
-}
-
-// Additional database methods can be added here...

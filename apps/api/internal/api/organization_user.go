@@ -1,4 +1,4 @@
-package handlers
+package api
 
 // func (h *Handlers) OrganizationUserHandler(w http.ResponseWriter, r *http.Request) {
 // 	switch r.Method {

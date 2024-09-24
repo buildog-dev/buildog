@@ -1,36 +1,29 @@
 package api
 
-import (
-	"net/http"
+// func Routes(h *handlers.Handlers) http.Handler {
+// 	router := http.NewServeMux()
 
-	"api/internal/api/handlers"
-	"api/internal/middleware"
-)
+// 	router.Handle("/users", middleware.Chain(
+// 		middleware.CorsMiddleware,
+// 		middleware.EnsureValidToken,
+// 	)(http.HandlerFunc(h.UsersHandler)))
 
-func Routes(h *handlers.Handlers) http.Handler {
-	router := http.NewServeMux()
+// 	router.Handle("/orgs", middleware.Chain(
+// 		middleware.CorsMiddleware,
+// 		middleware.EnsureValidToken,
+// 	)(http.HandlerFunc(h.OrganizationsHandler)))
 
-	router.Handle("/users", middleware.Chain(
-		middleware.CorsMiddleware,
-		middleware.EnsureValidToken,
-	)(http.HandlerFunc(h.UsersHandler)))
+// 	// users
+// 	// router.Handle("/users", middleware.Chain(
+// 	// 	h.UsersHandler,
+// 	// 	middleware.CorsMiddleware,
+// 	// 	middleware.EnsureValidToken,
+// 	// ))
 
-	router.Handle("/orgs", middleware.Chain(
-		middleware.CorsMiddleware,
-		middleware.EnsureValidToken,
-	)(http.HandlerFunc(h.OrganizationsHandler)))
+// 	// tenant
 
-	// users
-	// router.Handle("/users", middleware.Chain(
-	// 	h.UsersHandler,
-	// 	middleware.CorsMiddleware,
-	// 	middleware.EnsureValidToken,
-	// ))
-
-	// tenant
-
-	return router
-}
+// 	return router
+// }
 
 // router.Handle("/tenant", middleware.Chain(
 // 	middleware.CorsMiddleware,
