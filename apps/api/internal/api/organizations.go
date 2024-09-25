@@ -9,19 +9,18 @@ import (
 )
 
 func (a *api) getOrganizationsHandler(w http.ResponseWriter, r *http.Request) {
-	claims, ok := r.Context().Value("tokenClaims").(map[string]any)
+	claims, ok := utils.GetTokenClaims(r)
 	if !ok {
+		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
 		return
 	}
 
-	userIDInterface := claims["user_id"]
-	userID, ok := userIDInterface.(string)
+	userID, ok := utils.GetUserIDFromClaims(claims)
 	if !ok {
-		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
 
-	// get all tenants
 	organizations, err := a.organizationsRepo.GetAllOrganizations(userID)
 
 	if err != nil {
@@ -29,8 +28,6 @@ func (a *api) getOrganizationsHandler(w http.ResponseWriter, r *http.Request) {
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
 		return
 	}
-
-	log.Print(organizations)
 
 	utils.JSONResponse(w, http.StatusCreated, organizations)
 }
@@ -73,16 +70,14 @@ func (a *api) createOrganizationHandler(w http.ResponseWriter, r *http.Request) 
 		Role:           "owner",
 	}
 
-	organizationUser, err := a.organizationsRepo.CreateOrganizationUser(user)
+	organizationUser, err := a.organizationUsersRepo.CreateOrganizationUser(user)
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
 		return
 	}
 
-	log.Print(organizationUser)
-
-	utils.JSONResponse(w, http.StatusCreated, organization)
+	utils.JSONResponse(w, http.StatusCreated, organizationUser)
 }
 
 // tenantHandler handles requests to /tenants/{tenantID}.

@@ -10,13 +10,6 @@ import (
 	"strings"
 )
 
-// const (
-// 	missingJWTErrorMessage       = "Requires authentication"
-// 	invalidJWTErrorMessage       = "Bad credentials"
-// 	permissionDeniedErrorMessage = "Permission denied"
-// )
-
-// EnsureValidToken is a middleware that will check the validity of our JWT.
 func EnsureValidToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := extractToken(r)
@@ -40,7 +33,6 @@ func EnsureValidToken(next http.Handler) http.Handler {
 			return
 		}
 
-		// Token is valid, proceed with the request
 		next.ServeHTTP(w, r)
 	})
 }

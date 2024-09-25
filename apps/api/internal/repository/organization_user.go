@@ -14,7 +14,7 @@ func NewOrganizationUserRepository(db *database.DB) *OrganizationUserRepository 
 	return &OrganizationUserRepository{db: db}
 }
 
-func (r *OrganizationRepository) CreateOrganizationUser(user *models.OrganizationUserCreated) (models.OrganizationUserCreated, error) {
+func (r *OrganizationUserRepository) CreateOrganizationUser(user *models.OrganizationUserCreated) (models.OrganizationUserCreated, error) {
 	query := `
 		INSERT INTO organization_users (organization_id, user_id, role, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5)
@@ -41,4 +41,19 @@ func (r *OrganizationRepository) CreateOrganizationUser(user *models.Organizatio
 	}
 
 	return createdOrganizationUser, nil
+}
+
+func (r *OrganizationUserRepository) GetOrganizationUser(user_id, organization_id string) (string, error) {
+	query := `
+		SELECT role FROM organization_users where organization_id = $1 and user_id = $2
+	`
+
+	var role string
+	err := r.db.QueryRow(query, organization_id, user_id).Scan(&role)
+
+	if err != nil {
+		return role, err
+	}
+
+	return role, nil
 }

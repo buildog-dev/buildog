@@ -25,7 +25,7 @@ export default function Page() {
 
   useEffect(() => {
     (async () => {
-      const response = await Service.makeAuthenticatedRequest("orgs");
+      const response = await Service.makeAuthenticatedRequest("organizations");
       setOrganizations(response);
     })();
   }, []);

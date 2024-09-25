@@ -43,16 +43,19 @@ func (a *api) Server(port int) *http.Server {
 func (a *api) Routes() http.Handler {
 	router := mux.NewRouter()
 
-	// Apply middlewares
 	router.Use(middleware.CorsMiddleware)
-	router.Use(middleware.EnsureValidToken)
+
+	protected := router.PathPrefix("/").Subrouter()
+	protected.Use(middleware.EnsureValidToken)
 
 	router.HandleFunc("/health", a.healthCheckHandler).Methods(http.MethodGet, http.MethodOptions)
 
 	router.HandleFunc("/users/create", a.createUserHandler).Methods(http.MethodGet, http.MethodOptions)
 
-	router.HandleFunc("/orgs", a.getOrganizationsHandler).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/orgs", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/organizations", a.getOrganizationsHandler).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/organizations", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
+
+	router.HandleFunc("/organization-user", a.addUserToOrganization).Methods(http.MethodPost, http.MethodOptions)
 
 	return router
 }

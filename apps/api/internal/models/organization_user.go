@@ -5,3 +5,8 @@ type OrganizationUserCreated struct {
 	UserId         string
 	Role           string
 }
+
+type AddUserOrganizationPayload struct {
+	Email string `json:"email"`
+	Role  string `json:"role"`
+}

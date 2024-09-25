@@ -1,48 +1,68 @@
 package api
 
-// func (h *Handlers) OrganizationUserHandler(w http.ResponseWriter, r *http.Request) {
-// 	switch r.Method {
-// 	case http.MethodPost:
-// 		h.addUserToOrganization(w, r)
-// 	// case http.MethodDelete:
-// 	// 	h.removeUserFromTenant(w, r)
-// 	// case http.MethodPut:
-// 	// 	h.updateTenantUserHandler(w, r)
-// 	// case http.MethodGet:
-// 	// 	h.getTenantUserHandler(w, r)
-// 	default:
-// 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-// 	}
-// }
+import (
+	"api/internal/models"
+	"api/pkg/utils"
+	"encoding/json"
+	"log"
+	"net/http"
+)
 
-// func (h *Handlers) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
-// 	var payload models.TenantUserDeleteAndAdd
+func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
+	var payload models.AddUserOrganizationPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
 
-// 	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-// 		http.Error(w, "Invalid request body", http.StatusBadRequest)
-// 		return
-// 	}
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
+		return
+	}
 
-// 	if !helpers.IsRoleValid(payload.Role) {
-// 		http.Error(w, "Invalid role", http.StatusBadRequest)
-// 		return
-// 	}
+	userID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
 
-// 	// get user
-// 	user, err := h.UserRepo.GetUser(payload.TargetUserID)
-// 	if err != nil {
-// 		http.Error(w, "Failed to get target user", http.StatusInternalServerError)
-// 		return
-// 	}
+	// check authorization for create user
+	organizationID := r.Header.Get("organization_id")
+	role, err := a.organizationUsersRepo.GetOrganizationUser(userID, organizationID)
+	if err != nil {
+		log.Printf("Error getting user: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Unauthoruized")
+		return
+	}
 
-// 	// add user to tenant
-// 	if err := h.UserRepo.CreateTenantUser(user, payload.TenantID, payload.Role); err != nil {
-// 		http.Error(w, "Failed to add user to tenant", http.StatusInternalServerError)
-// 		return
-// 	}
+	if role == "admin" || role == "owner" {
+		user, err := a.userRepo.GetUserWithEmail(payload.Email)
+		if err != nil {
+			log.Printf("Error creating user: %v", err)
+			utils.JSONError(w, http.StatusInternalServerError, "No permission")
+			return
+		}
 
-// 	w.WriteHeader(http.StatusOK)
-// }
+		organization_user := &models.OrganizationUserCreated{
+			OrganizationId: organizationID,
+			UserId:         user.UserId,
+			Role:           payload.Role,
+		}
+
+		create_organization_user, err := a.organizationUsersRepo.CreateOrganizationUser(organization_user)
+		if err != nil {
+			log.Printf("Error creating user: %v", err)
+			utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization user")
+			return
+		}
+
+		utils.JSONResponse(w, http.StatusCreated, create_organization_user)
+		return
+	}
+
+	utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization user")
+}
 
 // func (h *Handlers) removeUserFromTenant(w http.ResponseWriter, r *http.Request) {
 // 	var payload models.TenantUserDeleteAndAdd
