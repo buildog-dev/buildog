@@ -10,7 +10,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authState, setAuthState] = useState<{ user: User | null }>({
     user: null,
   });
-  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -18,22 +17,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handleAuthStateChange = (user: User | null) => {
       if (user) {
         if (!user.emailVerified && (pathname === "/login/" || pathname === "/signup/")) {
-          setLoading(false);
           return;
         }
 
         setAuthState({ user });
 
         // Redirect based on sign-in state and current pathname
-        if (pathname === "/login/" || pathname === "/signup/") {
+        if (pathname === "/login" || pathname === "/signup") {
           router.push("/organizations/");
         }
-        setLoading(false);
         return;
       }
 
-      if (!(pathname === "/login/" || pathname === "/signup/")) {
-        setLoading(false);
+      if (!(pathname === "/login" || pathname === "/signup")) {
         router.push("/login");
       }
     };
@@ -45,11 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => listen();
   }, [router, pathname]);
 
-  return (
-    <AuthContext.Provider value={authState}>
-      {loading ? "Loading.." : children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

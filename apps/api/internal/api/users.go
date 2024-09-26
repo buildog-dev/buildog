@@ -29,7 +29,7 @@ func (a *api) createUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	now := time.Now()
 	user := &models.User{
-		UserId:    userID,
+		Id:        userID,
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
 		Email:     payload.Email,

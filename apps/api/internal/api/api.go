@@ -43,19 +43,18 @@ func (a *api) Server(port int) *http.Server {
 func (a *api) Routes() http.Handler {
 	router := mux.NewRouter()
 
+	healthRouter := router.PathPrefix("/health").Subrouter()
+	healthRouter.HandleFunc("", a.healthCheckHandler).Methods(http.MethodGet, http.MethodOptions)
+
 	router.Use(middleware.CorsMiddleware)
 
-	protected := router.PathPrefix("/").Subrouter()
-	protected.Use(middleware.EnsureValidToken)
+	protectedRouter := router.PathPrefix("").Subrouter()
+	protectedRouter.Use(middleware.EnsureValidToken)
 
-	router.HandleFunc("/health", a.healthCheckHandler).Methods(http.MethodGet, http.MethodOptions)
-
-	router.HandleFunc("/users/create", a.createUserHandler).Methods(http.MethodGet, http.MethodOptions)
-
-	router.HandleFunc("/organizations", a.getOrganizationsHandler).Methods(http.MethodGet, http.MethodOptions)
-	router.HandleFunc("/organizations", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
-
-	router.HandleFunc("/organization-user", a.addUserToOrganization).Methods(http.MethodPost, http.MethodOptions)
+	protectedRouter.HandleFunc("/users/create", a.createUserHandler).Methods(http.MethodPost, http.MethodOptions)
+	protectedRouter.HandleFunc("/organizations", a.getOrganizationsHandler).Methods(http.MethodGet, http.MethodOptions)
+	protectedRouter.HandleFunc("/organizations", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
+	protectedRouter.HandleFunc("/organization-user", a.addUserToOrganization).Methods(http.MethodPost, http.MethodOptions)
 
 	return router
 }

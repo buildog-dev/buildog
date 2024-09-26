@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Dialog,
@@ -16,22 +16,35 @@ import { Label } from "@repo/ui/components/ui/label";
 import { useRouter } from "next/navigation";
 import { Card } from "@repo/ui/components/ui/card";
 import { ArrowRightIcon, PlusCircledIcon } from "@ui/components/ui/react-icons";
-import { Auth, Service } from "@/web-sdk";
+import { Service } from "@/web-sdk";
+import { useAuth } from "@/components/auth-provider";
 
 export default function Page() {
+  const { user } = useAuth();
   const [organizations, setOrganizations] = useState([]);
   const [newOrgName, setNewOrgName] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    (async () => {
-      const response = await Service.makeAuthenticatedRequest("organizations");
+  const fetchOrganizations = useCallback(async () => {
+    const response = await Service.makeAuthenticatedRequest("organizations");
+    if (response) {
       setOrganizations(response);
-    })();
+    }
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    fetchOrganizations();
+  }, [user, fetchOrganizations]);
+
   const handleCreateOrganization = async () => {
-    console.log("Creating organization:", newOrgName);
+    const response = await Service.makeAuthenticatedRequest("organizations", "POST", {
+      organization_name: newOrgName,
+      organization_description: "description",
+    });
+    if (response) {
+      fetchOrganizations();
+    }
   };
 
   return (

@@ -42,12 +42,11 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
     if ("error" in response) {
       setError(response.error);
     } else {
-      const createUserResponse = await Service.makeAuthenticatedRequest("users", "POST", {
+      const createUserResponse = await Service.makeAuthenticatedRequest("users/create", "POST", {
         first_name,
         last_name,
         email,
       });
-      console.log(createUserResponse);
 
       if (createUserResponse) {
         setVerifyYourEmail(true);

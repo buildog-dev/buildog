@@ -37,7 +37,6 @@ func New() (*DB, error) {
 		SSLMode:  os.Getenv("DB_SLL_MODE"),
 	}
 
-	// Parse DB_PORT if it's set
 	if portStr := os.Getenv("DB_PORT"); portStr != "" {
 		if port, err := strconv.Atoi(portStr); err == nil {
 			config.Port = port
@@ -46,7 +45,6 @@ func New() (*DB, error) {
 		}
 	}
 
-	// Log the configuration (make sure to not log the password in a production environment)
 	fmt.Printf("Attempting to connect to database with config: %+v\n", config)
 
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
@@ -57,7 +55,6 @@ func New() (*DB, error) {
 		return nil, fmt.Errorf("failed to open database connection: %w", err)
 	}
 
-	// Set connection pool parameters
 	sqlDB.SetMaxOpenConns(25)
 	sqlDB.SetMaxIdleConns(25)
 	sqlDB.SetConnMaxLifetime(5 * time.Minute)

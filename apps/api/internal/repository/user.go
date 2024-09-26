@@ -16,10 +16,10 @@ func NewUserRepository(db *database.DB) *UserRepository {
 }
 
 func (r *UserRepository) CreateUser(user *models.User) (sql.Result, error) {
-	query := `INSERT INTO users (user_id, first_name, last_name, email, created_at, updated_at) 
+	query := `INSERT INTO users (id, first_name, last_name, email, created_at, updated_at) 
               VALUES ($1, $2, $3, $4, $5, $6)`
 
-	result, err := r.db.Exec(query, user.UserId, user.FirstName, user.LastName, user.Email, user.CreatedAt, user.UpdatedAt)
+	result, err := r.db.Exec(query, user.Id, user.FirstName, user.LastName, user.Email, user.CreatedAt, user.UpdatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to add user to database: %w", err)
 	}
@@ -27,11 +27,11 @@ func (r *UserRepository) CreateUser(user *models.User) (sql.Result, error) {
 }
 
 func (r *UserRepository) GetUserWithEmail(email string) (models.User, error) {
-	query := `SELECT user_id, first_name, last_name, email FROM users WHERE email=$1`
+	query := `SELECT id, first_name, last_name, email FROM users WHERE email=$1`
 	row := r.db.QueryRow(query, email)
 
 	var user models.User
-	err := row.Scan(&user.UserId, &user.FirstName, &user.LastName, &user.Email)
+	err := row.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email)
 	if err == sql.ErrNoRows {
 		return models.User{}, fmt.Errorf("user not found")
 	}

@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Label } from "@ui/components/label";
-import { cn } from "@repo/ui/lib/utils";
 import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
@@ -40,6 +38,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
   });
+
   //extracts the error code from a firebase error message. => Firebase: Error (auth/invalid-credential)
   const extractErrorCode = (errorMessage: string): string => {
     const match = errorMessage.match(/\(auth\/[a-zA-Z0-9\-]+\)/);
@@ -70,6 +69,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         title: "Email Not Verified",
         description: "Please verify your email.",
       });
+    } else {
+      router.push("/organizations");
     }
 
     setLoading(false);
