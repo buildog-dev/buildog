@@ -2,7 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "scripts": {
-    "build": "go build ./cmd/main.go",
-    "dev": "go run ./cmd/main.go"
+    "build": "go build ./cmd/server/main.go",
+    "dev": "go run ./cmd/server/main.go"
   }
 }

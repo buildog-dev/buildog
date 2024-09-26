@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Dialog,
@@ -14,26 +14,37 @@ import {
 import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
 import { useRouter } from "next/navigation";
-import getOrganizations from "@/lib/get-organizations";
 import { Card } from "@repo/ui/components/ui/card";
 import { ArrowRightIcon, PlusCircledIcon } from "@ui/components/ui/react-icons";
+import { Service } from "@/web-sdk";
+import { useAuth } from "@/components/auth-provider";
 
 export default function Page() {
+  const { user } = useAuth();
   const [organizations, setOrganizations] = useState([]);
   const [newOrgName, setNewOrgName] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchOrganizations() {
-      const orgs = await getOrganizations();
-      setOrganizations(orgs);
+  const fetchOrganizations = useCallback(async () => {
+    const response = await Service.makeAuthenticatedRequest("organizations");
+    if (response) {
+      setOrganizations(response);
     }
-
-    fetchOrganizations();
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    fetchOrganizations();
+  }, [user, fetchOrganizations]);
+
   const handleCreateOrganization = async () => {
-    console.log("Creating organization:", newOrgName);
+    const response = await Service.makeAuthenticatedRequest("organizations", "POST", {
+      organization_name: newOrgName,
+      organization_description: "description",
+    });
+    if (response) {
+      fetchOrganizations();
+    }
   };
 
   return (
@@ -112,14 +123,14 @@ export default function Page() {
           <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
             {organizations.map((org) => (
               <Card
-                key={org.id}
+                key={org.OrganizationId}
                 className="p-6 cursor-pointer h-36 w-full max-w-lg flex items-center justify-between border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
-                onClick={() => router.push(`/organizations/${org.id}/`)}
+                onClick={() => router.push(`/organizations/${org.OrganizationId}/`)}
               >
                 <div className="flex flex-col w-full">
-                  <div className="text-xl font-semibold mb-2">{org.name}</div>
+                  <div className="text-xl font-semibold mb-2">{org.OrganizationName}</div>
                   <div className="text-sm text-gray-600 mb-4">
-                    <div className="mb-1">{org.description}</div>
+                    <div className="mb-1">{org.OrganizationDescription}</div>
                   </div>
                 </div>
                 <div className="text-xl text-gray-500">

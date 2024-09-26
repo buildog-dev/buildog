@@ -4,10 +4,10 @@ export const firebaseErrorMessage = {
     "The claims payload provided to setCustomUserClaims() exceeds the maximum allowed size of 1000 bytes.",
   "auth/email-already-exists":
     "The provided email is already in use by an existing user. Each user must have a unique email.",
-  "auth/id-token-expired": "The provided Firebase ID token is expired.",
-  "auth/id-token-revoked": "The Firebase ID token has been revoked.",
+  "auth/id-token-expired": "The provided Buildog ID token is expired.",
+  "auth/id-token-revoked": "The Buildog ID token has been revoked.",
   "auth/insufficient-permission":
-    "The credential used to initialize the Admin SDK has insufficient permission to access the requested Authentication resource. Refer to Set up a Firebase project for documentation on how to generate a credential with appropriate permissions and use it to authenticate the Admin SDKs.",
+    "The credential used to initialize the Admin SDK has insufficient permission to access the requested Authentication resource. Refer to Set up a Buildog project for documentation on how to generate a credential with appropriate permissions and use it to authenticate the Admin SDKs.",
   "auth/invalid-argument":
     "An invalid argument was provided to an Authentication method. The error message should contain additional information.",
   "auth/invalid-claims":
@@ -29,7 +29,7 @@ export const firebaseErrorMessage = {
   "auth/invalid-hash-rounds": "The hash rounds must be a valid number.",
   "auth/invalid-hash-salt-separator":
     "The hashing algorithm salt separator field must be a valid byte buffer.",
-  "auth/invalid-id-token": "The provided ID token is not a valid Firebase ID token.",
+  "auth/invalid-id-token": "The provided ID token is not a valid Buildog ID token.",
   "auth/invalid-last-sign-in-time": "The last sign-in time must be a valid UTC date string.",
   "auth/invalid-page-token":
     "The provided next page token in listUsers() is invalid. It must be a valid non-empty string.",
@@ -55,16 +55,16 @@ export const firebaseErrorMessage = {
   "auth/phone-number-already-exists":
     "The provided phoneNumber is already in use by an existing user. Each user must have a unique phoneNumber.",
   "auth/project-not-found":
-    "No Firebase project was found for the credential used to initialize the Admin SDKs. Refer to Set up a Firebase project for documentation on how to generate a credential for your project and use it to authenticate the Admin SDKs.",
+    "No Buildog project was found for the credential used to initialize the Admin SDKs. Refer to Set up a Buildog project for documentation on how to generate a credential for your project and use it to authenticate the Admin SDKs.",
   "auth/reserved-claims":
     "One or more custom user claims provided to setCustomUserClaims() are reserved. For example, OIDC specific claims such as (sub, iat, iss, exp, aud, auth_time, etc) should not be used as keys for custom claims.",
-  "auth/session-cookie-expired": "The provided Firebase session cookie is expired.",
-  "auth/session-cookie-revoked": "The Firebase session cookie has been revoked.",
+  "auth/session-cookie-expired": "The provided Buildog session cookie is expired.",
+  "auth/session-cookie-revoked": "The Buildog session cookie has been revoked.",
   "auth/uid-already-exists":
     "The provided uid is already in use by an existing user. Each user must have a unique uid.",
   "auth/admin-restricted-operation": "This operation is restricted to administrators only.",
   "auth/app-not-authorized":
-    "This app, identified by the domain where it's hosted, is not authorized to use Firebase Authentication with the provided API key. Review your key configuration in the Google API console.",
+    "This app, identified by the domain where it's hosted, is not authorized to use Buildog Authentication with the provided API key. Review your key configuration in the Google API console.",
   "auth/app-not-installed":
     "The requested mobile application corresponding to the identifier (Android package name or iOS bundle ID) provided is not installed on this device.",
   "auth/captcha-check-failed":
@@ -79,9 +79,9 @@ export const firebaseErrorMessage = {
   "auth/requires-recent-login":
     "This operation is sensitive and requires recent authentication. Log in again before retrying this request.",
   "auth/dependent-sdk-initialized-before-auth":
-    "Another Firebase SDK was initialized and is trying to use Auth before Auth is initialized. Please be sure to call initializeAuth or getAuth before starting any other Firebase SDK.",
+    "Another Buildog SDK was initialized and is trying to use Auth before Auth is initialized. Please be sure to call initializeAuth or getAuth before starting any other Buildog SDK.",
   "auth/dynamic-link-not-activated":
-    "Please activate Dynamic Links in the Firebase Console and agree to the terms and conditions.",
+    "Please activate Dynamic Links in the Buildog Console and agree to the terms and conditions.",
   "auth/email-change-needs-verification": "Multi-factor users must always have a verified email.",
   "auth/email-already-in-use": "The email address is already in use by another account.",
   "auth/emulator-config-failed":
@@ -112,7 +112,7 @@ export const firebaseErrorMessage = {
   "auth/invalid-cert-hash": "The SHA-1 certificate hash provided is invalid.",
   "auth/invalid-credential": "The supplied auth credential is malformed or has expired.",
   "auth/invalid-message-payload":
-    "The email template corresponding to this action contains invalid characters in its message. Please fix by going to the Auth email templates section in the Firebase Console.",
+    "The email template corresponding to this action contains invalid characters in its message. Please fix by going to the Auth email templates section in the Buildog Console.",
   "auth/invalid-multi-factor-session":
     "The request does not contain a valid proof of first factor successful sign-in.",
   "auth/invalid-oauth-provider":
@@ -120,7 +120,7 @@ export const firebaseErrorMessage = {
   "auth/invalid-oauth-client-id":
     "The OAuth client ID provided is either invalid or does not match the specified API key.",
   "auth/unauthorized-domain":
-    "This domain is not authorized for OAuth operations for your Firebase project. Edit the list of authorized domains from the Firebase console.",
+    "This domain is not authorized for OAuth operations for your Buildog project. Edit the list of authorized domains from the Buildog console.",
   "auth/invalid-action-code":
     "The action code is invalid. This can happen if the code is malformed, expired, or has already been used.",
   "auth/invalid-persistence-type":
@@ -131,14 +131,14 @@ export const firebaseErrorMessage = {
   "auth/invalid-recipient-email":
     "The email corresponding to this action failed to send as the provided recipient email address is invalid.",
   "auth/invalid-sender":
-    "The email template corresponding to this action contains an invalid sender email or name. Please fix by going to the Auth email templates section in the Firebase Console.",
+    "The email template corresponding to this action contains an invalid sender email or name. Please fix by going to the Auth email templates section in the Buildog Console.",
   "auth/invalid-verification-id":
     "The verification ID used to create the phone auth credential is invalid.",
   "auth/invalid-tenant-id": "The Auth instance's tenant ID is invalid.",
   "auth/missing-android-pkg-name":
     "An Android Package Name must be provided if the Android App is required to be installed.",
   "auth/auth-domain-config-required":
-    "Be sure to include authDomain when calling firebase.initializeApp(), by following the instructions in the Firebase console.",
+    "Be sure to include authDomain when calling buildog.initializeApp(), by following the instructions in the Buildog console.",
   "auth/missing-app-credential":
     "The phone verification request is missing an application verifier assertion. A reCAPTCHA response token needs to be provided.",
   "auth/missing-verification-code":
@@ -155,7 +155,7 @@ export const firebaseErrorMessage = {
     "To send verification codes, provide a phone number for the recipient.",
   "auth/missing-verification-id":
     "The phone auth credential was created with an empty verification ID.",
-  "auth/app-deleted": "This instance of FirebaseApp has been deleted.",
+  "auth/app-deleted": "This instance of BuildogApp has been deleted.",
   "auth/multi-factor-info-not-found":
     "The user does not have a second factor matching the identifier provided.",
   "auth/multi-factor-auth-required":
@@ -169,7 +169,7 @@ export const firebaseErrorMessage = {
   "auth/null-user":
     "A null user object was provided as the argument for an operation which requires a non-null user object.",
   "auth/operation-not-allowed":
-    "The given sign-in provider is disabled for this Firebase project. Enable it in the Firebase console, under the sign-in method tab of the Auth section.",
+    "The given sign-in provider is disabled for this Buildog project. Enable it in the Buildog console, under the sign-in method tab of the Auth section.",
   "auth/operation-not-supported-in-this-environment":
     "This operation is not supported in the environment this application is running on. 'location.protocol' must be http, https or chrome-extension and web storage must be enabled.",
   "auth/popup-blocked":
@@ -192,7 +192,7 @@ export const firebaseErrorMessage = {
   "auth/too-many-requests":
     "We have blocked all requests from this device due to unusual activity. Try again later.",
   "auth/unauthorized-continue-uri":
-    "The domain of the continue URL is not whitelisted.  Please whitelist the domain in the Firebase console.",
+    "The domain of the continue URL is not whitelisted.  Please whitelist the domain in the Buildog console.",
   "auth/unsupported-first-factor":
     "Enrolling a second factor or signing in with a multi-factor account requires sign-in with a supported first factor.",
   "auth/unsupported-persistence-type":
@@ -205,7 +205,7 @@ export const firebaseErrorMessage = {
   "auth/user-disabled": "The user account has been disabled by an administrator.",
   "auth/user-mismatch":
     "The supplied credentials do not correspond to the previously signed in user.",
-  "auth/weak-password": "The password must be 6 characters long or more.",
+  "auth/weak-password": "The password must be 8 characters long or more.",
   "auth/web-storage-unsupported":
     "This browser is not supported or 3rd party cookies and data may be disabled.",
   "auth/already-initialized":
