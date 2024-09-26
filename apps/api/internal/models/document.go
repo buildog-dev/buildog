@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// Document represents a document in the system
 type Document struct {
 	ID          int64     `json:"id"`
 	TenantID    int64     `json:"tenant_id"`
