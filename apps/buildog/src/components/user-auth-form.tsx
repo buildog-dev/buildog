@@ -13,11 +13,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
 import { useToast } from "@ui/components/use-toast";
-import { firebaseErrorMessage } from "../lib/firebase-error-message";
+import { buildogErrorMessage } from "../lib/firebase-error-message";
+import { extractErrorCode } from "@/lib/firebase-helper";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-// represents the authentication response.
 interface AuthResponse {
   email?: string;
   emailVerified?: boolean;
@@ -40,32 +40,23 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
   });
-  //extracts the error code from a firebase error message. => Firebase: Error (auth/invalid-credential)
-  const extractErrorCode = (errorMessage: string): string => {
-    const match = errorMessage.match(/\(auth\/[a-zA-Z0-9\-]+\)/);
-    return match ? match[0].replace(/[()]/g, "") : "unknown-error";
-  };
 
   async function onSubmit(data: LoginFromValues) {
     const { email, password } = data;
 
     setLoading(true);
 
-    // sign in and get the response
     const response: AuthResponse = await Auth.signIn(email, password);
 
-    // If there's an error, handle it
     if (response.error) {
       const errorCode = extractErrorCode(response.error);
-      const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+      const errMsg = buildogErrorMessage[errorCode] || "An unknown error occurred.";
 
       toast({
         title: "Login Failed",
         description: errMsg,
       });
-    }
-    // Check if the email is verified
-    else if (!response.emailVerified) {
+    } else if (!response.emailVerified) {
       toast({
         title: "Email Not Verified",
         description: "Please verify your email.",
