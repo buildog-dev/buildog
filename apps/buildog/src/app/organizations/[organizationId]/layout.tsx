@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Appbar from "@/components/app-bar";
 import { useCallback, useState, useEffect } from "react";
