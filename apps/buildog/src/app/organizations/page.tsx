@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@repo/ui/components/ui/dialog";
-import { Textarea } from "@repo/ui/components/ui/textarea"
+import { Textarea } from "@repo/ui/components/ui/textarea";
 import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
 import { useRouter } from "next/navigation";
