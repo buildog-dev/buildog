@@ -17,10 +17,14 @@ import {
 import DefaultCard from "@/components/cards/default-card";
 import RichCard from "@/components/cards/feature-rich-card";
 import ImageCard from "@/components/cards/image-card";
+import DefaultFooter from "@/components/footers/default-footer";
+import LinksCenterFooter from "@/components/footers/links-center-footer";
+import EnhancedFooter from "@/components/footers/enhanced-footer";
 
 export default function DropdownMenuCheckboxes() {
   const [header, setHeader] = useState<string>("DefaultHeader");
   const [card, setCard] = useState<string>("DefaultCard");
+  const [footer, setFooter] = useState<string>("DefaultFooter");
 
   return (
     <div className="flex gap-4 h-full">
@@ -92,6 +96,40 @@ export default function DropdownMenuCheckboxes() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <div className="mt-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-slate-800 text-white" variant="outline">
+                Choose Footer
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Select a Footer</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={footer === "DefaultFooter"}
+                onCheckedChange={() => setFooter("DefaultFooter")}
+                className="cursor-pointer"
+              >
+                Default Footer
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={footer === "LinksCenterFooter"}
+                onCheckedChange={() => setFooter("LinksCenterFooter")}
+                className="cursor-pointer"
+              >
+                Social Links Center
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={footer === "EnhancedFooter"}
+                onCheckedChange={() => setFooter("EnhancedFooter")}
+                className="cursor-pointer"
+              >
+                Enhanced Footer
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="w-full rounded-lg p-4 border">
@@ -105,6 +143,12 @@ export default function DropdownMenuCheckboxes() {
           {card === "DefaultCard" && <DefaultCard />}
           {card === "RichCard" && <RichCard />}
           {card === "ImageCard" && <ImageCard />}
+        </div>
+        {/* Footer rendering */}
+        <div className="mt-8">
+          {footer === "DefaultFooter" && <DefaultFooter />}
+          {footer === "LinksCenterFooter" && <LinksCenterFooter />}
+          {footer === "EnhancedFooter" && <EnhancedFooter />}
         </div>
       </div>
     </div>

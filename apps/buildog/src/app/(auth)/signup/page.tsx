@@ -17,9 +17,9 @@ export default function SignUpPage() {
       <SignUpForm />
       <div className="flex gap-1 items-center justify-center text-sm">
         <p>Already have an account?</p>
-          <Link href="/login" className="underline">
-            Sign In
-          </Link>
+        <Link href="/login" className="underline">
+          Sign In
+        </Link>
       </div>
     </>
   );
