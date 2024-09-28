@@ -41,7 +41,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   async function onSubmit(data: LoginFromValues) {
     const { email, password } = data;
-
+    console.log(email);
     setLoading(true);
 
     const response: AuthResponse = await Auth.signIn(email, password);
