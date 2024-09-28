@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { Label } from "@ui/components/label";
+import { cn } from "@repo/ui/lib/utils";
 import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
@@ -11,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/components/form";
 import { useToast } from "@ui/components/use-toast";
-import { firebaseErrorMessage } from "../lib/firebase-error-message";
+import { buildogErrorMessage } from "../lib/firebase-error-message";
 import { extractErrorCode } from "@/lib/firebase-helper";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -48,7 +50,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     if (response.error) {
       const errorCode = extractErrorCode(response.error);
-      const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+      const errMsg = buildogErrorMessage[errorCode] || "An unknown error occurred.";
 
       toast({
         title: "Login Failed",
@@ -59,8 +61,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         title: "Email Not Verified",
         description: "Please verify your email.",
       });
-    } else {
-      router.push("/organizations");
     }
 
     setLoading(false);

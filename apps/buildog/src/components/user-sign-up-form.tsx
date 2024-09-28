@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
 import { ReloadIcon } from "@ui/components/react-icons";
-import { Auth, Service } from "@/web-sdk";
+import { Auth } from "@/web-sdk";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@ui/compone
 import { Label } from "@ui/components/label";
 import { Card, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
 import { useToast } from "@ui/components/use-toast";
-import { firebaseErrorMessage } from "../lib/firebase-error-message";
+import { buildogErrorMessage } from "../lib/firebase-error-message";
 import { extractErrorCode } from "@/lib/firebase-helper";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -45,22 +45,14 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
 
     if ("error" in response) {
       const errorCode = extractErrorCode(response.error);
-      const errMsg = firebaseErrorMessage[errorCode] || "An unknown error occurred.";
+      const errMsg = buildogErrorMessage[errorCode] || "An unknown error occurred.";
 
       toast({
         title: "Sign Up Failed",
         description: errMsg,
       });
     } else {
-      const createUserResponse = await Service.makeAuthenticatedRequest("users/create", "POST", {
-        first_name,
-        last_name,
-        email,
-      });
-
-      if (createUserResponse) {
-        setVerifyYourEmail(true);
-      }
+      setVerifyYourEmail(true);
     }
     setLoading(false);
   }
