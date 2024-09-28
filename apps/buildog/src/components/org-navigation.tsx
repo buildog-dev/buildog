@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { CheckIcon, CaretSortIcon, PlusCircledIcon } from "@ui/components/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/ui/avatar";
 import { cn } from "@repo/ui/lib/utils";
@@ -13,22 +13,35 @@ import {
 } from "@ui/components/command";
 import { DropdownMenuSeparator } from "@ui/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/popover";
-import getOrganizations from "@/lib/get-organizations";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import { Service } from "@/web-sdk";
+import { useAuth } from "@/components/auth-provider";
 
 const personalAccounts = [
   { id: 1, name: "John Doe", avatarUrl: "https://avatar.vercel.sh/john-doe.png" },
   { id: 2, name: "Jane Smith", avatarUrl: "https://avatar.vercel.sh/jane-smith.png" },
 ];
 
-export default function OrgNavigation() {
+export default function OrgSelectDropdown() {
+  const { user } = useAuth();
+  const [organizations, setOrganizations] = useState([]);
   const params = useParams();
   const { organizationId } = params;
 
-  const organizations = getOrganizations();
+  const getOrganizations = useCallback(async () => {
+    const response = await Service.makeAuthenticatedRequest("organizations");
+    if (response) {
+      setOrganizations(response);
+    }
+  }, []);
 
-  const currentOrganization = organizations.find((org) => org.id === organizationId);
+  useEffect(() => {
+    if (!user) return;
+    getOrganizations();
+  }, [user, getOrganizations]);
+
+  const currentOrganization = organizations.find((org) => org.OrganizationId === organizationId);
 
   const router = useRouter();
 
@@ -36,14 +49,20 @@ export default function OrgNavigation() {
     router.push(`/organizations/${organizationId}`);
   };
 
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string>("");
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedOrg, setSelectedOrg] = React.useState(currentOrganization);
-  const [selectedAccount, setSelectedAccount] = React.useState(personalAccounts[0]);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState(null);
+
+  useEffect(() => {
+    setSelectedOrg(currentOrganization);
+  }, [currentOrganization]);
 
   const filteredOrganizations = searchTerm
-    ? organizations.filter((org) => org.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    ? organizations.filter((org) =>
+        org.OrganizationName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : organizations;
 
   const filteredPersonalAccounts = searchTerm
@@ -51,6 +70,9 @@ export default function OrgNavigation() {
         account.name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : personalAccounts;
+
+  const shouldShowCreateOrganization =
+    !searchTerm || "create organization".includes(searchTerm.toLowerCase());
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -67,11 +89,11 @@ export default function OrgNavigation() {
                 <AvatarImage
                   className="aspect-square h-full w-full grayscale"
                   src="https://avatar.vercel.sh/acme-inc.png"
-                  alt={selectedOrg.name}
+                  alt={selectedOrg.OrganizationName}
                 />
-                <AvatarFallback>{selectedOrg.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{selectedOrg.OrganizationName.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="ml-1 mr-auto">{selectedOrg.name}</div>
+              <div className="ml-1 mr-auto">{selectedOrg.OrganizationName}</div>
             </>
           ) : selectedAccount ? (
             <>
@@ -92,7 +114,7 @@ export default function OrgNavigation() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search organization..."
             value={searchTerm}
@@ -136,32 +158,39 @@ export default function OrgNavigation() {
             )}
             {filteredOrganizations.length > 0 && (
               <CommandGroup>
-                <div className="pl-3 pr-3 font-medium text-zinc-400 text-xs pt-2 pb-2">Teams</div>
+                <div className="pl-3 pr-3 font-medium text-zinc-400 text-xs pt-2 pb-2">
+                  Organizations
+                </div>
                 {filteredOrganizations.map((org) => (
                   <CommandItem
-                    key={org.id}
+                    key={org.OrganizationId}
+                    value={org.OrganizationId.toString()}
                     onSelect={() => {
                       setSelectedOrg(org);
                       setSelectedAccount(null);
-                      setValue(org.id.toString() === value ? "" : org.id.toString());
-                      handleOrganizationChange(org.id.toString());
+                      setValue(
+                        org.OrganizationId.toString() === value ? "" : org.OrganizationId.toString()
+                      );
+                      handleOrganizationChange(org.OrganizationId.toString());
                       setOpen(false);
                     }}
-                    className={`cursor-pointer ${org.id === currentOrganization?.id ? "font-bold" : ""}`}
+                    className={`cursor-pointer ${org.OrganizationId === currentOrganization?.OrganizationId ? "font-bold" : ""}`}
                   >
                     <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
                       <AvatarImage
                         className="aspect-square h-full w-full grayscale"
                         src="https://avatar.vercel.sh/acme-inc.png"
-                        alt={org.name}
+                        alt={org.OrganizationName}
                       />
-                      <AvatarFallback>{org.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>{org.OrganizationName.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    {org.name}
+                    {org.OrganizationName}
                     <CheckIcon
                       className={cn(
                         "mr-0 ml-auto h-4 w-4",
-                        selectedOrg?.id === org.id ? "opacity-100" : "opacity-0"
+                        selectedOrg?.OrganizationId === org.OrganizationId
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                   </CommandItem>
@@ -169,17 +198,19 @@ export default function OrgNavigation() {
               </CommandGroup>
             )}
             <DropdownMenuSeparator />
-            <CommandItem
-              onSelect={(currentValue) => {
-                setValue(currentValue === value ? "" : currentValue);
-                setOpen(false);
-              }}
-            >
-              <Link href={"/organizations"} className="flex items-center py-1">
-                <PlusCircledIcon className="ml-1.5 h-5 w-5" />
-                <span className="ml-2">Create Organization</span>
-              </Link>
-            </CommandItem>
+            {shouldShowCreateOrganization && (
+              <CommandItem
+                onSelect={(currentValue) => {
+                  setValue(currentValue === value ? "" : currentValue);
+                  setOpen(false);
+                }}
+              >
+                <Link href={"/organizations"} className="flex items-center py-1">
+                  <PlusCircledIcon className="ml-1.5 h-5 w-5" />
+                  <span className="ml-2">Create Organization</span>
+                </Link>
+              </CommandItem>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>
