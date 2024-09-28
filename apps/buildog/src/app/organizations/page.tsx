@@ -9,8 +9,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@repo/ui/components/ui/dialog";
+import { Textarea } from "@repo/ui/components/ui/textarea"
 import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
 import { useRouter } from "next/navigation";
@@ -24,6 +24,7 @@ export default function Page() {
   const { user } = useAuth();
   const [organizations, setOrganizations] = useState([]);
   const [newOrgName, setNewOrgName] = useState("");
+  const [newOrgDescription, setNewOrgDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
@@ -44,10 +45,10 @@ export default function Page() {
     setIsLoading(true);
     const response = await Service.makeAuthenticatedRequest("organizations", "POST", {
       organization_name: newOrgName,
-      organization_description: "description",
+      organization_description: newOrgDescription,
     });
-    setIsLoading(false);
     if (response) {
+      setIsLoading(false);
       fetchOrganizations();
       setIsModalOpen(false);
     }
@@ -55,89 +56,25 @@ export default function Page() {
 
   return (
     <>
-      <div className="relative flex flex-col items-center justify-center min-h-screen p-6 pt-24 w-full max-w-6xl mx-auto">
+      <div className="min-h-screen p-6 pt-24 w-full max-w-6xl mx-auto">
         <OrganizationsHeader />
         {organizations.length === 0 ? (
-          // No organizations case
           <div className="flex flex-col items-center justify-center text-center space-y-4">
             <PlusCircledIcon className="h-12 w-12 text-gray-500" />
             <p className="text-lg text-gray-700">You don’t have any organizations yet.</p>
             <p className="text-sm text-gray-500">Click the button below to add a new one.</p>
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-              <DialogTrigger asChild>
-                <Button size="lg" className="mt-4" onClick={() => setIsModalOpen(true)}>
-                  Add Organization
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add New Organization</DialogTitle>
-                  <DialogDescription>Enter the name of your new organization.</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div>
-                    <Label htmlFor="orgName">Organization Name</Label>
-                    <Input
-                      id="orgName"
-                      value={newOrgName}
-                      onChange={(e) => setNewOrgName(e.target.value)}
-                      placeholder="My Unique Organization"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button
-                    onClick={handleCreateOrganization}
-                    className="w-full"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Creating..." : "Create Organization"}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <Button size="lg" onClick={() => setIsModalOpen(true)}>
+              Add Organization
+            </Button>
           </div>
         ) : (
-          // Organizations present case
           <div className="w-full">
             <div className="flex items-center justify-between w-full mb-6">
               <h2 className="text-2xl font-semibold">Your Organizations</h2>
-              <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" onClick={() => setIsModalOpen(true)}>
-                    Add Organization
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Organization</DialogTitle>
-                    <DialogDescription>Enter the name of your new organization.</DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div>
-                      <Label htmlFor="orgName">Organization Name</Label>
-                      <Input
-                        id="orgName"
-                        value={newOrgName}
-                        onChange={(e) => setNewOrgName(e.target.value)}
-                        placeholder="Organization Name"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      onClick={handleCreateOrganization}
-                      className="w-full"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "Creating..." : "Create Organization"}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <Button size="lg" onClick={() => setIsModalOpen(true)}>
+                Add Organization
+              </Button>
             </div>
-
-            {/* Organization cards grid */}
             <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10 overflow-hidden">
               {organizations.map((org) => (
                 <Card
@@ -159,6 +96,40 @@ export default function Page() {
             </div>
           </div>
         )}
+
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Organization</DialogTitle>
+              <DialogDescription>Enter the name of your new organization.</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="grid w-full max-w-sm items-center gap-1.5">
+                <Label htmlFor="orgName">Organization Name</Label>
+                <Input
+                  id="orgName"
+                  value={newOrgName}
+                  onChange={(e) => setNewOrgName(e.target.value)}
+                  placeholder="Organization Name"
+                />
+              </div>
+              <div className="grid w-full max-w-sm items-center gap-1.5">
+                <Label htmlFor="orgDescription">Organization Description</Label>
+                <Textarea
+                  id="orgDescription"
+                  value={newOrgDescription}
+                  onChange={(e) => setNewOrgDescription(e.target.value)}
+                  placeholder="Organization Description"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={handleCreateOrganization} className="w-full" disabled={isLoading}>
+                {isLoading ? "Creating..." : "Create Organization"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
