@@ -69,13 +69,13 @@ export default function Page() {
           </div>
         ) : (
           <div className="w-full">
-            <div className="flex items-center justify-between w-full mb-6">
+            <div className="flex items-center justify-between w-full mb-6 px-2">
               <h2 className="text-2xl font-semibold">Your Organizations</h2>
               <Button size="lg" onClick={() => setIsModalOpen(true)}>
                 Add Organization
               </Button>
             </div>
-            <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10 overflow-hidden">
+            <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10 overflow-hidden px-2 pb-6">
               {organizations.map((org) => (
                 <Card
                   key={org.OrganizationId}
