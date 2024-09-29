@@ -3,7 +3,7 @@ import { Button } from "@ui/components/ui/button";
 
 export default function DefaultCard() {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <Card className="bg-white shadow-md">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">Default Card</CardTitle>

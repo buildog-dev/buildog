@@ -1,28 +1,91 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ui/components/ui/card";
-import { Badge } from "@ui/components/ui/badge";
 import { Button } from "@ui/components/ui/button";
-import { HeartFilledIcon, CalendarIcon } from "@ui/components/react-icons";
+
 export default function FeatureRichCard() {
+  const today = new Date();
+  const formattedDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
   return (
-    <Card className="bg-gray-100 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold text-primary">Feature-rich Card</CardTitle>
-        <Badge className="w-12">New</Badge>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-700">Packed with features for an engaging blog post preview.</p>
-        <div className="flex items-center mt-4 text-sm text-gray-500">
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          <span>May 20, 2023</span>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button>Read More</Button>
-        <Button variant="ghost">
-          <HeartFilledIcon className="mr-2 h-4 w-4" />
-          Like
-        </Button>
-      </CardFooter>
-    </Card>
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <Card className="flex flex-col">
+        <CardHeader>
+          <h3 className="text-lg font-semibold">The Power of Next.js</h3>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Explore the features that make Next.js a powerful framework for React applications.
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between mt-auto">
+          <div className="text-sm text-muted-foreground">{formattedDate}</div>
+          <Button variant="outline" size="sm">
+            Read More
+          </Button>
+        </CardFooter>
+      </Card>
+      <Card className="flex flex-col">
+        <CardHeader>
+          <h3 className="text-lg font-semibold">The Power of Next.js</h3>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Explore the features that make Next.js a powerful framework for React applications.
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between mt-auto">
+          <div className="text-sm text-muted-foreground">{formattedDate}</div>
+          <Button variant="outline" size="sm">
+            Read More
+          </Button>
+        </CardFooter>
+      </Card>
+      <Card className="flex flex-col">
+        <CardHeader>
+          <h3 className="text-lg font-semibold">The Power of Next.js</h3>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Explore the features that make Next.js a powerful framework for React applications.
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between mt-auto">
+          <div className="text-sm text-muted-foreground">{formattedDate}</div>
+          <Button variant="outline" size="sm">
+            Read More
+          </Button>
+        </CardFooter>
+      </Card>
+      <Card className="flex flex-col">
+        <CardHeader>
+          <h3 className="text-lg font-semibold">The Power of Next.js</h3>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Explore the features that make Next.js a powerful framework for React applications.
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between mt-auto">
+          <div className="text-sm text-muted-foreground">{formattedDate}</div>
+          <Button variant="outline" size="sm">
+            Read More
+          </Button>
+        </CardFooter>
+      </Card>
+      <Card className="flex flex-col">
+        <CardHeader>
+          <h3 className="text-lg font-semibold">The Power of Next.js</h3>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Explore the features that make Next.js a powerful framework for React applications.
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between mt-auto">
+          <div className="text-sm text-muted-foreground">{formattedDate}</div>
+          <Button variant="outline" size="sm">
+            Read More
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
