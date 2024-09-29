@@ -23,7 +23,7 @@ const personalAccounts = [
   { id: 2, name: "Jane Smith", avatarUrl: "https://avatar.vercel.sh/jane-smith.png" },
 ];
 
-export default function OrgSelectDropdown() {
+export default function OrgNavigation() {
   const { user } = useAuth();
   const [organizations, setOrganizations] = useState([]);
   const params = useParams();
