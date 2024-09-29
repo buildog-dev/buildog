@@ -14,7 +14,7 @@ export default function DefaultCard() {
           </p>
         </CardContent>
         <CardFooter>
-          <Button variant="outline">Read More</Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
       <Card className="bg-white shadow-md">
@@ -27,7 +27,7 @@ export default function DefaultCard() {
           </p>
         </CardContent>
         <CardFooter>
-          <Button variant="outline">Read More</Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
       <Card className="bg-white shadow-md">
@@ -40,7 +40,7 @@ export default function DefaultCard() {
           </p>
         </CardContent>
         <CardFooter>
-          <Button variant="outline">Read More</Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
 
@@ -54,7 +54,7 @@ export default function DefaultCard() {
           </p>
         </CardContent>
         <CardFooter>
-          <Button variant="outline">Read More</Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
     </div>

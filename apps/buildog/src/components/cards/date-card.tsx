@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ui/components/ui/card";
 import { Button } from "@ui/components/ui/button";
 
-export default function FeatureRichCard() {
+export default function DateCard() {
   const today = new Date();
   const formattedDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
   return (
@@ -17,9 +17,7 @@ export default function FeatureRichCard() {
         </CardContent>
         <CardFooter className="flex justify-between mt-auto">
           <div className="text-sm text-muted-foreground">{formattedDate}</div>
-          <Button variant="outline" size="sm">
-            Read More
-          </Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
       <Card className="flex flex-col">
@@ -33,9 +31,7 @@ export default function FeatureRichCard() {
         </CardContent>
         <CardFooter className="flex justify-between mt-auto">
           <div className="text-sm text-muted-foreground">{formattedDate}</div>
-          <Button variant="outline" size="sm">
-            Read More
-          </Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
       <Card className="flex flex-col">
@@ -49,9 +45,7 @@ export default function FeatureRichCard() {
         </CardContent>
         <CardFooter className="flex justify-between mt-auto">
           <div className="text-sm text-muted-foreground">{formattedDate}</div>
-          <Button variant="outline" size="sm">
-            Read More
-          </Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
       <Card className="flex flex-col">
@@ -65,9 +59,7 @@ export default function FeatureRichCard() {
         </CardContent>
         <CardFooter className="flex justify-between mt-auto">
           <div className="text-sm text-muted-foreground">{formattedDate}</div>
-          <Button variant="outline" size="sm">
-            Read More
-          </Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
       <Card className="flex flex-col">
@@ -81,9 +73,7 @@ export default function FeatureRichCard() {
         </CardContent>
         <CardFooter className="flex justify-between mt-auto">
           <div className="text-sm text-muted-foreground">{formattedDate}</div>
-          <Button variant="outline" size="sm">
-            Read More
-          </Button>
+          <Button>Read More</Button>
         </CardFooter>
       </Card>
     </div>

@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@ui/components/dropdown-menu";
 import DefaultCard from "@/components/cards/default-card";
-import RichCard from "@/components/cards/feature-rich-card";
+import DateCard from "@/components/cards/date-card";
 import ImageCard from "@/components/cards/image-card";
 import DefaultFooter from "@/components/footers/default-footer";
 import EnhancedFooter from "@/components/footers/enhanced-footer";
@@ -80,11 +80,11 @@ export default function DropdownMenuCheckboxes() {
                 Default Blog Card
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={card === "RichCard"}
-                onCheckedChange={() => setCard("RichCard")}
+                checked={card === "DateCard"}
+                onCheckedChange={() => setCard("DateCard")}
                 className="cursor-pointer"
               >
-                Rich Blog Card
+                Blog Card With Date
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 checked={card === "ImageCard"}
@@ -141,7 +141,7 @@ export default function DropdownMenuCheckboxes() {
         {/* Blog card rendering */}
         <div className="mt-8 flex flex-wrap gap-4 p-10">
           {card === "DefaultCard" && <DefaultCard />}
-          {card === "RichCard" && <RichCard />}
+          {card === "DateCard" && <DateCard />}
           {card === "ImageCard" && <ImageCard />}
         </div>
 
