@@ -79,14 +79,35 @@ func (r *OrganizationRepository) CreateOrganization(organization *models.Organiz
 	return createdOrganization, nil
 }
 
-func (r *OrganizationRepository) GetOrganization(organization_id string) (models.OrganizationResponse, error) {
+func (r *OrganizationRepository) GetOrganization(organization_id string, user_id string) (models.OrganizationResponse, error) {
+	// query := `
+	// 	SELECT
+	// 		id, name, description, created_by
+	// 	FROM
+	// 		organizations
+	// 	WHERE
+	// 		id=$1;
+	// `
 	query := `
-		SELECT id, name, description, created_by FROM organizations WHERE id=$1;
+		SELECT
+			o.id,
+			o.name,
+			o.description,
+			o.created_by
+		FROM 
+			organizations o 
+		LEFT JOIN 
+			organization_users ou 
+		ON 
+			o.id = ou.organization_id AND ou.user_id = $2
+		WHERE 
+			o.id = $1 AND (ou.user_id IS NOT NULL OR o.created_by = $2);
 	`
 	var getOrganization models.OrganizationResponse
 	err := r.db.QueryRow(
 		query,
 		organization_id,
+		user_id,
 	).Scan(
 		&getOrganization.Id,
 		&getOrganization.Name,
