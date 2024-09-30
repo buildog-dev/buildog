@@ -1,5 +1,5 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,9 @@ import {
 } from "@ui/components/form";
 import { Input } from "@ui/components/input";
 import { toast } from "@ui/components/use-toast";
+import { Service } from "@/web-sdk";
+import { tree } from "next/dist/build/templates/app-page";
+import { useAuth } from "@/components/auth-provider";
 
 const nameUpdateFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -28,6 +31,31 @@ type NameUpdateFormValues = z.infer<typeof nameUpdateFormSchema>;
 type EmailUpdateFormValues = z.infer<typeof emailUpdateFormSchema>;
 
 export default function ProfilePage() {
+  const { user } = useAuth();
+  const [userCredentials, setUserCredentials] = useState<{
+    user_id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+  }>({
+    user_id: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+  });
+
+  const fetchUser = useCallback(async () => {
+    const response = await Service.makeAuthenticatedRequest("user");
+    if (response) {
+      setUserCredentials(response);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchUser();
+  }, [user, fetchUser]);
+
   const nameForm = useForm<NameUpdateFormValues>({
     resolver: zodResolver(nameUpdateFormSchema),
     mode: "onChange",
@@ -77,7 +105,13 @@ export default function ProfilePage() {
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input className="w-96" type="text" placeholder="John" {...field} />
+                      <Input
+                        className="w-96"
+                        type="text"
+                        placeholder={userCredentials.first_name}
+                        disabled={true}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -90,7 +124,13 @@ export default function ProfilePage() {
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input className="w-96" type="text" placeholder="Doe" {...field} />
+                      <Input
+                        className="w-96"
+                        type="text"
+                        placeholder={userCredentials.last_name}
+                        disabled={true}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -123,7 +163,8 @@ export default function ProfilePage() {
                       <Input
                         className="w-96"
                         type="email"
-                        placeholder="buildog@example.com"
+                        placeholder={userCredentials.email}
+                        disabled={true}
                         {...field}
                       />
                     </FormControl>
