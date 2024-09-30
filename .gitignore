@@ -28,6 +28,7 @@ out/
 build
 dist
 main
+main.exe
 
 
 # Debug
