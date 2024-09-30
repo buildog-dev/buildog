@@ -1,7 +1,7 @@
 package api
 
 import (
-	"encoding/json"
+	"api/pkg/utils"
 	"fmt"
 	"net/http"
 
@@ -20,14 +20,18 @@ func (a *api) checkAdminOrOwner(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Extract user ID and organization ID from the request
 		// This is a placeholder and should be replaced with actual extraction logic
-		var requestBody struct {
-			UserID string `json:"user_id"`
-		}
-		if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-			http.Error(w, "Invalid request body", http.StatusBadRequest)
+		claims, ok := utils.GetTokenClaims(r)
+		if !ok {
+			utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
 			return
 		}
-		userID := requestBody.UserID
+
+		userID, ok := utils.GetUserIDFromClaims(claims)
+		if !ok {
+			utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+			return
+		}
+
 		fmt.Println("userID", userID)
 		organizationID := r.Header.Get("organization_id")
 		fmt.Println("organizationID", organizationID)

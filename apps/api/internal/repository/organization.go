@@ -3,6 +3,8 @@ package repository
 import (
 	"api/internal/models"
 	"api/pkg/database"
+	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -77,4 +79,52 @@ func (r *OrganizationRepository) CreateOrganization(organization *models.Organiz
 	}
 
 	return createdOrganization, nil
+}
+
+func (r *OrganizationRepository) UpdateOrganization(organization *models.OrganizationInfo) (models.OrganizationInfo, error) {
+	query := `
+		UPDATE organizations
+		SET 
+			name = $1, 
+			description = $2,
+			updated_at = $3
+		WHERE 
+			id = $4
+		RETURNING id,name,description
+	`
+
+	fmt.Println(organization.OrganizationId, organization.OrganizationName, organization.OrganizationDescription)
+
+	var organizationInfo models.OrganizationInfo
+
+	err := r.db.QueryRow(
+		query,
+		organization.OrganizationName,
+		organization.OrganizationDescription,
+		time.Now(),
+		organization.OrganizationId,
+	).Scan(
+		&organizationInfo.OrganizationId,
+		&organizationInfo.OrganizationName,
+		&organizationInfo.OrganizationDescription,
+	)
+
+	if err != nil {
+		return organizationInfo, err
+	}
+
+	return organizationInfo, nil
+}
+
+func (r *OrganizationRepository) DeleteOrganization(organization *models.DeleteOrganizationPayload) (sql.Result, error) {
+	query := `
+		DELETE FROM organizations
+		WHERE id = $1
+	`
+	result, err := r.db.Exec(query, organization.Id)
+
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }

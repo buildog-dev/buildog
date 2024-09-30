@@ -79,3 +79,37 @@ func (a *api) createOrganizationHandler(w http.ResponseWriter, r *http.Request) 
 
 	utils.JSONResponse(w, http.StatusCreated, organizationUser)
 }
+
+func (a *api) updateOrganizationHandler(w http.ResponseWriter, r *http.Request) {
+	var payload models.OrganizationInfo
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	organization, err := a.organizationsRepo.UpdateOrganization(&payload)
+	if err != nil {
+		log.Printf("Error updating organization: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to update organization")
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusCreated, organization)
+}
+
+func (a *api) deleteOrganizationHandler(w http.ResponseWriter, r *http.Request) {
+	var payload models.DeleteOrganizationPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	result, err := a.organizationsRepo.DeleteOrganization(&payload)
+	if err != nil {
+		log.Printf("Error creating user: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusCreated, result)
+}
