@@ -60,7 +60,7 @@ func (a *api) getUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := a.userRepo.GetUserWithUID(userID)
+	user, err := a.userRepo.GetUserWithID(userID)
 	if err != nil {
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to get user")
 		return

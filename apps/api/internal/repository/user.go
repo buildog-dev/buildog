@@ -41,7 +41,7 @@ func (r *UserRepository) GetUserWithEmail(email string) (models.User, error) {
 
 	return user, nil
 }
-func (r *UserRepository) GetUserWithUID(uid string) (models.User, error) {
+func (r *UserRepository) GetUserWithID(uid string) (models.User, error) {
 	query := `SELECT id, first_name, last_name, email FROM users WHERE id=$1`
 	row := r.db.QueryRow(query, uid)
 

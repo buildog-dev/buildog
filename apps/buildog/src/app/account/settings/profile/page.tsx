@@ -15,7 +15,6 @@ import {
 import { Input } from "@ui/components/input";
 import { toast } from "@ui/components/use-toast";
 import { Service } from "@/web-sdk";
-import { tree } from "next/dist/build/templates/app-page";
 import { useAuth } from "@/components/auth-provider";
 
 const nameUpdateFormSchema = z.object({
@@ -32,6 +31,7 @@ type EmailUpdateFormValues = z.infer<typeof emailUpdateFormSchema>;
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
   const [userCredentials, setUserCredentials] = useState<{
     user_id: string;
     first_name: string;
@@ -46,13 +46,19 @@ export default function ProfilePage() {
 
   const fetchUser = useCallback(async () => {
     const response = await Service.makeAuthenticatedRequest("user");
-    if (response) {
+    if (response.error) {
+      toast({
+        title: "Error",
+        description: response.error,
+      });
+    } else {
       setUserCredentials(response);
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) setLoading(true);
     fetchUser();
   }, [user, fetchUser]);
 
@@ -90,96 +96,99 @@ export default function ProfilePage() {
 
   return (
     <Fragment>
-      <Form {...nameForm}>
-        <form onSubmit={nameForm.handleSubmit(onNameFormSubmit)} className="space-y-8">
-          <div className="overflow-y-auto w-full border rounded-lg">
-            <div className="w-full p-5 space-y-4">
-              <h2 className="text-2xl font-bold tracking-tight">Profile Information</h2>
-              <div className="w-full flex items-center">
-                <span className="w-full border-t" />
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <Form {...nameForm}>
+            <form onSubmit={nameForm.handleSubmit(onNameFormSubmit)} className="space-y-8">
+              <div className="overflow-y-auto w-full border rounded-lg">
+                <div className="w-full p-5 space-y-4">
+                  <h2 className="text-2xl font-bold tracking-tight">Profile Information</h2>
+                  <div className="w-full flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <FormField
+                    control={nameForm.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="w-96"
+                            type="text"
+                            placeholder={userCredentials.first_name}
+                            disabled={true}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={nameForm.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="w-96"
+                            type="text"
+                            placeholder={userCredentials.last_name}
+                            disabled={true}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <hr />
+                <div className="w-full p-4 space-y-4 flex justify-end">
+                  <Button type="submit">Save</Button>
+                </div>
               </div>
-              <FormField
-                control={nameForm.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-96"
-                        type="text"
-                        placeholder={userCredentials.first_name}
-                        disabled={true}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={nameForm.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-96"
-                        type="text"
-                        placeholder={userCredentials.last_name}
-                        disabled={true}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <hr />
-            <div className="w-full p-4 space-y-4 flex justify-end">
-              <Button type="submit">Save</Button>
-            </div>
-          </div>
-        </form>
-      </Form>
+            </form>
+          </Form>
 
-      <Form {...emailForm}>
-        <form onSubmit={emailForm.handleSubmit(onEmailFormSubmit)} className="space-y-8 mt-8">
-          <div className="overflow-y-auto w-full border rounded-lg">
-            <div className="w-full p-5 space-y-4">
-              <h2 className="text-2xl font-bold tracking-tight">Account Information</h2>
-              <div className="w-full flex items-center">
-                <span className="w-full border-t" />
+          <Form {...emailForm}>
+            <form onSubmit={emailForm.handleSubmit(onEmailFormSubmit)} className="space-y-8 mt-8">
+              <div className="overflow-y-auto w-full border rounded-lg">
+                <div className="w-full p-5 space-y-4">
+                  <h2 className="text-2xl font-bold tracking-tight">Account Information</h2>
+                  <div className="w-full flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <FormField
+                    control={emailForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="w-96"
+                            type="email"
+                            placeholder={userCredentials.email}
+                            disabled={true}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <hr />
+                <div className="w-full p-4 space-y-4 flex justify-end">
+                  <Button type="submit">Save</Button>
+                </div>
               </div>
-              <FormField
-                control={emailForm.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="w-96"
-                        type="email"
-                        placeholder={userCredentials.email}
-                        disabled={true}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <hr />
-            <div className="w-full p-4 space-y-4 flex justify-end">
-              <Button type="submit">Save</Button>
-            </div>
-          </div>
-        </form>
-      </Form>
+            </form>
+          </Form>
+        </>
+      )}
     </Fragment>
   );
 }
