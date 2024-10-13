@@ -21,10 +21,27 @@ import DefaultFooter from "@/components/footers/default-footer";
 import EnhancedFooter from "@/components/footers/enhanced-footer";
 import LinksCenterFooter from "@/components/footers/links-center-footer";
 
-export default function DropdownMenuCheckboxes() {
+export default function Page() {
   const [header, setHeader] = useState<string>("DefaultHeader");
   const [card, setCard] = useState<string>("DefaultCard");
   const [footer, setFooter] = useState<string>("DefaultFooter");
+  const headers = [
+    { name: "DefaultHeader", component: <DefaultHeader /> },
+    { name: "LinksCenterHeader", component: <LinksCenterHeader /> },
+    { name: "NameCenterHeader", component: <NameCenterHeader /> },
+  ];
+
+  const cards = [
+    { name: "DefaultCard", component: <DefaultCard /> },
+    { name: "DateCard", component: <DateCard /> },
+    { name: "ImageCard", component: <ImageCard /> },
+  ];
+
+  const footers = [
+    { name: "DefaultFooter", component: <DefaultFooter /> },
+    { name: "EnhancedFooter", component: <EnhancedFooter /> },
+    { name: "LinksCenterFooter", component: <LinksCenterFooter /> },
+  ];
 
   return (
     <div className="flex gap-4 h-full">
