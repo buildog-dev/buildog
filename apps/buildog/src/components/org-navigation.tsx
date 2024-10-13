@@ -18,16 +18,15 @@ import Link from "next/link";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
 
-const personalAccounts = [
-  { id: 1, name: "John Doe", avatarUrl: "https://avatar.vercel.sh/john-doe.png" },
-  { id: 2, name: "Jane Smith", avatarUrl: "https://avatar.vercel.sh/jane-smith.png" },
-];
-
 export default function OrgNavigation() {
-  const { user } = useAuth();
   const [organizations, setOrganizations] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { user } = useAuth();
   const params = useParams();
   const { organizationId } = params;
+  const router = useRouter();
 
   const getOrganizations = useCallback(async () => {
     const response = await Service.makeAuthenticatedRequest("organizations");
@@ -43,36 +42,11 @@ export default function OrgNavigation() {
 
   const currentOrganization = organizations.find((org) => org.OrganizationId === organizationId);
 
-  const router = useRouter();
-
-  const handleOrganizationChange = (organizationId: string) => {
-    router.push(`/organizations/${organizationId}`);
-  };
-
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedOrg, setSelectedOrg] = useState(null);
-  const [selectedAccount, setSelectedAccount] = useState(null);
-
-  useEffect(() => {
-    setSelectedOrg(currentOrganization);
-  }, [currentOrganization]);
-
   const filteredOrganizations = searchTerm
     ? organizations.filter((org) =>
         org.OrganizationName.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : organizations;
-
-  const filteredPersonalAccounts = searchTerm
-    ? personalAccounts.filter((account) =>
-        account.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : personalAccounts;
-
-  const shouldShowCreateOrganization =
-    !searchTerm || "create organization".includes(searchTerm.toLowerCase());
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -83,29 +57,17 @@ export default function OrgNavigation() {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {selectedOrg ? (
+          {currentOrganization ? (
             <>
               <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
                 <AvatarImage
                   className="aspect-square h-full w-full grayscale"
                   src="https://avatar.vercel.sh/acme-inc.png"
-                  alt={selectedOrg.OrganizationName}
+                  alt={currentOrganization.OrganizationName}
                 />
-                <AvatarFallback>{selectedOrg.OrganizationName.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{currentOrganization.OrganizationName.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="ml-1 mr-auto">{selectedOrg.OrganizationName}</div>
-            </>
-          ) : selectedAccount ? (
-            <>
-              <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-                <AvatarImage
-                  className="aspect-square h-full w-full grayscale"
-                  src={selectedAccount.avatarUrl}
-                  alt={selectedAccount.name}
-                />
-                <AvatarFallback>{selectedAccount.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <div className="ml-1 mr-auto">{selectedAccount.name}</div>
+              <div className="ml-1 mr-auto">{currentOrganization.OrganizationName}</div>
             </>
           ) : (
             "Select Organization"
@@ -121,40 +83,10 @@ export default function OrgNavigation() {
             onValueChange={setSearchTerm}
           />
           <CommandList>
-            <CommandEmpty>No account or organization found.</CommandEmpty>
-            {filteredPersonalAccounts.length > 0 && (
-              <CommandGroup>
-                <div className="pl-3 pr-3 font-medium text-zinc-400 text-xs pt-2 pb-2">
-                  Personal Account
-                </div>
-                {filteredPersonalAccounts.map((account) => (
-                  <CommandItem
-                    key={account.id}
-                    onSelect={() => {
-                      setSelectedAccount(account);
-                      setSelectedOrg(null);
-                      setValue(account.id.toString() === value ? "" : account.id.toString());
-                      setOpen(false);
-                    }}
-                  >
-                    <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-                      <AvatarImage
-                        className="aspect-square h-full w-full grayscale"
-                        src={account.avatarUrl}
-                        alt={account.name}
-                      />
-                      <AvatarFallback>{account.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    {account.name}
-                    <CheckIcon
-                      className={cn(
-                        "mr-0 ml-auto h-4 w-4",
-                        selectedAccount?.id === account.id ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+            {filteredOrganizations.length === 0 && (
+              <CommandEmpty>
+                {searchTerm ? `There is no match for "${searchTerm}".` : "No organization found."}
+              </CommandEmpty>
             )}
             {filteredOrganizations.length > 0 && (
               <CommandGroup>
@@ -166,12 +98,7 @@ export default function OrgNavigation() {
                     key={org.OrganizationId}
                     value={org.OrganizationId.toString()}
                     onSelect={() => {
-                      setSelectedOrg(org);
-                      setSelectedAccount(null);
-                      setValue(
-                        org.OrganizationId.toString() === value ? "" : org.OrganizationId.toString()
-                      );
-                      handleOrganizationChange(org.OrganizationId.toString());
+                      router.push(`/organizations/${org.OrganizationId}`);
                       setOpen(false);
                     }}
                     className={`cursor-pointer ${org.OrganizationId === currentOrganization?.OrganizationId ? "font-bold" : ""}`}
@@ -188,7 +115,7 @@ export default function OrgNavigation() {
                     <CheckIcon
                       className={cn(
                         "mr-0 ml-auto h-4 w-4",
-                        selectedOrg?.OrganizationId === org.OrganizationId
+                        currentOrganization?.OrganizationId === org.OrganizationId
                           ? "opacity-100"
                           : "opacity-0"
                       )}
@@ -197,21 +124,15 @@ export default function OrgNavigation() {
                 ))}
               </CommandGroup>
             )}
-            <DropdownMenuSeparator />
-            {shouldShowCreateOrganization && (
-              <CommandItem
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue);
-                  setOpen(false);
-                }}
-              >
-                <Link href={"/organizations"} className="flex items-center py-1">
-                  <PlusCircledIcon className="ml-1.5 h-5 w-5" />
-                  <span className="ml-2">Create Organization</span>
-                </Link>
-              </CommandItem>
-            )}
           </CommandList>
+          <DropdownMenuSeparator />
+          <Link
+            href="/organizations"
+            className="flex items-center py-1 px-1 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white"
+          >
+            <PlusCircledIcon className="ml-1.5 h-5 w-5" />
+            <span className="ml-2">Create Organization</span>
+          </Link>
         </Command>
       </PopoverContent>
     </Popover>
