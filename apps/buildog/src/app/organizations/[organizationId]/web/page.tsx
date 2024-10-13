@@ -42,6 +42,13 @@ export default function Page() {
     { name: "EnhancedFooter", component: <EnhancedFooter /> },
     { name: "LinksCenterFooter", component: <LinksCenterFooter /> },
   ];
+  const renderComponent = (items, selectedName) => {
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].name === selectedName) {
+        return items[i].component;
+      }
+    }
+  };
 
   return (
     <div className="flex gap-4 h-full">
