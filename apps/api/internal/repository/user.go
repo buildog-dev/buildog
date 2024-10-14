@@ -41,6 +41,21 @@ func (r *UserRepository) GetUserWithEmail(email string) (models.User, error) {
 
 	return user, nil
 }
+func (r *UserRepository) GetUserWithID(uid string) (models.GetUserPayload, error) {
+	query := `SELECT first_name, last_name, email FROM users WHERE id=$1`
+	row := r.db.QueryRow(query, uid)
+
+	var user models.GetUserPayload
+	err := row.Scan(&user.FirstName, &user.LastName, &user.Email)
+	if err == sql.ErrNoRows {
+		return models.GetUserPayload{}, fmt.Errorf("user not found")
+	}
+	if err != nil {
+		return models.GetUserPayload{}, fmt.Errorf("failed to get user from database: %s", err)
+	}
+
+	return user, nil
+}
 
 // func (r *UserRepository) CreateTenantUser(user models.User, tenantId int64, role string) error {
 // 	query := `INSERT INTO tenantUsers (user_id, tenant_id, role) VALUES ($1, $2, $3)`
