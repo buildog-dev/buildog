@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 import DefaultHeader from "@/components/themes/default-header";
 import LinksCenterHeader from "@/components/themes/links-center-header";
 import NameCenterHeader from "@/components/themes/name-center-header";
-import { useState } from "react";
 import { Button } from "@ui/components/button";
 import {
   DropdownMenu,
@@ -21,10 +21,18 @@ import DefaultFooter from "@/components/footers/default-footer";
 import EnhancedFooter from "@/components/footers/enhanced-footer";
 import LinksCenterFooter from "@/components/footers/links-center-footer";
 
-export default function DropdownMenuCheckboxes() {
+export default function Page() {
   const [header, setHeader] = useState<string>("DefaultHeader");
   const [card, setCard] = useState<string>("DefaultCard");
   const [footer, setFooter] = useState<string>("DefaultFooter");
+
+  const renderCards = (Component: React.ComponentType, count: number) => {
+    const cards = [];
+    for (let index = 0; index < count; index++) {
+      cards.push(<Component key={index} />);
+    }
+    return cards;
+  };
 
   return (
     <div className="flex gap-4 h-full">
@@ -61,7 +69,6 @@ export default function DropdownMenuCheckboxes() {
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
         <div className="mt-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -133,19 +140,19 @@ export default function DropdownMenuCheckboxes() {
       </div>
 
       <div className="w-full rounded-lg p-4 border">
-        {/* Header rendering */}
+        {/* Header Rendering */}
         {header === "DefaultHeader" && <DefaultHeader />}
         {header === "LinksCenterHeader" && <LinksCenterHeader />}
         {header === "NameCenterHeader" && <NameCenterHeader />}
 
-        {/* Blog card rendering */}
+        {/* Blog Card Rendering */}
         <div className="mt-8 flex flex-wrap gap-4 p-10">
-          {card === "DefaultCard" && <DefaultCard />}
-          {card === "DateCard" && <DateCard />}
-          {card === "ImageCard" && <ImageCard />}
+          {card === "DefaultCard" && renderCards(DefaultCard, 5)}
+          {card === "DateCard" && renderCards(DateCard, 5)}
+          {card === "ImageCard" && renderCards(ImageCard, 5)}
         </div>
 
-        {/* Footer rendering */}
+        {/* Footer Rendering */}
         <div className="mt-8">
           {footer === "DefaultFooter" && <DefaultFooter />}
           {footer === "EnhancedFooter" && <EnhancedFooter />}
