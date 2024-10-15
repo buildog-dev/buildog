@@ -44,7 +44,7 @@ func (r *OrganizationUserRepository) CreateOrganizationUser(user *models.Organiz
 	return createdOrganizationUser, nil
 }
 
-func (r *OrganizationUserRepository) GetOrganizationUser(user_id, organization_id string) (string, error) {
+func (r *OrganizationUserRepository) GetOrganizationUserRole( organization_id string,user_id string) (string, error) {
 	query := `
 		SELECT role FROM organization_users where organization_id = $1 and user_id = $2
 	`
@@ -131,4 +131,36 @@ func (r *OrganizationUserRepository) DeleteOrganizationUser(organizationID, user
 	}
 
 	return nil
+}
+
+// GetOrganizationUserInfo retrieves detailed information about a user in an organization
+func (r *OrganizationUserRepository) GetOrganizationUserInfo(userID string, organizationID string) (*models.OrganizationUserInfo, error) {
+	query := `
+		SELECT ou.organization_id, ou.user_id, ou.role, ou.created_at, ou.updated_at,
+			   u.first_name, u.last_name, u.email
+		FROM organization_users ou
+		LEFT JOIN users u ON ou.user_id = u.id
+		WHERE ou.user_id = $1 AND ou.organization_id = $2
+	`
+
+	var userInfo models.OrganizationUserInfo
+	err := r.db.QueryRow(query, userID, organizationID).Scan(
+		&userInfo.UserID,
+		&userInfo.OrganizationID,
+		&userInfo.Role,
+		&userInfo.CreatedAt,
+		&userInfo.UpdatedAt,
+		&userInfo.FirstName,
+		&userInfo.LastName,
+		&userInfo.Email,
+	)
+	if err == sql.ErrNoRows {
+		return nil, ErrOrganizationUserNotFound{UserID: userID}
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &userInfo, nil
 }
