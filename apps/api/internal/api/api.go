@@ -54,9 +54,11 @@ func (a *api) Routes() http.Handler {
 	protectedRouter.HandleFunc("/users/create", a.createUserHandler).Methods(http.MethodPost, http.MethodOptions)
 	protectedRouter.HandleFunc("/organizations", a.getOrganizationsHandler).Methods(http.MethodGet, http.MethodOptions)
 	protectedRouter.HandleFunc("/organizations", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
+	
 	protectedRouter.HandleFunc("/organization-user", a.addUserToOrganization).Methods(http.MethodPost, http.MethodOptions)
 	protectedRouter.HandleFunc("/organization-user", a.updateUserRoleInOrganization).Methods(http.MethodPut, http.MethodOptions)
 	protectedRouter.HandleFunc("/organization-user", a.deleteUserFromOrganization).Methods(http.MethodDelete, http.MethodOptions)
+	protectedRouter.HandleFunc("/organization-user", a.listOrganizationUsers).Methods(http.MethodGet, http.MethodOptions)
 	protectedRouter.HandleFunc("/organization-user/{user_id}", a.getOrganizationUserInfo).Methods(http.MethodGet, http.MethodOptions)
 	
 	return router

@@ -189,4 +189,25 @@ func (a *api) getOrganizationUserInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func (a *api) listOrganizationUsers(w http.ResponseWriter, r *http.Request) {
+	organizationID := r.Header.Get("organization_id")
+	if organizationID == "" {
+		utils.JSONError(w, http.StatusBadRequest, "Organization ID is required")
+		return
+	}
+
+	users, err := a.organizationUsersRepo.ListOrganizationUsers(organizationID)
+	if err != nil {
+		log.Printf("Error listing organization users: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to list organization users")
+		return
+	}
+
+	if len(users) == 0 {
+		utils.JSONResponse(w, http.StatusOK, []models.OrganizationUserInfo{})
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, users)
+}
 

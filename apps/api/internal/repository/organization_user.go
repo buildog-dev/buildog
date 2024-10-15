@@ -4,6 +4,7 @@ import (
 	"api/internal/models"
 	"api/pkg/database"
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -163,4 +164,49 @@ func (r *OrganizationUserRepository) GetOrganizationUserInfo(userID string, orga
 	}
 
 	return &userInfo, nil
+}
+// ListOrganizationUsers retrieves detailed information about all users in an organization
+func (r *OrganizationUserRepository) ListOrganizationUsers(organizationID string) ([]*models.OrganizationUserInfo, error) {
+	query := `
+		SELECT ou.organization_id, ou.user_id, ou.role, ou.created_at, ou.updated_at,
+			   u.first_name, u.last_name, u.email
+		FROM organization_users ou
+		LEFT JOIN users u ON ou.user_id = u.id
+		WHERE ou.organization_id = $1
+	`
+
+	rows, err := r.db.Query(query, organizationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []*models.OrganizationUserInfo
+
+	for rows.Next() {
+		var userInfo models.OrganizationUserInfo
+		err := rows.Scan(
+			&userInfo.OrganizationID,
+			&userInfo.UserID,
+			&userInfo.Role,
+			&userInfo.CreatedAt,
+			&userInfo.UpdatedAt,
+			&userInfo.FirstName,
+			&userInfo.LastName,
+			&userInfo.Email,
+		)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, &userInfo)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	if len(users) == 0 {
+		return nil, fmt.Errorf("no users found for organization ID %s", organizationID)
+	}
+
+	return users, nil
 }
