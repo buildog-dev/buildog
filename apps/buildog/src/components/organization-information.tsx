@@ -26,10 +26,11 @@ export default function OrganizationInformation({ organizationId }: { organizati
 
       if (response) {
         setOrganization(response);
-        setLoading(false);
       }
     } catch (error) {
       router.push("/not-found");
+    } finally {
+      setLoading(false);
     }
   }, []);
 
