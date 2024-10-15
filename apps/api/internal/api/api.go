@@ -52,9 +52,12 @@ func (a *api) Routes() http.Handler {
 	protectedRouter.Use(middleware.EnsureValidToken)
 
 	protectedRouter.HandleFunc("/users/create", a.createUserHandler).Methods(http.MethodPost, http.MethodOptions)
+
+	protectedRouter.HandleFunc("/user", a.getUserHandler).Methods(http.MethodGet, http.MethodOptions)
+
 	protectedRouter.HandleFunc("/organizations", a.getOrganizationsHandler).Methods(http.MethodGet, http.MethodOptions)
 	protectedRouter.HandleFunc("/organizations", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
-	
+
 	protectedRouter.HandleFunc("/organization-user", a.addUserToOrganization).Methods(http.MethodPost, http.MethodOptions)
 	protectedRouter.HandleFunc("/organization-user", a.updateUserRoleInOrganization).Methods(http.MethodPut, http.MethodOptions)
 	protectedRouter.HandleFunc("/organization-user", a.deleteUserFromOrganization).Methods(http.MethodDelete, http.MethodOptions)
