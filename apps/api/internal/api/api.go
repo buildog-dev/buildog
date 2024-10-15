@@ -52,6 +52,7 @@ func (a *api) Routes() http.Handler {
 	protectedRouter.Use(middleware.EnsureValidToken)
 
 	protectedRouter.HandleFunc("/users/create", a.createUserHandler).Methods(http.MethodPost, http.MethodOptions)
+	protectedRouter.HandleFunc("/users/update", a.updateUserHandler).Methods(http.MethodPut, http.MethodOptions)
 
 	protectedRouter.HandleFunc("/user", a.getUserHandler).Methods(http.MethodGet, http.MethodOptions)
 

@@ -18,8 +18,8 @@ import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
 
 const nameUpdateFormSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
 });
 
 const emailUpdateFormSchema = z.object({
@@ -72,15 +72,21 @@ export default function ProfilePage() {
     mode: "onChange",
   });
 
-  function onNameFormSubmit(data: NameUpdateFormValues) {
-    toast({
-      title: "You submitted the following name values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onNameFormSubmit(data: NameUpdateFormValues) {
+    const response = await Service.makeAuthenticatedRequest(
+      "users/update",
+      "PUT",
+      nameForm.getValues()
+    );
+    if (response.error) {
+      toast({
+        title: "Error",
+        description: response.error,
+      });
+    }
+    setUserCredentials((prev) => ({ ...prev, ...data }));
+    nameForm.setValue("first_name", "");
+    nameForm.setValue("last_name", "");
   }
 
   function onEmailFormSubmit(data: EmailUpdateFormValues) {
@@ -110,7 +116,7 @@ export default function ProfilePage() {
                   </div>
                   <FormField
                     control={nameForm.control}
-                    name="firstName"
+                    name="first_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
@@ -119,7 +125,7 @@ export default function ProfilePage() {
                             className="w-96"
                             type="text"
                             placeholder={userCredentials.first_name}
-                            disabled={true}
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
@@ -128,7 +134,7 @@ export default function ProfilePage() {
                   />
                   <FormField
                     control={nameForm.control}
-                    name="lastName"
+                    name="last_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
@@ -137,7 +143,7 @@ export default function ProfilePage() {
                             className="w-96"
                             type="text"
                             placeholder={userCredentials.last_name}
-                            disabled={true}
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
