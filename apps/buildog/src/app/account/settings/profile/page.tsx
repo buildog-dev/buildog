@@ -33,12 +33,10 @@ export default function ProfilePage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [userCredentials, setUserCredentials] = useState<{
-    user_id: string;
     first_name: string;
     last_name: string;
     email: string;
   }>({
-    user_id: "",
     first_name: "",
     last_name: "",
     email: "",
