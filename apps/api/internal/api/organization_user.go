@@ -2,6 +2,7 @@ package api
 
 import (
 	"api/internal/models"
+	"api/internal/repository"
 	"api/pkg/utils"
 	"encoding/json"
 	"log"
@@ -62,4 +63,51 @@ func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization user")
+}
+
+func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Request) {
+	var payload models.UpdateUserRolePayload
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
+		return
+	}
+
+	currentUserID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
+
+	organizationID := r.Header.Get("organization_id")
+	currentUserRole, err := a.organizationUsersRepo.GetOrganizationUser(currentUserID, organizationID)
+	if err != nil {
+		log.Printf("Error getting user role: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Unauthorized")
+		return
+	}
+
+	if currentUserRole != "admin" && currentUserRole != "owner" {
+		utils.JSONError(w, http.StatusForbidden, "Insufficient permissions to update user role")
+		return
+	}
+
+	err = a.organizationUsersRepo.UpdateOrganizationUserRole(organizationID, payload.UserID, payload.Role)
+	if err != nil {
+		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
+			utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
+		} else {
+			log.Printf("Error updating user role: %v", err)
+			utils.JSONError(w, http.StatusInternalServerError, "Failed to update user role")
+		}
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, map[string]string{"message": "User role updated successfully"})
 }
