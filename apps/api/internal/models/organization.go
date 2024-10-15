@@ -10,6 +10,13 @@ type Organization struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+type OrganizationResponse struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	CreatedBy   string `json:"created_by"`
+}
+
 type OrganizationBody struct {
 	OrganizationName        string `json:"organization_name"`
 	OrganizationDescription string `json:"organization_description"`
