@@ -109,3 +109,26 @@ type ErrOrganizationUserNotFound struct {
 	UserID         string
 }
 
+// DeleteOrganizationUser removes a user from an organization if they exist
+func (r *OrganizationUserRepository) DeleteOrganizationUser(organizationID, userID string) error {
+	deleteQuery := `
+		DELETE FROM organization_users
+		WHERE organization_id = $1 AND user_id = $2
+	`
+
+	result, err := r.db.Exec(deleteQuery, organizationID, userID)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return ErrOrganizationUserNotFound{OrganizationID: organizationID, UserID: userID}
+	}
+
+	return nil
+}

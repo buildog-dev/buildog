@@ -15,3 +15,6 @@ type UpdateUserRolePayload struct {
 	UserID string `json:"user_id"`
 	Role   string `json:"role"`
 }
+type DeleteOrganizationUserPayload struct {
+	UserID string `json:"user_id"`
+}

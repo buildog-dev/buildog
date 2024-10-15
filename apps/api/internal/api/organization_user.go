@@ -111,3 +111,50 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 
 	utils.JSONResponse(w, http.StatusOK, map[string]string{"message": "User role updated successfully"})
 }
+
+func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request) {
+	var payload models.DeleteOrganizationUserPayload
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
+		return
+	}
+
+	currentUserID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
+
+	organizationID := r.Header.Get("organization_id")
+	currentUserRole, err := a.organizationUsersRepo.GetOrganizationUser(currentUserID, organizationID)
+	if err != nil {
+		log.Printf("Error getting user role: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Unauthorized")
+		return
+	}
+
+	if currentUserRole != "admin" && currentUserRole != "owner" {
+		utils.JSONError(w, http.StatusForbidden, "Insufficient permissions to delete user from organization")
+		return
+	}
+
+	err = a.organizationUsersRepo.DeleteOrganizationUser(organizationID, payload.UserID)
+	if err != nil {
+		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
+			utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
+		} else {
+			log.Printf("Error deleting user from organization: %v", err)
+			utils.JSONError(w, http.StatusInternalServerError, "Failed to delete user from organization")
+		}
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, map[string]string{"message": "User deleted from organization successfully"})
+}
