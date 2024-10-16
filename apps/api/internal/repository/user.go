@@ -57,6 +57,15 @@ func (r *UserRepository) GetUserWithID(uid string) (models.GetUserPayload, error
 	return user, nil
 }
 
+func (r *UserRepository) UpdateUser(uid, first_name, last_name string) (sql.Result, error) {
+	query := `UPDATE users SET first_name = $1, last_name = $2 WHERE id = $3`
+	result, err := r.db.Exec(query, first_name, last_name, uid)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update user")
+	}
+	return result, nil
+}
+
 // func (r *UserRepository) CreateTenantUser(user models.User, tenantId int64, role string) error {
 // 	query := `INSERT INTO tenantUsers (user_id, tenant_id, role) VALUES ($1, $2, $3)`
 // 	_, err := r.db.Exec(query, user.UserId, tenantId, role)
