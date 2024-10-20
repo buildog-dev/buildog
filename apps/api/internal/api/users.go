@@ -68,3 +68,29 @@ func (a *api) getUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusOK, user)
 }
+
+func (a *api) updateUserHandler(w http.ResponseWriter, r *http.Request) {
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
+		return
+	}
+
+	userID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
+
+	var payload models.User
+	if err := utils.DecodeRequestBody(r, &payload); err != nil {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid request body")
+	}
+
+	success, err := a.userRepo.UpdateUser(userID, payload.FirstName, payload.LastName)
+	if err != nil {
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to update user")
+	}
+
+	utils.JSONResponse(w, http.StatusOK, success)
+}
