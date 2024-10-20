@@ -1,3 +1,5 @@
+"use client";
+
 import Appbar from "@/components/app-bar";
 import { Sidebar } from "@/components/sidebar";
 
