@@ -14,7 +14,7 @@ export default function OrganizationInformation({ organizationId }: { organizati
     description: "",
     created_by: "",
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
 
   const fetchOrganizations = useCallback(async () => {
