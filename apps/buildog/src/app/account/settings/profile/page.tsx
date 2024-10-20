@@ -71,11 +71,7 @@ export default function ProfilePage() {
   });
 
   async function onNameFormSubmit(data: NameUpdateFormValues) {
-    const response = await Service.makeAuthenticatedRequest(
-      "users",
-      "PUT",
-      nameForm.getValues()
-    );
+    const response = await Service.makeAuthenticatedRequest("users", "PUT", nameForm.getValues());
     if (response.error) {
       toast({
         title: "Error",
