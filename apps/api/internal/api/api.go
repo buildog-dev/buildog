@@ -51,8 +51,8 @@ func (a *api) Routes() http.Handler {
 	protectedRouter := router.PathPrefix("").Subrouter()
 	protectedRouter.Use(middleware.EnsureValidToken)
 
-	protectedRouter.HandleFunc("/users", a.createUserHandler).Methods(http.MethodPost, http.MethodOptions)
-	protectedRouter.HandleFunc("/users", a.updateUserHandler).Methods(http.MethodPut, http.MethodOptions)
+	protectedRouter.HandleFunc("/user", a.createUserHandler).Methods(http.MethodPost, http.MethodOptions)
+	protectedRouter.HandleFunc("/user", a.updateUserHandler).Methods(http.MethodPut, http.MethodOptions)
 
 	protectedRouter.HandleFunc("/user", a.getUserHandler).Methods(http.MethodGet, http.MethodOptions)
 

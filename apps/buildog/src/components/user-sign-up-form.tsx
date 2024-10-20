@@ -52,7 +52,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
         description: errMsg,
       });
     } else {
-      const createUserResponse = await Service.makeAuthenticatedRequest("users", "POST", {
+      const createUserResponse = await Service.makeAuthenticatedRequest("user", "POST", {
         first_name,
         last_name,
         email,
