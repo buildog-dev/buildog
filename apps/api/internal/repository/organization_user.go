@@ -61,20 +61,7 @@ func (r *OrganizationUserRepository) GetOrganizationUserRole( organization_id st
 }
 
 func (r *OrganizationUserRepository) UpdateOrganizationUserRole(organizationID, userID, newRole string) error {
-	// First, check if the user is related to the organization
-	checkQuery := `
-		SELECT 1 FROM organization_users
-		WHERE organization_id = $1 AND user_id = $2
-	`
-	var exists bool
-	err := r.db.QueryRow(checkQuery, organizationID, userID).Scan(&exists)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return ErrOrganizationUserNotFound{OrganizationID: organizationID, UserID: userID}
-		}
-		return err
-	}
-
+	// Check if the user is related to the organization
 	// If the user is related, proceed with the update
 	updateQuery := `
 		UPDATE organization_users
