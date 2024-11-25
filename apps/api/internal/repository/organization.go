@@ -93,8 +93,6 @@ func (r *OrganizationRepository) UpdateOrganization(organization *models.Organiz
 		RETURNING id,name,description
 	`
 
-	fmt.Println(organization.OrganizationId, organization.OrganizationName, organization.OrganizationDescription)
-
 	var organizationInfo models.OrganizationInfo
 
 	err := r.db.QueryRow(
