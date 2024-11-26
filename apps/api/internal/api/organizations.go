@@ -106,8 +106,8 @@ func (a *api) deleteOrganizationHandler(w http.ResponseWriter, r *http.Request) 
 
 	result, err := a.organizationsRepo.DeleteOrganization(&payload)
 	if err != nil {
-		log.Printf("Error creating user: %v", err)
-		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
+		log.Printf("Error deleting user: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to delete organization")
 		return
 	}
 
