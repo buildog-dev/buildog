@@ -4,7 +4,6 @@ interface ServiceClientConfig {
   serviceBaseUrl: string;
 }
 
-// ServiceClient Class
 class ServiceClient {
   private serviceBaseUrl: string;
   private authenticator: Authenticator;
@@ -17,7 +16,8 @@ class ServiceClient {
   async makeAuthenticatedRequest(
     endpoint: string,
     method: string = "GET",
-    data: any = null
+    data: any = null,
+    headers: { [key: string]: string } = {}
   ): Promise<any> {
     try {
       const token = await this.authenticator.getCurrentUserToken();
@@ -25,12 +25,18 @@ class ServiceClient {
         throw new Error("User is not authenticated.");
       }
 
+      // Default headers
+      const defaultHeaders: { [key: string]: string } = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      // Combine default headers with dynamic headers passed as argument
+      const finalHeaders = { ...defaultHeaders, ...headers };
+
       const options: RequestInit = {
         method,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+        headers: finalHeaders,
       };
 
       if (data && method !== "GET") {

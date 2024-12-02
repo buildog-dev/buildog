@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "@ui/components/button";
 import { DataTable } from "@ui/components/ui/data-table";
 import {
@@ -23,6 +23,9 @@ import { Label } from "@ui/components/label";
 import { PersonIcon } from "@ui/components/react-icons";
 import { CaretDownIcon } from "@ui/components/react-icons";
 import { Input } from "@ui/components/input";
+import { useParams } from "next/navigation";
+import { Service } from "@/web-sdk";
+import { useAuth } from "@/components/auth-provider";
 
 type User = {
   id: number;
@@ -34,48 +37,35 @@ type User = {
   updated_at: string;
 };
 
-const dummyUsers: User[] = [
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    role: "admin",
-    email: "john.doe@example.com",
-    created_at: "2023-07-15T10:15:30Z",
-    updated_at: "2023-09-10T14:20:45Z",
-  },
-  {
-    id: 2,
-    first_name: "Jane",
-    last_name: "Smith",
-    role: "writer",
-    email: "jane.smith@example.com",
-    created_at: "2023-06-20T09:05:20Z",
-    updated_at: "2023-09-12T16:10:55Z",
-  },
-  {
-    id: 3,
-    first_name: "Michael",
-    last_name: "Brown",
-    role: "reader",
-    email: "michael.brown@example.com",
-    created_at: "2023-08-01T11:25:40Z",
-    updated_at: "2023-09-11T18:30:35Z",
-  },
-  {
-    id: 4,
-    first_name: "Emily",
-    last_name: "Davis",
-    role: "writer",
-    email: "emily.davis@example.com",
-    created_at: "2023-07-30T12:45:50Z",
-    updated_at: "2023-09-12T19:45:15Z",
-  },
-];
-
 export default function UserTable() {
-  const [users, setUsers] = useState<User[]>(dummyUsers);
+  const [users, setUsers] = useState<User[]>([]);
+  const { user } = useAuth();
+  const params = useParams();
+  const { organizationId } = params;
   const [open, setOpen] = useState(false);
+
+  const getUserList = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      if (!organizationId || Array.isArray(organizationId)) return;
+
+      const response = await Service.makeAuthenticatedRequest("organization-user", "GET", null, {
+        organization_id: organizationId,
+      });
+
+      if (response) {
+        setUsers(response);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      // Handle error appropriately (e.g., show error message to user)
+    }
+  }, [user, organizationId]);
+
+  useEffect(() => {
+    getUserList(); // Call getUserList when user changes
+  }, [user, getUserList]);
 
   const deleteUser = (userId: number) => {
     setOpen(!open);
