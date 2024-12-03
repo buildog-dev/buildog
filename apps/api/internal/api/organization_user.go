@@ -12,34 +12,34 @@ import (
 )
 
 func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
-    var payload models.AddUserOrganizationPayload
-    if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-        http.Error(w, "Invalid request body", http.StatusBadRequest)
-        return
-    }
-    organizationID := r.Header.Get("organization_id")
+	var payload models.AddUserOrganizationPayload
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	organizationID := r.Header.Get("organization_id")
 
-    user, err := a.userRepo.GetUserWithEmail(payload.Email)
-    if err != nil {
-        log.Printf("Error creating user: %v", err)
-        utils.JSONError(w, http.StatusInternalServerError, "No permission")
-        return
-    }
+	user, err := a.userRepo.GetUserWithEmail(payload.Email)
+	if err != nil {
+		log.Printf("Error creating user: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "No permission")
+		return
+	}
 
-    organization_user := &models.OrganizationUserCreated{
-        OrganizationId: organizationID,
-        UserId:         user.Id,
-        Role:           payload.Role,
-    }
+	organization_user := &models.OrganizationUserCreated{
+		OrganizationId: organizationID,
+		UserId:         user.Id,
+		Role:           payload.Role,
+	}
 
-    create_organization_user, err := a.organizationUsersRepo.CreateOrganizationUser(organization_user)
-    if err != nil {
-        log.Printf("Error creating user: %v", err)
-        utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization user")
-        return
-    }
+	create_organization_user, err := a.organizationUsersRepo.CreateOrganizationUser(organization_user)
+	if err != nil {
+		log.Printf("Error creating user: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization user")
+		return
+	}
 
-    utils.JSONResponse(w, http.StatusCreated, create_organization_user)
+	utils.JSONResponse(w, http.StatusCreated, create_organization_user)
 }
 
 func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Request) {
@@ -148,7 +148,6 @@ func (a *api) getOrganizationUserInfo(w http.ResponseWriter, r *http.Request) {
 
 	organizationID := r.Header.Get("organization_id")
 
-	
 	userInfo, err := a.organizationUsersRepo.GetOrganizationUserInfo(userID, organizationID)
 
 	if err != nil {
@@ -163,7 +162,6 @@ func (a *api) getOrganizationUserInfo(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusOK, userInfo)
 }
-
 
 func (a *api) listOrganizationUsers(w http.ResponseWriter, r *http.Request) {
 	organizationID := r.Header.Get("organization_id")
@@ -186,4 +184,3 @@ func (a *api) listOrganizationUsers(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusOK, users)
 }
-

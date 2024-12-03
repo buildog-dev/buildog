@@ -107,9 +107,7 @@ export default function UserTable() {
       cell: ({ row }) => {
         const user = row.original;
 
-        return (
-          <UserInfoModal rowUser={user} setUsers={setUsers} mode={"edit"} />
-        );
+        return <UserInfoModal rowUser={user} setUsers={setUsers} mode={"edit"} />;
       },
     },
   ];
@@ -132,7 +130,7 @@ export default function UserTable() {
         </div>
       )}
 
-      <UserInfoModal setUsers={setUsers} mode={"add"}/>
+      <UserInfoModal setUsers={setUsers} mode={"add"} />
     </div>
   );
 }

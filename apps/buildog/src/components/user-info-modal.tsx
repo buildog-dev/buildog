@@ -63,7 +63,7 @@ export default function UserInfoModal({
       alert("Unauthorized: Please log in.");
       return;
     }
-    
+
     if (!email || !role) {
       alert("Email and role are required for adding a user.");
       return;
@@ -71,12 +71,12 @@ export default function UserInfoModal({
 
     try {
       if (!organizationId || Array.isArray(organizationId)) return;
-      
+
       const response = await Service.makeAuthenticatedRequest(
         "organization-user",
         "POST",
-        { Email: email, Role: role}, // Payload
-        { organization_id: organizationId} // Headers
+        { Email: email, Role: role }, // Payload
+        { organization_id: organizationId } // Headers
       );
 
       if (response) {

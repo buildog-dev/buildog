@@ -1,10 +1,10 @@
 package api
 
 import (
-	"fmt"
-	"net/http"
 	"api/pkg/utils"
+	"fmt"
 	"github.com/gorilla/mux"
+	"net/http"
 )
 
 func (a *api) registerOrganizationUserRoutes(router *mux.Router) {
@@ -28,7 +28,7 @@ func (a *api) checkAdminOrOwner(next http.HandlerFunc) http.HandlerFunc {
 			utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
 			return
 		}
-		
+
 		organizationID := r.Header.Get("organization_id")
 
 		// Get the user's role for the organization
