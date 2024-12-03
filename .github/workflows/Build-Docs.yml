@@ -1,9 +1,11 @@
 name: Trigger AWS CodeBuild on Push
 
-on: 
+on:
   push:
     branches:
-      - main  
+      - main
+    paths:
+      - 'apps/docs/**'
 
 jobs:
   trigger-codebuild:
