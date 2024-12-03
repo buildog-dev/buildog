@@ -1,8 +1,22 @@
-name: Build Docs On Push
-on: [push]
+name: Trigger AWS CodeBuild on Push
+
+on: 
+  push:
+    branches:
+      - main  
+
 jobs:
-  Hello-World-Job:
-    runs-on:
-      - codebuild-buildog-${{ github.run_id }}-${{ github.run_attempt }}
+  trigger-codebuild:
+    runs-on: ubuntu-latest
+
     steps:
-      - run: echo "Created"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  
+
+      - name: Trigger AWS CodeBuild
+        run: |
+          aws codebuild start-build --project-name buildog
