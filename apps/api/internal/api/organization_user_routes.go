@@ -1,10 +1,9 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
-
+	"api/pkg/utils"
 	"github.com/gorilla/mux"
 )
 
@@ -18,19 +17,19 @@ func (a *api) registerOrganizationUserRoutes(router *mux.Router) {
 
 func (a *api) checkAdminOrOwner(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Extract user ID and organization ID from the request
-		// This is a placeholder and should be replaced with actual extraction logic
-		var requestBody struct {
-			UserID string `json:"user_id"`
-		}
-		if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-			http.Error(w, "Invalid request body", http.StatusBadRequest)
+		claims, ok := utils.GetTokenClaims(r)
+		if !ok {
+			utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
 			return
 		}
-		userID := requestBody.UserID
-		fmt.Println("userID", userID)
+
+		userID, ok := utils.GetUserIDFromClaims(claims)
+		if !ok {
+			utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+			return
+		}
+		
 		organizationID := r.Header.Get("organization_id")
-		fmt.Println("organizationID", organizationID)
 
 		// Get the user's role for the organization
 		role, err := a.organizationUsersRepo.GetOrganizationUserRole(organizationID, userID)
