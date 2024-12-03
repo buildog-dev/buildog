@@ -1,0 +1,8 @@
+name: Build Docs On Push
+on: [push]
+jobs:
+  Hello-World-Job:
+    runs-on:
+      - codebuild-buildog-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - run: echo "Created"
