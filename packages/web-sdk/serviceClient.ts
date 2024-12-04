@@ -17,7 +17,8 @@ class ServiceClient {
   async makeAuthenticatedRequest(
     endpoint: string,
     method: string = "GET",
-    data: any = null
+    data: any = null,
+    headers: any = null
   ): Promise<any> {
     try {
       const token = await this.authenticator.getCurrentUserToken();
@@ -30,6 +31,7 @@ class ServiceClient {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
+          ...headers,
         },
       };
 
