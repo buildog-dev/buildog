@@ -78,3 +78,33 @@ func (r *OrganizationRepository) CreateOrganization(organization *models.Organiz
 
 	return createdOrganization, nil
 }
+
+func (r *OrganizationRepository) GetOrganization(organization_id string) (models.OrganizationResponse, error) {
+	query := `
+		SELECT
+			id,
+			name,
+			description,
+			created_by
+		FROM 
+			organizations
+		WHERE
+			id = $1
+		`
+	var getOrganization models.OrganizationResponse
+	err := r.db.QueryRow(
+		query,
+		organization_id,
+	).Scan(
+		&getOrganization.Id,
+		&getOrganization.Name,
+		&getOrganization.Description,
+		&getOrganization.CreatedBy,
+	)
+
+	if err != nil {
+		return getOrganization, err
+	}
+
+	return getOrganization, nil
+}
