@@ -4,7 +4,6 @@ import (
 	"api/internal/models"
 	"api/pkg/database"
 	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -81,7 +80,6 @@ func (r *OrganizationRepository) CreateOrganization(organization *models.Organiz
 	return createdOrganization, nil
 }
 
-
 func (r *OrganizationRepository) UpdateOrganization(organization *models.OrganizationInfo) (models.OrganizationInfo, error) {
 	query := `
 		UPDATE organizations
@@ -127,7 +125,7 @@ func (r *OrganizationRepository) DeleteOrganization(organization *models.DeleteO
 	}
 	return result, nil
 }
-  
+
 func (r *OrganizationRepository) GetOrganization(organization_id string) (models.OrganizationResponse, error) {
 	query := `
 		SELECT
@@ -157,4 +155,3 @@ func (r *OrganizationRepository) GetOrganization(organization_id string) (models
 
 	return getOrganization, nil
 }
-

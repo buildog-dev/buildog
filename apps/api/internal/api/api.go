@@ -62,8 +62,6 @@ func (a *api) Routes() http.Handler {
 	protectedRouter.HandleFunc("/organization", a.checkParticipant(a.getOrganizationHandler)).Methods(http.MethodGet, http.MethodOptions)
 	protectedRouter.HandleFunc("/user", a.getUserHandler).Methods(http.MethodGet, http.MethodOptions)
 
-	protectedRouter.HandleFunc("/organization-user", a.addUserToOrganization).Methods(http.MethodPost, http.MethodOptions)
-
 	a.registerOrganizationUserRoutes(protectedRouter)
 
 	return router

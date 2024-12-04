@@ -17,7 +17,6 @@ func (a *api) registerOrganizationUserRoutes(router *mux.Router) {
 	router.HandleFunc("/organization-user/{user_id}", a.getOrganizationUserInfo).Methods(http.MethodGet, http.MethodOptions)
 }
 
-
 func (a *api) checkRole(next http.HandlerFunc, roleType string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var userID string
@@ -78,5 +77,3 @@ func (a *api) checkAdminOrOwner(next http.HandlerFunc) http.HandlerFunc {
 func (a *api) checkParticipant(next http.HandlerFunc) http.HandlerFunc {
 	return a.checkRole(next, "participant")
 }
-
-
