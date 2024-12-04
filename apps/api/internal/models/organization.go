@@ -23,9 +23,9 @@ type OrganizationBody struct {
 }
 
 type OrganizationInfo struct {
-	OrganizationId          string
-	OrganizationName        string
-	OrganizationDescription string
+	OrganizationId          string `json:"organization_id"`
+	OrganizationName        string `json:"organization_name"`
+	OrganizationDescription string `json:"organization_description"`
 }
 
 type OrganizationCreated struct {
@@ -33,4 +33,8 @@ type OrganizationCreated struct {
 	Name        string
 	Description string
 	CreatedBy   string
+}
+
+type DeleteOrganizationPayload struct {
+	Id string `json:"organization_id"`
 }
