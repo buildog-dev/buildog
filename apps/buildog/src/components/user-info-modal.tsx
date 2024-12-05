@@ -58,6 +58,43 @@ export default function UserInfoModal({
     }
   }, [user, mode]);
 
+  const updateUserRoleHandler = useCallback(async () => {
+    if (!user) {
+      alert("Unauthorized: Please log in.");
+      return;
+    }
+
+    if (!rowUser || !rowUser.user_id || !role) {
+      alert("Invalid user data or role not selected.");
+      return;
+    }
+
+    try {
+      if (!organizationId || Array.isArray(organizationId)) return;
+
+      const response = await Service.makeAuthenticatedRequest(
+        "organization-user",
+        "PUT",
+        {
+          user_id: rowUser.user_id,
+          role: role,
+        },
+        { organization_id: organizationId }
+      );
+
+      if (response) {
+        alert("User role updated successfully!");
+        setUsers((prevUsers) =>
+          prevUsers.map((u) => (u.user_id === rowUser.user_id ? { ...u, role } : u))
+        );
+        setOpen(false);
+      }
+    } catch (error) {
+      console.error("Failed to update user role:", error);
+      alert("Failed to update user role. Please try again.");
+    }
+  }, [user, organizationId, rowUser?.user_id, role, setUsers]);
+
   const addUserHandler = useCallback(async () => {
     if (!user) {
       alert("Unauthorized: Please log in.");
@@ -75,8 +112,8 @@ export default function UserInfoModal({
       const response = await Service.makeAuthenticatedRequest(
         "organization-user",
         "POST",
-        { Email: email, Role: role }, // Payload
-        { organization_id: organizationId } // Headers
+        { Email: email, Role: role },
+        { organization_id: organizationId }
       );
 
       if (response) {
@@ -96,13 +133,10 @@ export default function UserInfoModal({
       return;
     }
 
-    console.log(rowUser);
-
     if (!rowUser || !rowUser.user_id) {
       alert("Invalid user data. Cannot delete.");
       return;
     }
-    console.log("Deleting user:", rowUser.user_id);
 
     try {
       if (!organizationId || Array.isArray(organizationId)) return;
@@ -113,8 +147,6 @@ export default function UserInfoModal({
         { user_id: rowUser.user_id },
         { organization_id: organizationId }
       );
-
-      console.log(response);
 
       if (response) {
         alert("User deleted successfully!");
@@ -128,12 +160,7 @@ export default function UserInfoModal({
 
   const saveUserChanges = () => {
     if (mode === "edit") {
-      setUsers((prevUsers) =>
-        prevUsers.map((u) =>
-          u.id === rowUser.user_id ? { ...u, first_name: firstName, last_name: lastName, role } : u
-        )
-      );
-      setOpen(false);
+      updateUserRoleHandler();
     } else if (mode === "add") {
       addUserHandler();
     }
