@@ -22,15 +22,15 @@ It extracts the user ID from the request token, validates the request payload, a
 
 - **Method:** `POST`
 - **Path:** `/users`
-- **Headers:**  
+- **Headers:**
   - `Authorization: Bearer <token>` (Required)
 
 ### **Request Payload**
 
 ```json
 {
-  "firstName": "John",
-  "lastName": "Doe",
+  "first_name": "John",
+  "last_name": "Doe",
   "email": "john.doe@example.com"
 }
 ```
@@ -58,8 +58,8 @@ curl -X POST http://localhost:3010/api/users \
 -H "Authorization: Bearer <token>" \
 -H "Content-Type: application/json" \
 -d '{
-  "firstName": "John",
-  "lastName": "Doe",
+  "first_name": "John",
+  "last_name": "Doe",
   "email": "john.doe@example.com"
 }'
 ```
@@ -82,7 +82,7 @@ It validates the user's token and fetches the user's information from the databa
 
 - **Method:** `GET`
 - **Path:** `/users`
-- **Headers:**  
+- **Headers:**
   - `Authorization: Bearer <token>` (Required)
 
 ### **Response**
@@ -92,11 +92,11 @@ It validates the user's token and fetches the user's information from the databa
 ```json
 {
   "id": "12345",
-  "firstName": "John",
-  "lastName": "Doe",
+  "first_name": "John",
+  "last_name": "Doe",
   "email": "john.doe@example.com",
-  "createdAt": "2024-12-01T10:00:00Z",
-  "updatedAt": "2024-12-01T10:00:00Z"
+  "created_at": "2024-12-01T10:00:00Z",
+  "updated_at": "2024-12-01T10:00:00Z"
 }
 ```
 
@@ -130,15 +130,15 @@ It validates the user's token, parses the request payload, and updates the user 
 
 - **Method:** `PUT`
 - **Path:** `/users`
-- **Headers:**  
+- **Headers:**
   - `Authorization: Bearer <token>` (Required)
 
 ### **Request Payload**
 
 ```json
 {
-  "firstName": "John",
-  "lastName": "Smith"
+  "first_name": "John",
+  "last_name": "Smith"
 }
 ```
 
@@ -165,7 +165,7 @@ curl -X PUT http://localhost:3010/api/users \
 -H "Authorization: Bearer <token>" \
 -H "Content-Type: application/json" \
 -d '{
-  "firstName": "John",
-  "lastName": "Smith"
+  "first_name": "John",
+  "last_name": "Smith"
 }'
 ```

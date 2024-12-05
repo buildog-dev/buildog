@@ -22,7 +22,7 @@ It validates the user's token and fetches the organizations from the database.
 
 - **Method:** `GET`
 - **Path:** `/organizations`
-- **Headers:**  
+- **Headers:**
   - `Authorization: Bearer <token>` (Required)
 
 ### **Response**
@@ -35,15 +35,15 @@ It validates the user's token and fetches the organizations from the database.
     "id": "org123",
     "name": "Organization One",
     "description": "Description of Organization One",
-    "createdBy": "user123",
-    "createdAt": "2024-12-01T10:00:00Z"
+    "created_by": "user123",
+    "created_at": "2024-12-01T10:00:00Z"
   },
   {
     "id": "org456",
     "name": "Organization Two",
     "description": "Description of Organization Two",
-    "createdBy": "user123",
-    "createdAt": "2024-12-02T14:00:00Z"
+    "created_by": "user123",
+    "created_at": "2024-12-02T14:00:00Z"
   }
 ]
 ```
@@ -78,15 +78,15 @@ It validates the user's token, processes the request payload, and saves the orga
 
 - **Method:** `POST`
 - **Path:** `/organizations`
-- **Headers:**  
+- **Headers:**
   - `Authorization: Bearer <token>` (Required)
 
 ### **Request Payload**
 
 ```json
 {
-  "organizationName": "New Organization",
-  "organizationDescription": "This is a description of the new organization."
+  "organization_name": "New Organization",
+  "organization_description": "This is a description of the new organization."
 }
 ```
 
@@ -96,8 +96,8 @@ It validates the user's token, processes the request payload, and saves the orga
 
 ```json
 {
-  "organizationId": "org789",
-  "userId": "user123",
+  "organization_id": "org789",
+  "user_id": "user123",
   "role": "owner"
 }
 ```
@@ -114,7 +114,7 @@ curl -X POST http://localhost:3010/api/organizations \
 -H "Authorization: Bearer <token>" \
 -H "Content-Type: application/json" \
 -d '{
-  "organizationName": "New Organization",
-  "organizationDescription": "This is a description of the new organization."
+  "organization_name": "New Organization",
+  "organization_description": "This is a description of the new organization."
 }'
 ```

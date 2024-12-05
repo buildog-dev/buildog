@@ -43,8 +43,8 @@ It verifies that the authenticated user has sufficient permissions (admin/owner)
 
 ```json
 {
-  "organizationId": "org123",
-  "userId": "user456",
+  "organization_id": "org123",
+  "user_id": "user456",
   "role": "member"
 }
 ```
@@ -93,7 +93,7 @@ It ensures the authenticated user has admin or owner permissions.
 
 ```json
 {
-  "userId": "user456",
+  "user_id": "user456",
   "role": "admin"
 }
 ```
@@ -123,7 +123,7 @@ curl -X PUT http://localhost:3010/organization-user \
 -H "organization_id: org123" \
 -H "Content-Type: application/json" \
 -d '{
-  "userId": "user456",
+  "user_id": "user456",
   "role": "admin"
 }'
 ```
@@ -213,10 +213,14 @@ It requires the `user_id` to be provided in the path.
 
 ```json
 {
-  "userId": "user456",
-  "organizationId": "org123",
+  "organization_id": "org123",
+  "user_id": "user456",
   "role": "admin",
-  "joinedAt": "2024-12-01T10:00:00Z"
+  "created_at": "2024-12-01T10:00:00Z",
+  "updated_at": "2024-12-01T10:00:00Z",
+  "first_name": "Jane",
+  "last_name": "Smith",
+  "email": "jane.smith@example.com"
 }
 ```
 

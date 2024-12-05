@@ -2,7 +2,11 @@
 
 ### Overview
 
-Welcome to the **API Reference Documentation** for managing users and organizations. This document provides a detailed guide to all available endpoints, including their purposes, usage scenarios, request and response formats, and example interactions. The API is designed to support common operations related to user and organization management in a secure and efficient manner.
+Welcome to the Buildog API reference documentation! This API provides a comprehensive interface for interacting with Buildog's core backend services, enabling developers to manage organizations, users, and related data efficiently.
+
+The API is written in **Go**, ensuring high performance and scalability. For additional insights about our backend, visit the [source code repository](https://github.com/buildog-dev/buildog/tree/main/apps/api).
+
+Explore this documentation to understand the endpoints, their usage, and how to integrate them into your application.
 
 ---
 
@@ -22,7 +26,6 @@ This API enables seamless integration with your applications to manage users and
 
 - **User Management:**  
   Create, retrieve, update, and delete users within the system.
-  
 - **Organization Management:**  
   Create organizations, retrieve organization details, and manage users within an organization.
 
@@ -35,7 +38,6 @@ This API enables seamless integration with your applications to manage users and
 
 - **Token-Based Authentication:**  
   All endpoints require a valid JWT token passed in the `Authorization` header as a Bearer token. Tokens include claims that the API uses to verify the identity and permissions of the user.
-  
 - **Role-Based Authorization:**  
   Specific actions, such as managing users in an organization, are restricted to users with appropriate roles (`admin`, `owner`).
 
@@ -46,6 +48,7 @@ This API enables seamless integration with your applications to manage users and
 The API is organized into logical groups to facilitate user and organization management:
 
 1. **User Management**
+
    - Create a user
    - Retrieve user details
    - Update user information
