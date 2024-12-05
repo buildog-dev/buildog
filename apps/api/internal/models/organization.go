@@ -10,15 +10,22 @@ type Organization struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+type OrganizationResponse struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	CreatedBy   string `json:"created_by"`
+}
+
 type OrganizationBody struct {
 	OrganizationName        string `json:"organization_name"`
 	OrganizationDescription string `json:"organization_description"`
 }
 
 type OrganizationInfo struct {
-	OrganizationId          string
-	OrganizationName        string
-	OrganizationDescription string
+	OrganizationId          string `json:"organization_id"`
+	OrganizationName        string `json:"organization_name"`
+	OrganizationDescription string `json:"organization_description"`
 }
 
 type OrganizationCreated struct {
@@ -26,4 +33,8 @@ type OrganizationCreated struct {
 	Name        string
 	Description string
 	CreatedBy   string
+}
+
+type DeleteOrganizationPayload struct {
+	Id string `json:"organization_id"`
 }
