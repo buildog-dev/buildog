@@ -6,6 +6,8 @@ This document details the endpoints for managing users within an organization, i
 
 ---
 
+<!-- TODO: Check every response type to be corresponding to types using postman -->
+
 ## **1. `addUserToOrganization`**
 
 ### **Description**
@@ -22,8 +24,8 @@ It verifies that the authenticated user has sufficient permissions (admin/owner)
 
 - **Method:** `POST`
 - **Path:** `/organization-user`
-- **Headers:**  
-  - `Authorization: Bearer <token>` (Required)  
+- **Headers:**
+  - `Authorization: Bearer <token>` (Required)
   - `organization_id: <organization_id>` (Required)
 
 ### **Request Payload**
@@ -83,8 +85,8 @@ It ensures the authenticated user has admin or owner permissions.
 
 - **Method:** `PUT`
 - **Path:** `/organization-user`
-- **Headers:**  
-  - `Authorization: Bearer <token>` (Required)  
+- **Headers:**
+  - `Authorization: Bearer <token>` (Required)
   - `organization_id: <organization_id>` (Required)
 
 ### **Request Payload**
@@ -143,15 +145,15 @@ It ensures the authenticated user has admin or owner permissions to perform the 
 
 - **Method:** `DELETE`
 - **Path:** `/organization-user`
-- **Headers:**  
-  - `Authorization: Bearer <token>` (Required)  
+- **Headers:**
+  - `Authorization: Bearer <token>` (Required)
   - `organization_id: <organization_id>` (Required)
 
 ### **Request Payload**
 
 ```json
 {
-  "userId": "user456"
+  "user_id": "user456"
 }
 ```
 
@@ -180,7 +182,7 @@ curl -X DELETE http://localhost:3010/organization-user \
 -H "organization_id: org123" \
 -H "Content-Type: application/json" \
 -d '{
-  "userId": "user456"
+  "user_id": "user456"
 }'
 ```
 
@@ -201,8 +203,8 @@ It requires the `user_id` to be provided in the path.
 
 - **Method:** `GET`
 - **Path:** `/organization-user/{user_id}`
-- **Headers:**  
-  - `Authorization: Bearer <token>` (Required)  
+- **Headers:**
+  - `Authorization: Bearer <token>` (Required)
   - `organization_id: <organization_id>` (Required)
 
 ### **Response**
@@ -250,8 +252,8 @@ This endpoint lists all users in an organization.
 
 - **Method:** `GET`
 - **Path:** `/organization-user`
-- **Headers:**  
-  - `Authorization: Bearer <token>` (Required)  
+- **Headers:**
+  - `Authorization: Bearer <token>` (Required)
   - `organization_id: <organization_id>` (Required)
 
 ### **Response**
@@ -261,16 +263,20 @@ This endpoint lists all users in an organization.
 ```json
 [
   {
-    "userId": "user456",
-    "organizationId": "org123",
+    "user_id": "user456",
+    "first_name": "John",
+    "last_name": "Doe",
     "role": "admin",
-    "joinedAt": "2024-12-01T10:00:00Z"
+    "email": "john.doe@example.com",
+    "created_at": "2024-12-01 10:00:00"
   },
   {
-    "userId": "user789",
-    "organizationId": "org123",
+    "user_id": "user789",
+    "first_name": "Jane",
+    "last_name": "Smith",
     "role": "member",
-    "joinedAt": "2024-12-02T14:00:00Z"
+    "email": "jane.smith@example.com",
+    "created_at": "2024-12-02 14:00:00"
   }
 ]
 ```
