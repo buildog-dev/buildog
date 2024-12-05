@@ -30,7 +30,7 @@ export default function UserInfoModal({
   mode,
 }: {
   rowUser?: {
-    id: number;
+    user_id: number;
     first_name: string;
     last_name: string;
     email: string;
@@ -90,11 +90,50 @@ export default function UserInfoModal({
     }
   }, [user, organizationId, email, role]);
 
+  const deleteUserHandler = useCallback(async () => {
+    if (!user) {
+      alert("Unauthorized: Please log in.");
+      return;
+    }
+
+    console.log(rowUser);
+  
+    if (!rowUser || !rowUser.user_id) {
+      alert("Invalid user data. Cannot delete.");
+      return;
+    }
+    console.log("Deleting user:", rowUser.user_id)
+  
+    try {
+      if (!organizationId || Array.isArray(organizationId)) return;
+
+  
+      const response = await Service.makeAuthenticatedRequest(
+        "organization-user",
+        "DELETE",
+        { user_id: rowUser.user_id },
+        { organization_id: organizationId }
+      );
+
+      console.log(response);
+  
+      if (response) {
+        alert("User deleted successfully!");
+        setUsers((prevUsers) => prevUsers.filter((u) => u.id !== rowUser.user_id));
+      }
+    } catch (error) {
+      console.error("Failed to delete organization user:", error);
+      alert("Failed to delete user. Please try again.");
+    }
+  }, [user, organizationId, rowUser?.user_id, setUsers]);
+  
+  
+
   const saveUserChanges = () => {
     if (mode === "edit") {
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
-          u.id === rowUser.id ? { ...u, first_name: firstName, last_name: lastName, role } : u
+          u.id === rowUser.user_id ? { ...u, first_name: firstName, last_name: lastName, role } : u
         )
       );
       setOpen(false);
@@ -156,6 +195,11 @@ export default function UserInfoModal({
         </div>
 
         <DialogFooter>
+          {mode === "edit" && (
+            <Button variant="destructive" onClick={deleteUserHandler}>
+              Delete User
+            </Button>
+          )}
           <Button onClick={saveUserChanges}>{mode === "edit" ? "Save Changes" : "Add User"}</Button>
         </DialogFooter>
       </DialogContent>

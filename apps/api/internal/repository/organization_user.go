@@ -46,12 +46,15 @@ func (r *OrganizationUserRepository) CreateOrganizationUser(user *models.Organiz
 }
 
 func (r *OrganizationUserRepository) GetOrganizationUserRole( organization_id string,user_id string) (string, error) {
+	fmt.Println("role checker for: ", user_id, organization_id)
 	query := `
 		SELECT role FROM organization_users where organization_id = $1 and user_id = $2
 	`
 
 	var role string
 	err := r.db.QueryRow(query, organization_id, user_id).Scan(&role)
+
+	fmt.Println("returned role in checker: ", role)
 
 	if err != nil {
 		return role, err

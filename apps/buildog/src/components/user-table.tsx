@@ -7,10 +7,9 @@ import { useParams } from "next/navigation";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
 import UserInfoModal from "./user-info-modal";
-import { Button } from "@ui/components/button";
 
 type User = {
-  id: number;
+  user_id: string;
   first_name: string;
   last_name: string;
   role: string;
@@ -58,7 +57,7 @@ export default function UserTable() {
       });
 
       return {
-        id: user.id,
+        user_id: user.user_id,
         first_name: user.first_name,
         last_name: user.last_name,
         role: user.role,
