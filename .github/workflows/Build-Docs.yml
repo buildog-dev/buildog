@@ -21,4 +21,4 @@ jobs:
 
       - name: Trigger AWS CodeBuild
         run: |
-          aws codebuild start-build --project-name buildog
+          aws codebuild start-build --project-name buildog-docs

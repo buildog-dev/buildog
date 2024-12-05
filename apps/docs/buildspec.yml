@@ -13,7 +13,7 @@ phases:
   post_build:
     commands:
       - echo "Syncing files to S3"
-      - aws s3 sync out/ s3://docs.buildog.dev --delete
+      - aws s3 sync out/ s3://buildog-docs-s3 --delete
 
 artifacts:
   files:
