@@ -143,29 +143,29 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 // DELETE ENDPOINT WITHOUT ROLE CHECKING
 
 func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request) {
-    var payload models.DeleteOrganizationUserPayload
-    err := json.NewDecoder(r.Body).Decode(&payload)
-    if err != nil {
-        utils.JSONError(w, http.StatusBadRequest, "Invalid request payload")
-        return
-    }
+	var payload models.DeleteOrganizationUserPayload
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
 
-    organizationID := r.Header.Get("organization_id")
-    
-    // Delete the user from organization directly
+	organizationID := r.Header.Get("organization_id")
+
+	// Delete the user from organization directly
 	fmt.Println("deleting user without role checking: ", payload.UserID, organizationID)
-    err = a.organizationUsersRepo.DeleteOrganizationUser(organizationID, payload.UserID)
-    if err != nil {
-        if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
-            utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
-        } else {
-            log.Printf("Error deleting user from organization: %v", err)
-            utils.JSONError(w, http.StatusInternalServerError, "Failed to delete user from organization")
-        }
-        return
-    }
+	err = a.organizationUsersRepo.DeleteOrganizationUser(organizationID, payload.UserID)
+	if err != nil {
+		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
+			utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
+		} else {
+			log.Printf("Error deleting user from organization: %v", err)
+			utils.JSONError(w, http.StatusInternalServerError, "Failed to delete user from organization")
+		}
+		return
+	}
 
-    utils.JSONResponse(w, http.StatusOK, map[string]string{"message": "User deleted from organization successfully"})
+	utils.JSONResponse(w, http.StatusOK, map[string]string{"message": "User deleted from organization successfully"})
 }
 
 func (a *api) getOrganizationUserInfo(w http.ResponseWriter, r *http.Request) {

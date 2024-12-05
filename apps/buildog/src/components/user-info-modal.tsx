@@ -97,17 +97,16 @@ export default function UserInfoModal({
     }
 
     console.log(rowUser);
-  
+
     if (!rowUser || !rowUser.user_id) {
       alert("Invalid user data. Cannot delete.");
       return;
     }
-    console.log("Deleting user:", rowUser.user_id)
-  
+    console.log("Deleting user:", rowUser.user_id);
+
     try {
       if (!organizationId || Array.isArray(organizationId)) return;
 
-  
       const response = await Service.makeAuthenticatedRequest(
         "organization-user",
         "DELETE",
@@ -116,7 +115,7 @@ export default function UserInfoModal({
       );
 
       console.log(response);
-  
+
       if (response) {
         alert("User deleted successfully!");
         setUsers((prevUsers) => prevUsers.filter((u) => u.id !== rowUser.user_id));
@@ -126,8 +125,6 @@ export default function UserInfoModal({
       alert("Failed to delete user. Please try again.");
     }
   }, [user, organizationId, rowUser?.user_id, setUsers]);
-  
-  
 
   const saveUserChanges = () => {
     if (mode === "edit") {
