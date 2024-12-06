@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 import DefaultHeader from "@/components/themes/default-header";
 import LinksCenterHeader from "@/components/themes/links-center-header";
 import NameCenterHeader from "@/components/themes/name-center-header";
-import { useState } from "react";
 import { Button } from "@ui/components/button";
 import {
   DropdownMenu,
@@ -15,12 +15,24 @@ import {
   DropdownMenuTrigger,
 } from "@ui/components/dropdown-menu";
 import DefaultCard from "@/components/cards/default-card";
-import RichCard from "@/components/cards/feature-rich-card";
+import DateCard from "@/components/cards/date-card";
 import ImageCard from "@/components/cards/image-card";
+import DefaultFooter from "@/components/footers/default-footer";
+import EnhancedFooter from "@/components/footers/enhanced-footer";
+import LinksCenterFooter from "@/components/footers/links-center-footer";
 
-export default function DropdownMenuCheckboxes() {
+export default function Page() {
   const [header, setHeader] = useState<string>("DefaultHeader");
   const [card, setCard] = useState<string>("DefaultCard");
+  const [footer, setFooter] = useState<string>("DefaultFooter");
+
+  const renderCards = (Component: React.ComponentType, count: number) => {
+    const cards = [];
+    for (let index = 0; index < count; index++) {
+      cards.push(<Component key={index} />);
+    }
+    return cards;
+  };
 
   return (
     <div className="flex gap-4 h-full">
@@ -57,7 +69,6 @@ export default function DropdownMenuCheckboxes() {
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
         <div className="mt-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -76,11 +87,11 @@ export default function DropdownMenuCheckboxes() {
                 Default Blog Card
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={card === "RichCard"}
-                onCheckedChange={() => setCard("RichCard")}
+                checked={card === "DateCard"}
+                onCheckedChange={() => setCard("DateCard")}
                 className="cursor-pointer"
               >
-                Rich Blog Card
+                Blog Card With Date
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 checked={card === "ImageCard"}
@@ -92,19 +103,60 @@ export default function DropdownMenuCheckboxes() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <div className="mt-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="bg-slate-800 text-white" variant="outline">
+                Choose Footer
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Select a Footer</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={footer === "DefaultFooter"}
+                onCheckedChange={() => setFooter("DefaultFooter")}
+                className="cursor-pointer"
+              >
+                Default Footer
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={footer === "EnhancedFooter"}
+                onCheckedChange={() => setFooter("EnhancedFooter")}
+                className="cursor-pointer"
+              >
+                Enhanced Footer
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={footer === "LinksCenterFooter"}
+                onCheckedChange={() => setFooter("LinksCenterFooter")}
+                className="cursor-pointer"
+              >
+                Social Links Center Footer
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="w-full rounded-lg p-4 border">
-        {/* Header rendering */}
+        {/* Header Rendering */}
         {header === "DefaultHeader" && <DefaultHeader />}
         {header === "LinksCenterHeader" && <LinksCenterHeader />}
         {header === "NameCenterHeader" && <NameCenterHeader />}
 
-        {/* Blog card rendering */}
+        {/* Blog Card Rendering */}
+        <div className="mt-8 flex flex-wrap gap-4 p-10">
+          {card === "DefaultCard" && renderCards(DefaultCard, 5)}
+          {card === "DateCard" && renderCards(DateCard, 5)}
+          {card === "ImageCard" && renderCards(ImageCard, 5)}
+        </div>
+
+        {/* Footer Rendering */}
         <div className="mt-8">
-          {card === "DefaultCard" && <DefaultCard />}
-          {card === "RichCard" && <RichCard />}
-          {card === "ImageCard" && <ImageCard />}
+          {footer === "DefaultFooter" && <DefaultFooter />}
+          {footer === "EnhancedFooter" && <EnhancedFooter />}
+          {footer === "LinksCenterFooter" && <LinksCenterFooter />}
         </div>
       </div>
     </div>
