@@ -1,4 +1,4 @@
-# Authentication
+## Authentication
 Buildog uses Firebase Auth for authentication.
 
 ## Setting Up Firebase for Development

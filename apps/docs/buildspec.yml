@@ -5,6 +5,7 @@ phases:
     commands:
       - echo "Installing dependencies"
       - cd apps/docs
+      - npm install pnpm
       - pnpm install
   build:
     commands:
