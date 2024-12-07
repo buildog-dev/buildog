@@ -6,7 +6,7 @@ This document provides details on the User Management endpoints, their functiona
 
 ---
 
-## **1. `createUserHandler`**
+## 1. Create New User
 
 ### **Description**
 
@@ -17,6 +17,8 @@ It extracts the user ID from the request token, validates the request payload, a
 
 - When a new user account needs to be created in the system.
 - When the authenticated user submits their profile details for account creation.
+
+Note: This endpoint is restricted to users with the owner or admin roles, as determined by the JWT token validation.
 
 ### **Endpoint Details**
 
@@ -66,7 +68,7 @@ curl -X POST http://localhost:3010/api/users \
 
 ---
 
-## **2. `getUserHandler`**
+## 2. Get User Information
 
 ### **Description**
 
@@ -114,7 +116,7 @@ curl -X GET http://localhost:3010/api/users \
 
 ---
 
-## **3. `updateUserHandler`**
+## 3. Update User Information
 
 ### **Description**
 

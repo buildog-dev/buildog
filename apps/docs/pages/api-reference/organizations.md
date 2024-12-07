@@ -6,7 +6,7 @@ This document provides details on the Organization Management endpoints, their f
 
 ---
 
-## **1. `getOrganizationsHandler`**
+## 1. Get Organization Information
 
 ### **Description**
 
@@ -62,7 +62,7 @@ curl -X GET http://localhost:3010/api/organizations \
 
 ---
 
-## **2. `createOrganizationHandler`**
+## 2. Create New Organization
 
 ### **Description**
 
@@ -73,6 +73,8 @@ It validates the user's token, processes the request payload, and saves the orga
 
 - When a new organization needs to be created.
 - When a user wants to establish a group or workspace.
+
+Note: This endpoint is restricted to users with the owner or admin roles, as determined by the JWT token validation.
 
 ### **Endpoint Details**
 

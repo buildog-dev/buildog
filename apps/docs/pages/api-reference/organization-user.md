@@ -6,9 +6,7 @@ This document details the endpoints for managing users within an organization, i
 
 ---
 
-<!-- TODO: Check every response type to be corresponding to types using postman -->
-
-## **1. `addUserToOrganization`**
+## 1. Add User to Organization
 
 ### **Description**
 
@@ -19,6 +17,8 @@ It verifies that the authenticated user has sufficient permissions (admin/owner)
 
 - To invite or add a user to an organization.
 - To assign roles within an organization.
+
+Note: This endpoint is restricted to users with the owner or admin roles, as determined by the JWT token validation.
 
 ### **Endpoint Details**
 
@@ -70,7 +70,7 @@ curl -X POST http://localhost:3010/organization-user \
 
 ---
 
-## **2. `updateUserRoleInOrganization`**
+## 2. Update User Role in Organization
 
 ### **Description**
 
@@ -80,6 +80,8 @@ It ensures the authenticated user has admin or owner permissions.
 ### **When to Use**
 
 - To promote or demote a user's role within an organization.
+
+Note: This endpoint is restricted to users with the owner or admin roles, as determined by the JWT token validation.
 
 ### **Endpoint Details**
 
@@ -130,7 +132,7 @@ curl -X PUT http://localhost:3010/organization-user \
 
 ---
 
-## **3. `deleteUserFromOrganization`**
+## 3. Delete User from Organization
 
 ### **Description**
 
@@ -140,6 +142,8 @@ It ensures the authenticated user has admin or owner permissions to perform the 
 ### **When to Use**
 
 - To revoke a user's membership in an organization.
+
+Note: This endpoint is restricted to users with the owner or admin roles, as determined by the JWT token validation.
 
 ### **Endpoint Details**
 
@@ -188,7 +192,7 @@ curl -X DELETE http://localhost:3010/organization-user \
 
 ---
 
-## **4. `getOrganizationUserInfo`**
+## 4. Get User Information in Organization
 
 ### **Description**
 
@@ -241,7 +245,7 @@ curl -X GET http://localhost:3010/organization-user/user456 \
 
 ---
 
-## **5. `listOrganizationUsers`**
+## 5. List All Users in an Organization
 
 ### **Description**
 

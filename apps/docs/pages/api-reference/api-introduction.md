@@ -36,8 +36,8 @@ This API enables seamless integration with your applications to manage users and
 
 ### **Authentication and Authorization**
 
-- **Token-Based Authentication:**  
-  All endpoints require a valid JWT token passed in the `Authorization` header as a Bearer token. Tokens include claims that the API uses to verify the identity and permissions of the user.
+- **Token-Based Authentication:**
+  All endpoints require a valid JWT token passed in the Authorization header as a Bearer token. Tokens include claims that the API uses to verify the identity and permissions of the user. If you'd like to learn more about how tokens are generated, refer to the [Authentication Guide](../getting-started/authentication.md).
 - **Role-Based Authorization:**  
   Specific actions, such as managing users in an organization, are restricted to users with appropriate roles (`admin`, `owner`).
 
@@ -47,20 +47,13 @@ This API enables seamless integration with your applications to manage users and
 
 The API is organized into logical groups to facilitate user and organization management:
 
-1. **User Management**
+Here’s the table with a bulleted list in the right column:
 
-   - Create a user
-   - Retrieve user details
-   - Update user information
-   - Delete a user
-
-2. **Organization Management**
-   - Create an organization
-   - Retrieve organization details
-   - Add users to an organization
-   - Update user roles
-   - Remove users from an organization
-   - List organization members
+| **Endpoints**         | **Operations**                                                                                                              |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **user**              | • Create<br>• Get<br>• Update<br>• Delete                                                                                   |
+| **organization**      | • Create<br>• Get                                                                                                           |
+| **organization-user** | • Add users to an organization<br>• Remove users from an organization<br>• Update user roles<br>• List organization members |
 
 ---
 
