@@ -5,11 +5,11 @@ phases:
     commands:
       - echo "Installing dependencies"
       - cd apps/docs
-      - npm install
+      - pnpm install
   build:
     commands:
       - echo "Building the project"
-      - npm run build
+      - pnpm build
   post_build:
     commands:
       - echo "Syncing files to S3"
