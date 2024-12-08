@@ -5,11 +5,8 @@ import (
 	"api/internal/repository"
 	"api/pkg/utils"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-
-	// "os/user"
 	"strings"
 )
 
@@ -23,25 +20,45 @@ func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
 
 	user, err := a.userRepo.GetUserWithEmail(payload.Email)
 	if err != nil {
-		log.Printf("Error creating user: %v", err)
-		utils.JSONError(w, http.StatusInternalServerError, "No permission")
+		log.Printf("Error fetching user by email: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to retrieve user")
 		return
 	}
 
-	organization_user := &models.OrganizationUserCreated{
+	exists, err := a.organizationUsersRepo.IsUserInOrganization(organizationID, user.Id)
+	if err != nil {
+		log.Printf("Error checking if user is in organization: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to check organization membership")
+		return
+	}
+
+	if exists {
+		utils.JSONError(w, http.StatusConflict, "User is already a member of the organization")
+		return
+	}
+
+	organizationUser := &models.OrganizationUserCreated{
 		OrganizationId: organizationID,
 		UserId:         user.Id,
 		Role:           payload.Role,
 	}
 
-	create_organization_user, err := a.organizationUsersRepo.CreateOrganizationUser(organization_user)
+	createdOrganizationUser, err := a.organizationUsersRepo.CreateOrganizationUser(organizationUser)
 	if err != nil {
-		log.Printf("Error creating user: %v", err)
+		log.Printf("Error creating organization user: %v", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization user")
 		return
 	}
 
-	utils.JSONResponse(w, http.StatusCreated, create_organization_user)
+	response := map[string]interface{}{
+		"user_id":    createdOrganizationUser.UserId,
+		"email":      payload.Email,
+		"role":       payload.Role,
+		"first_name": user.FirstName,
+		"last_name":  user.LastName,
+	}
+
+	utils.JSONResponse(w, http.StatusCreated, response)
 }
 
 func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Request) {
@@ -71,7 +88,6 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 
 	organizationID := r.Header.Get("organization_id")
 
-	fmt.Println("Updating user role with explicit role checking: ", payload.UserID, organizationID, payload.Role)
 	err = a.organizationUsersRepo.UpdateOrganizationUserRole(organizationID, payload.UserID, payload.Role)
 	if err != nil {
 		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {

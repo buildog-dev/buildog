@@ -198,3 +198,19 @@ func (r *OrganizationUserRepository) ListOrganizationUsers(organizationID string
 
 	return users, nil
 }
+
+func (r *OrganizationUserRepository) IsUserInOrganization(organizationID, userID string) (bool, error) {
+	query := `
+		SELECT EXISTS (
+			SELECT 1 
+			FROM organization_users 
+			WHERE organization_id = $1 AND user_id = $2
+		)
+	`
+	var exists bool
+	err := r.db.QueryRow(query, organizationID, userID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}

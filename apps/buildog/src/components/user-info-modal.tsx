@@ -23,6 +23,7 @@ import {
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
 import { useParams } from "next/navigation";
+import { toast } from "@ui/components/use-toast";
 
 export default function UserInfoModal({
   rowUser,
@@ -48,7 +49,6 @@ export default function UserInfoModal({
   const params = useParams();
   const { organizationId } = params;
 
-  // Populate fields if editing an existing user
   useEffect(() => {
     if (mode === "edit" && user) {
       setFirstName(rowUser.first_name || "");
@@ -58,14 +58,34 @@ export default function UserInfoModal({
     }
   }, [user, mode]);
 
+  useEffect(() => {
+    if (!open) {
+      setFirstName(rowUser?.first_name || "");
+      setLastName(rowUser?.last_name || "");
+      setEmail(rowUser?.email || "");
+      setRole(rowUser?.role || "");
+    }
+  }, [open, rowUser]);
+
   const updateUserRoleHandler = useCallback(async () => {
     if (!user) {
-      alert("Unauthorized: Please log in.");
+      toast({
+        title: "Unauthorized: Please log in!",
+        variant: "destructive",
+      });
       return;
     }
 
     if (!rowUser || !rowUser.user_id || !role) {
-      alert("Invalid user data or role not selected.");
+      toast({
+        title: "Invalid user data or role not selected.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (rowUser.role == role) {
+      setOpen(false);
       return;
     }
 
@@ -83,7 +103,10 @@ export default function UserInfoModal({
       );
 
       if (response) {
-        alert("User role updated successfully!");
+        toast({
+          title: "Updated user role successfully!",
+          description: `Changed user role to ${role}`,
+        });
         setUsers((prevUsers) =>
           prevUsers.map((u) => (u.user_id === rowUser.user_id ? { ...u, role } : u))
         );
@@ -91,18 +114,29 @@ export default function UserInfoModal({
       }
     } catch (error) {
       console.error("Failed to update user role:", error);
-      alert("Failed to update user role. Please try again.");
+      setOpen(false);
+      toast({
+        title: "Failed to update user role",
+        description: `Error: ${error}`,
+        variant: "destructive",
+      });
     }
   }, [user, organizationId, rowUser?.user_id, role, setUsers]);
 
   const addUserHandler = useCallback(async () => {
     if (!user) {
-      alert("Unauthorized: Please log in.");
+      toast({
+        title: "Unauthorized: Please log in!",
+        variant: "destructive",
+      });
       return;
     }
 
     if (!email || !role) {
-      alert("Email and role are required for adding a user.");
+      toast({
+        title: "Email and role are required for adding a user.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -117,24 +151,50 @@ export default function UserInfoModal({
       );
 
       if (response) {
-        alert("User added successfully!");
-        setUsers((prevUsers) => [...prevUsers, { email, role }]);
+        toast({
+          title: "Added user to organization successfully!",
+          description: `${email} added as ${role}.`,
+        });
+
+        const newUser = {
+          user_id: response.user_id,
+          first_name: response.first_name || "",
+          last_name: response.last_name || "",
+          email: email,
+          role: role,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        setUsers((prevUsers) => [...prevUsers, newUser]);
         setOpen(false);
       }
     } catch (error) {
       console.error("Failed to create organization user:", error);
-      alert("Failed to add user. Please try again.");
+      toast({
+        title: "Failed to add user to organization!",
+        description: `Error: ${error}`,
+        variant: "destructive",
+      });
+      setOpen(false);
     }
   }, [user, organizationId, email, role]);
 
   const deleteUserHandler = useCallback(async () => {
     if (!user) {
-      alert("Unauthorized: Please log in.");
+      toast({
+        title: "Unauthorized: Please log in!",
+        variant: "destructive",
+      });
       return;
     }
 
     if (!rowUser || !rowUser.user_id) {
-      alert("Invalid user data. Cannot delete.");
+      toast({
+        title: "Invalid user data!",
+        description: "Can't remove user with invalid data.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -149,12 +209,23 @@ export default function UserInfoModal({
       );
 
       if (response) {
-        alert("User deleted successfully!");
-        setUsers((prevUsers) => prevUsers.filter((u) => u.id !== rowUser.user_id));
+        toast({
+          title: "User deleted successfully!",
+          description: `${rowUser.email} removed from organization.`,
+        });
+
+        setUsers((prevUsers) => prevUsers.filter((u) => u.user_id !== rowUser.user_id));
+
+        setOpen(false);
       }
     } catch (error) {
       console.error("Failed to delete organization user:", error);
-      alert("Failed to delete user. Please try again.");
+      toast({
+        title: "Failed to remove user!",
+        description: `Error: ${error}`,
+        variant: "destructive",
+      });
+      setOpen(false);
     }
   }, [user, organizationId, rowUser?.user_id, setUsers]);
 
@@ -184,18 +255,24 @@ export default function UserInfoModal({
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {mode === "add" && (
-            <>
+          {mode === "edit" && (
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <Label htmlFor="firstName">First Name</Label>
+                <Input id="firstName" value={firstName} disabled />
               </div>
-            </>
+              <div>
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input id="lastName" value={lastName} disabled />
+              </div>
+            </div>
+          )}
+
+          {mode === "add" && (
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
           )}
 
           <div className="grid gap-2">
