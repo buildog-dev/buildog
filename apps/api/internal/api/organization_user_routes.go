@@ -2,7 +2,7 @@ package api
 
 import (
 	"api/pkg/utils"
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"net/http"
 
@@ -24,14 +24,17 @@ func (a *api) checkRole(next http.HandlerFunc, roleType string) http.HandlerFunc
 
 		if roleType == "adminOrOwner" {
 			// Extract user ID from the request body for admin or owner check
-			var requestBody struct {
-				UserID string `json:"user_id"`
-			}
-			if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-				http.Error(w, "Invalid request body", http.StatusBadRequest)
+			claims, ok := utils.GetTokenClaims(r)
+			if !ok {
+				utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
 				return
 			}
-			userID = requestBody.UserID
+
+			userID, ok = utils.GetUserIDFromClaims(claims)
+			if !ok {
+				utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+				return
+			}
 			organizationID = r.Header.Get("organization_id")
 		} else if roleType == "participant" {
 			// Extract user ID from token claims for participant check

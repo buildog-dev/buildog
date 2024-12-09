@@ -40,11 +40,11 @@ export default function OrgNavigation() {
     getOrganizations();
   }, [user, getOrganizations]);
 
-  const currentOrganization = organizations.find((org) => org.OrganizationId === organizationId);
+  const currentOrganization = organizations.find((org) => org.organization_id === organizationId);
 
   const filteredOrganizations = searchTerm
     ? organizations.filter((org) =>
-        org.OrganizationName.toLowerCase().includes(searchTerm.toLowerCase())
+        org.organization_name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : organizations;
 
@@ -63,11 +63,11 @@ export default function OrgNavigation() {
                 <AvatarImage
                   className="aspect-square h-full w-full grayscale"
                   src="https://avatar.vercel.sh/acme-inc.png"
-                  alt={currentOrganization.OrganizationName}
+                  alt={currentOrganization.organization_name}
                 />
-                <AvatarFallback>{currentOrganization.OrganizationName.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{currentOrganization.organization_name.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="ml-1 mr-auto">{currentOrganization.OrganizationName}</div>
+              <div className="ml-1 mr-auto">{currentOrganization.organization_name}</div>
             </>
           ) : (
             "Select Organization"
@@ -95,27 +95,27 @@ export default function OrgNavigation() {
                 </div>
                 {filteredOrganizations.map((org) => (
                   <CommandItem
-                    key={org.OrganizationId}
-                    value={org.OrganizationId.toString()}
+                    key={org.organization_id}
+                    value={org.organization_id.toString()}
                     onSelect={() => {
-                      router.push(`/organizations/${org.OrganizationId}`);
+                      router.push(`/organizations/${org.organization_id}`);
                       setOpen(false);
                     }}
-                    className={`cursor-pointer ${org.OrganizationId === currentOrganization?.OrganizationId ? "font-bold" : ""}`}
+                    className={`cursor-pointer ${org.organization_id === currentOrganization?.organization_id ? "font-bold" : ""}`}
                   >
                     <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
                       <AvatarImage
                         className="aspect-square h-full w-full grayscale"
                         src="https://avatar.vercel.sh/acme-inc.png"
-                        alt={org.OrganizationName}
+                        alt={org.organization_name}
                       />
-                      <AvatarFallback>{org.OrganizationName.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>{org.organization_name.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    {org.OrganizationName}
+                    {org.organization_name}
                     <CheckIcon
                       className={cn(
                         "mr-0 ml-auto h-4 w-4",
-                        currentOrganization?.OrganizationId === org.OrganizationId
+                        currentOrganization?.organization_id === org.organization_id
                           ? "opacity-100"
                           : "opacity-0"
                       )}
