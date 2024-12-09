@@ -78,14 +78,14 @@ export default function Page() {
             <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10 overflow-hidden px-2 pb-6">
               {organizations.map((org) => (
                 <Card
-                  key={org.OrganizationId}
+                  key={org.organization_id}
                   className="p-6 cursor-pointer h-36 w-full flex items-center justify-between border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out"
-                  onClick={() => router.push(`/organizations/${org.OrganizationId}/`)}
+                  onClick={() => router.push(`/organizations/${org.organization_id}/`)}
                 >
                   <div className="flex flex-col w-full">
-                    <div className="text-xl font-semibold mb-2">{org.OrganizationName}</div>
+                    <div className="text-xl font-semibold mb-2">{org.organization_name}</div>
                     <div className="text-sm text-gray-600 mb-4">
-                      <div className="mb-1">{org.OrganizationDescription}</div>
+                      <div className="mb-1">{org.organization_description}</div>
                     </div>
                   </div>
                   <div className="text-xl text-gray-500">
