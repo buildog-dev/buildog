@@ -4,5 +4,6 @@
   "---": {
     "type": "separator"
   },
-  "getting-started": "Getting Started"
+  "getting-started": "Getting Started",
+  "api-reference": "API Reference"
 }
