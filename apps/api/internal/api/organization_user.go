@@ -25,18 +25,6 @@ func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	exists, err := a.organizationUsersRepo.IsUserInOrganization(organizationID, user.Id)
-	if err != nil {
-		log.Printf("Error checking if user is in organization: %v", err)
-		utils.JSONError(w, http.StatusInternalServerError, "Failed to check organization membership")
-		return
-	}
-
-	if exists {
-		utils.JSONError(w, http.StatusConflict, "User is already a member of the organization")
-		return
-	}
-
 	organizationUser := &models.OrganizationUserCreated{
 		OrganizationId: organizationID,
 		UserId:         user.Id,
@@ -69,23 +57,6 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	claims, ok := utils.GetTokenClaims(r)
-	if !ok {
-		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
-		return
-	}
-
-	currentUserID, ok := utils.GetUserIDFromClaims(claims)
-	if !ok {
-		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID in token")
-		return
-	}
-
-	if currentUserID == payload.UserID {
-		utils.JSONError(w, http.StatusForbidden, "You cannot change your own role")
-		return
-	}
-
 	organizationID := r.Header.Get("organization_id")
 
 	err = a.organizationUsersRepo.UpdateOrganizationUserRole(organizationID, payload.UserID, payload.Role)
@@ -107,23 +78,6 @@ func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request)
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil {
 		utils.JSONError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-
-	claims, ok := utils.GetTokenClaims(r)
-	if !ok {
-		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
-		return
-	}
-
-	currentUserID, ok := utils.GetUserIDFromClaims(claims)
-	if !ok {
-		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID in token")
-		return
-	}
-
-	if currentUserID == payload.UserID {
-		utils.JSONError(w, http.StatusForbidden, "You cannot delete yourself from the organization")
 		return
 	}
 
