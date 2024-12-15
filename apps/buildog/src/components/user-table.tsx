@@ -1,31 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { Button } from "@ui/components/button";
+import React, { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@ui/components/ui/data-table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@ui/components/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@ui/components/dialog";
-import { Label } from "@ui/components/label";
 import { PersonIcon } from "@ui/components/react-icons";
-import { CaretDownIcon } from "@ui/components/react-icons";
-import { Input } from "@ui/components/input";
+import { useParams } from "next/navigation";
+import { Service } from "@/web-sdk";
+import { useAuth } from "@/components/auth-provider";
+import UserInfoModal from "./user-info-modal";
 
 type User = {
-  id: number;
+  user_id: string;
   first_name: string;
   last_name: string;
   role: string;
@@ -34,57 +18,33 @@ type User = {
   updated_at: string;
 };
 
-const dummyUsers: User[] = [
-  {
-    id: 1,
-    first_name: "John",
-    last_name: "Doe",
-    role: "admin",
-    email: "john.doe@example.com",
-    created_at: "2023-07-15T10:15:30Z",
-    updated_at: "2023-09-10T14:20:45Z",
-  },
-  {
-    id: 2,
-    first_name: "Jane",
-    last_name: "Smith",
-    role: "writer",
-    email: "jane.smith@example.com",
-    created_at: "2023-06-20T09:05:20Z",
-    updated_at: "2023-09-12T16:10:55Z",
-  },
-  {
-    id: 3,
-    first_name: "Michael",
-    last_name: "Brown",
-    role: "reader",
-    email: "michael.brown@example.com",
-    created_at: "2023-08-01T11:25:40Z",
-    updated_at: "2023-09-11T18:30:35Z",
-  },
-  {
-    id: 4,
-    first_name: "Emily",
-    last_name: "Davis",
-    role: "writer",
-    email: "emily.davis@example.com",
-    created_at: "2023-07-30T12:45:50Z",
-    updated_at: "2023-09-12T19:45:15Z",
-  },
-];
-
 export default function UserTable() {
-  const [users, setUsers] = useState<User[]>(dummyUsers);
-  const [open, setOpen] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const { user } = useAuth();
+  const params = useParams();
+  const { organizationId } = params;
 
-  const deleteUser = (userId: number) => {
-    setOpen(!open);
+  const getUserList = useCallback(async () => {
+    if (!user) return;
 
-    setUsers((prevUsers) => {
-      const updatedUsers = prevUsers.filter((user) => user.id !== userId);
-      return updatedUsers;
-    });
-  };
+    try {
+      if (!organizationId || Array.isArray(organizationId)) return;
+
+      const response = await Service.makeAuthenticatedRequest("organization-user", "GET", null, {
+        organization_id: organizationId,
+      });
+
+      if (response) {
+        setUsers(response);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  }, [user, organizationId]);
+
+  useEffect(() => {
+    getUserList();
+  }, [user, getUserList]);
 
   const tableData = () => {
     return users.map((user) => {
@@ -97,7 +57,7 @@ export default function UserTable() {
       });
 
       return {
-        id: user.id,
+        user_id: user.user_id,
         first_name: user.first_name,
         last_name: user.last_name,
         role: user.role,
@@ -146,89 +106,7 @@ export default function UserTable() {
       cell: ({ row }) => {
         const user = row.original;
 
-        const [firstName, setFirstName] = useState(user.first_name);
-        const [lastName, setLastName] = useState(user.last_name);
-        const [role, setRole] = useState(user.role);
-
-        const saveUserChanges = () => {
-          setUsers((prevUsers) =>
-            prevUsers.map((u) =>
-              u.id === user.id ? { ...u, first_name: firstName, last_name: lastName, role } : u
-            )
-          );
-          setOpen(false);
-        };
-
-        return (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="relative">
-                Edit
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Edit User</DialogTitle>
-                <DialogDescription>
-                  Change the name and role of the user or delete the user
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="grid gap-4 py-4">
-                <div className="flex space-x-4">
-                  <div className="w-1/2">
-                    <Label htmlFor="first_name">First Name</Label>
-                    <Input
-                      id="first_name"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="w-1/2">
-                    <Label htmlFor="last_name">Last Name</Label>
-                    <Input
-                      id="last_name"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                </div>
-
-                <div className="grid gap-2">
-                  <div className="flex items-center space-x-2">
-                    <span>User Role:</span>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="flex items-center justify-between">
-                          {role || "Select role"}
-                          <CaretDownIcon className="w-4 h-4 ml-2" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => setRole("admin")}>admin</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setRole("writer")}>
-                          writer
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setRole("reader")}>
-                          reader
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
-              </div>
-
-              <DialogFooter>
-                <Button className="bg-red-500 hover:bg-red-600" onClick={() => deleteUser(user.id)}>
-                  Delete
-                </Button>
-                <Button onClick={saveUserChanges}>Save</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        );
+        return <UserInfoModal rowUser={user} setUsers={setUsers} mode={"edit"} />;
       },
     },
   ];
@@ -244,33 +122,14 @@ export default function UserTable() {
 
             <h3 className="mt-4 text-lg font-semibold">No Users Found</h3>
             <p className="mb-4 mt-2 text-sm text-muted-foreground">
-              This organizations currently doesn't have any users.
+              This organization currently doesn't have any users.
             </p>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button size="sm" className="relative">
-                  Add User
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add User</DialogTitle>
-                  <DialogDescription>Write the name of the user you want add.</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="url">Name of the User</Label>
-                    <Input id="url" placeholder="John Doe" />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button>Add User</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <UserInfoModal setUsers={setUsers} mode={"add"} />
           </div>
         </div>
       )}
+
+      <UserInfoModal setUsers={setUsers} mode={"add"} />
     </div>
   );
 }
