@@ -13,7 +13,7 @@ import {
 } from "@ui/components/command";
 import { DropdownMenuSeparator } from "@ui/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/popover";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
@@ -27,6 +27,7 @@ export default function OrgNavigation() {
   const params = useParams();
   const { organizationId } = params;
   const router = useRouter();
+  const pathname = usePathname();
 
   const getOrganizations = useCallback(async () => {
     const response = await Service.makeAuthenticatedRequest("organizations");
@@ -98,8 +99,11 @@ export default function OrgNavigation() {
                     key={org.organization_id}
                     value={org.organization_id.toString()}
                     onSelect={() => {
-                      router.push(`/organizations/${org.organization_id}`);
-                      setOpen(false);
+                      const newPath = pathname.replace(
+                        organizationId as string,
+                        org.organization_id.toString()
+                      );
+                      router.replace(newPath);
                     }}
                     className={`cursor-pointer ${org.organization_id === currentOrganization?.organization_id ? "font-bold" : ""}`}
                   >

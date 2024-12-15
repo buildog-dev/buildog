@@ -46,8 +46,8 @@ export default function OrganizationInformation({ organizationId }: { organizati
       ) : (
         <>
           <h1>Organization id: {organization.id}</h1>
-          <h1>Organization id: {organization.name}</h1>
-          <h1>Organization id: {organization.description}</h1>
+          <h1>Organization name: {organization.name}</h1>
+          <h1>Organization description: {organization.description}</h1>
           <p>This is the overview page for the organization.</p>
         </>
       )}
