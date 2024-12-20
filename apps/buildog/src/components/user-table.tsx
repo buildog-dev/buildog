@@ -6,7 +6,7 @@ import { PersonIcon } from "@ui/components/react-icons";
 import { useParams } from "next/navigation";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
-import UserInfoModal from "./user-info-modal";
+import OrganizationUserModal from "./organization-user-modal";
 
 type User = {
   user_id: string;
@@ -28,10 +28,10 @@ export default function UserTable() {
     if (!user) return;
 
     try {
-      if (!organizationId || Array.isArray(organizationId)) return;
+      if (!organizationId) return;
 
       const response = await Service.makeAuthenticatedRequest("organization-user", "GET", null, {
-        organization_id: organizationId,
+        organization_id: organizationId as string,
       });
 
       if (response) {
@@ -105,31 +105,19 @@ export default function UserTable() {
       enableSorting: false,
       cell: ({ row }) => {
         const user = row.original;
-
-        return <UserInfoModal rowUser={user} setUsers={setUsers} mode={"edit"} />;
+        return <OrganizationUserModal getUserList={getUserList} user={user} mode="edit" />;
       },
     },
   ];
 
   return (
     <div className="space-y-4">
-      {users.length > 0 ? (
-        <DataTable columns={columns} data={tableData()} filterColumnId={"first_name"} />
-      ) : (
-        <div className="flex h-[450px] shrink-0 items-center justify-center rounded-md border border-dashed">
-          <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
-            <PersonIcon className="h-10 w-10 text-muted-foreground" />
-
-            <h3 className="mt-4 text-lg font-semibold">No Users Found</h3>
-            <p className="mb-4 mt-2 text-sm text-muted-foreground">
-              This organization currently doesn't have any users.
-            </p>
-            <UserInfoModal setUsers={setUsers} mode={"add"} />
-          </div>
-        </div>
-      )}
-
-      <UserInfoModal setUsers={setUsers} mode={"add"} />
+      <DataTable
+        columns={columns}
+        data={tableData()}
+        filterColumnId={"first_name"}
+        buttonArea={<OrganizationUserModal getUserList={getUserList} mode="add" />}
+      />
     </div>
   );
 }
