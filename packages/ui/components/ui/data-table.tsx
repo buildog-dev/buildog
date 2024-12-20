@@ -30,22 +30,24 @@ import {
   DropdownMenuTrigger,
 } from "@ui/components/ui/dropdown-menu";
 
-import * as React from "react";
+import React, { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterColumnId: string;
+  buttonArea?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   filterColumnId,
+  buttonArea,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [selectedColumn, setSelectedColumn] = React.useState<string | null>(null);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
 
   const table = useReactTable({
     data,
@@ -68,13 +70,14 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex justify-between items-center py-4">
         <Input
           placeholder="Search"
           value={(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn(filterColumnId)?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
+        <div>{buttonArea}</div>
       </div>
       <div className="rounded-md border">
         <Table>

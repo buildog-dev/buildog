@@ -2,7 +2,6 @@ package api
 
 import (
 	"api/pkg/utils"
-	// "encoding/json"
 	"fmt"
 	"net/http"
 

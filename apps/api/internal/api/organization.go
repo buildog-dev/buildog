@@ -16,5 +16,5 @@ func (a *api) getOrganizationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.JSONResponse(w, http.StatusCreated, organization)
+	utils.JSONResponse(w, http.StatusOK, organization)
 }
