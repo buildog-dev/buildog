@@ -6,7 +6,7 @@ import { useAuth } from "@/components/auth-provider";
 import { useRouter } from "next/navigation";
 import { Organization } from "@/types/organization";
 import { Card, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
-import { Skeleton } from "@ui/components/Skeleton";
+import { Skeleton } from "@ui/components/skeleton";
 
 const organizationCardNames = {
   id: "Organization Id",
