@@ -49,6 +49,13 @@ export default function OrgNavigation() {
       )
     : organizations;
 
+  const handleOrganizationRouteChange = (newOrganizationId: string) => {
+    if (typeof organizationId === "string") {
+      const newPath = pathname.replace(organizationId, newOrganizationId);
+      router.push(newPath);
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -99,11 +106,7 @@ export default function OrgNavigation() {
                     key={org.organization_id}
                     value={org.organization_id.toString()}
                     onSelect={() => {
-                      const newPath = pathname.replace(
-                        organizationId as string,
-                        org.organization_id.toString()
-                      );
-                      router.replace(newPath);
+                      handleOrganizationRouteChange(org.organization_id);
                     }}
                     className={`cursor-pointer ${org.organization_id === currentOrganization?.organization_id ? "font-bold" : ""}`}
                   >
