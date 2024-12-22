@@ -13,7 +13,7 @@ import {
 } from "@ui/components/command";
 import { DropdownMenuSeparator } from "@ui/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/popover";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
@@ -27,6 +27,7 @@ export default function OrgNavigation() {
   const params = useParams();
   const { organizationId } = params;
   const router = useRouter();
+  const pathname = usePathname();
 
   const getOrganizations = useCallback(async () => {
     const response = await Service.makeAuthenticatedRequest("organizations");
@@ -47,6 +48,13 @@ export default function OrgNavigation() {
         org.organization_name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : organizations;
+
+  const handleOrganizationRouteChange = (newOrganizationId: string) => {
+    if (typeof organizationId === "string") {
+      const newPath = pathname.replace(organizationId, newOrganizationId);
+      router.push(newPath);
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -96,11 +104,8 @@ export default function OrgNavigation() {
                 {filteredOrganizations.map((org) => (
                   <CommandItem
                     key={org.organization_id}
-                    value={org.organization_id.toString()}
-                    onSelect={() => {
-                      router.push(`/organizations/${org.organization_id}`);
-                      setOpen(false);
-                    }}
+                    value={org.organization_id}
+                    onSelect={() => handleOrganizationRouteChange(org.organization_id)}
                     className={`cursor-pointer ${org.organization_id === currentOrganization?.organization_id ? "font-bold" : ""}`}
                   >
                     <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
