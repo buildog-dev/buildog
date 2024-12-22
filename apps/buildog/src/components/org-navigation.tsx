@@ -104,10 +104,8 @@ export default function OrgNavigation() {
                 {filteredOrganizations.map((org) => (
                   <CommandItem
                     key={org.organization_id}
-                    value={org.organization_id.toString()}
-                    onSelect={() => {
-                      handleOrganizationRouteChange(org.organization_id);
-                    }}
+                    value={org.organization_id}
+                    onSelect={() => handleOrganizationRouteChange(org.organization_id)}
                     className={`cursor-pointer ${org.organization_id === currentOrganization?.organization_id ? "font-bold" : ""}`}
                   >
                     <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
