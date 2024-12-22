@@ -5,17 +5,27 @@ import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
 import { useRouter } from "next/navigation";
 import { Organization } from "@/types/organization";
+import { Card, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
+import { Skeleton } from "@ui/components/skeleton";
+
+const organizationCardNames = {
+  id: "Organization Id",
+  name: "Organization Name",
+  description: "Description",
+  created_by: "Created By",
+};
 
 export default function OrganizationInformation({ organizationId }: { organizationId: string }) {
   const { user } = useAuth();
+  const router = useRouter();
+
+  const [loading, setLoading] = useState<boolean>(true);
   const [organization, setOrganization] = useState<Organization>({
     id: "",
     name: "",
     description: "",
     created_by: "",
   });
-  const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
 
   const fetchOrganizations = useCallback(async () => {
     try {
@@ -39,18 +49,28 @@ export default function OrganizationInformation({ organizationId }: { organizati
     fetchOrganizations();
   }, [user, fetchOrganizations]);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-[90px] w-[348px] rounded-xl" />
+        <Skeleton className="h-[90px] w-[348px] rounded-xl" />
+        <Skeleton className="h-[90px] w-[348px] rounded-xl" />
+        <Skeleton className="h-[90px] w-[348px] rounded-xl" />
+      </div>
+    );
+  }
+
   return (
-    <div>
-      {loading ? (
-        <>Loading</>
-      ) : (
-        <>
-          <h1>Organization id: {organization.id}</h1>
-          <h1>Organization id: {organization.name}</h1>
-          <h1>Organization id: {organization.description}</h1>
-          <p>This is the overview page for the organization.</p>
-        </>
-      )}
+    <div className="flex flex-col gap-3">
+      {organization &&
+        Object.entries(organization).map(([key, value]) => (
+          <Card className="w-[350px]">
+            <CardHeader>
+              <CardTitle>{organizationCardNames[key]}</CardTitle>
+              <CardDescription>{value}</CardDescription>
+            </CardHeader>
+          </Card>
+        ))}
     </div>
   );
 }

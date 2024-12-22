@@ -29,7 +29,7 @@ func (a *api) getOrganizationsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.JSONResponse(w, http.StatusCreated, organizations)
+	utils.JSONResponse(w, http.StatusOK, organizations)
 }
 
 func (a *api) createOrganizationHandler(w http.ResponseWriter, r *http.Request) {

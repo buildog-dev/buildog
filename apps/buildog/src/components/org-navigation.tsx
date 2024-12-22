@@ -13,7 +13,7 @@ import {
 } from "@ui/components/command";
 import { DropdownMenuSeparator } from "@ui/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/popover";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
@@ -27,6 +27,7 @@ export default function OrgNavigation() {
   const params = useParams();
   const { organizationId } = params;
   const router = useRouter();
+  const pathname = usePathname();
 
   const getOrganizations = useCallback(async () => {
     const response = await Service.makeAuthenticatedRequest("organizations");
@@ -40,13 +41,20 @@ export default function OrgNavigation() {
     getOrganizations();
   }, [user, getOrganizations]);
 
-  const currentOrganization = organizations.find((org) => org.OrganizationId === organizationId);
+  const currentOrganization = organizations.find((org) => org.organization_id === organizationId);
 
   const filteredOrganizations = searchTerm
     ? organizations.filter((org) =>
-        org.OrganizationName.toLowerCase().includes(searchTerm.toLowerCase())
+        org.organization_name.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : organizations;
+
+  const handleOrganizationRouteChange = (newOrganizationId: string) => {
+    if (typeof organizationId === "string") {
+      const newPath = pathname.replace(organizationId, newOrganizationId);
+      router.push(newPath);
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -63,11 +71,11 @@ export default function OrgNavigation() {
                 <AvatarImage
                   className="aspect-square h-full w-full grayscale"
                   src="https://avatar.vercel.sh/acme-inc.png"
-                  alt={currentOrganization.OrganizationName}
+                  alt={currentOrganization.organization_name}
                 />
-                <AvatarFallback>{currentOrganization.OrganizationName.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{currentOrganization.organization_name.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="ml-1 mr-auto">{currentOrganization.OrganizationName}</div>
+              <div className="ml-1 mr-auto">{currentOrganization.organization_name}</div>
             </>
           ) : (
             "Select Organization"
@@ -95,27 +103,24 @@ export default function OrgNavigation() {
                 </div>
                 {filteredOrganizations.map((org) => (
                   <CommandItem
-                    key={org.OrganizationId}
-                    value={org.OrganizationId.toString()}
-                    onSelect={() => {
-                      router.push(`/organizations/${org.OrganizationId}`);
-                      setOpen(false);
-                    }}
-                    className={`cursor-pointer ${org.OrganizationId === currentOrganization?.OrganizationId ? "font-bold" : ""}`}
+                    key={org.organization_id}
+                    value={org.organization_id}
+                    onSelect={() => handleOrganizationRouteChange(org.organization_id)}
+                    className={`cursor-pointer ${org.organization_id === currentOrganization?.organization_id ? "font-bold" : ""}`}
                   >
                     <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
                       <AvatarImage
                         className="aspect-square h-full w-full grayscale"
                         src="https://avatar.vercel.sh/acme-inc.png"
-                        alt={org.OrganizationName}
+                        alt={org.organization_name}
                       />
-                      <AvatarFallback>{org.OrganizationName.charAt(0)}</AvatarFallback>
+                      <AvatarFallback>{org.organization_name.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    {org.OrganizationName}
+                    {org.organization_name}
                     <CheckIcon
                       className={cn(
                         "mr-0 ml-auto h-4 w-4",
-                        currentOrganization?.OrganizationId === org.OrganizationId
+                        currentOrganization?.organization_id === org.organization_id
                           ? "opacity-100"
                           : "opacity-0"
                       )}
