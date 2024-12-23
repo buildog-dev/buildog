@@ -3,7 +3,7 @@ import AvatarDropdown from "./avatar-dropdown";
 
 export default function OrganizationsHeader() {
   return (
-    <div className="border-b fixed top-0 left-0 right-0 shadow bg-white dark:bg-[#030711]">
+    <div className="border-b fixed top-0 left-0 right-0 shadow">
       <div className="flex h-16 items-center justify-center px-4 lg:px-6">
         <nav className="flex items-center space-x-4 lg:space-x-6">
           <div className="relative z-20 flex items-center text-lg font-medium">Buildog</div>
