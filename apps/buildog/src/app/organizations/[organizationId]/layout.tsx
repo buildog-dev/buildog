@@ -1,8 +1,7 @@
 "use client";
 
 import Appbar from "@/components/app-bar";
-import { SidebarProvider } from "@ui/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar";
+import { Sidebar } from "@/components/sidebar";
 
 export default function Layout({
   children,
@@ -14,14 +13,12 @@ export default function Layout({
   const { organizationId } = params;
 
   return (
-    <SidebarProvider>
-      <div className="flex w-full">
-        <AppSidebar organizationId={organizationId} />
-        <div className="flex flex-col w-full">
-          <Appbar />
-          <main className="flex-grow p-5 mx-auto overflow-auto w-full">{children}</main>
-        </div>
+    <div className="flex w-full">
+      <Sidebar className="w-[300px] border-r" organizationId={organizationId} />
+      <div className="flex flex-col w-full">
+        <Appbar />
+        <div className="flex-grow p-5 mx-auto overflow-auto w-full">{children}</div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 }
