@@ -274,8 +274,8 @@ const SidebarTrigger = React.forwardRef<
       {/* Sidebar icon */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
+        width="26"
+        height="26"
         fill="CurrentColor"
         viewBox="0 0 256 256"
       >

@@ -9,6 +9,9 @@ import {
   SidebarMenu,
   SidebarGroupContent,
   SidebarMenuButton,
+  SidebarTrigger,
+  SidebarFooter,
+  useSidebar,
 } from "@ui/components/ui/sidebar";
 import { Pencil2Icon, FrameIcon, GlobeIcon, GearIcon } from "@ui/components/react-icons";
 
@@ -20,6 +23,8 @@ interface SidebarProps {
 export function AppSidebar({ className, organizationId }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
 
   const routes = {
     Main: {
@@ -56,7 +61,7 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
   const normalizePath = (path: string) => path.replace(/\/$/, "");
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon" className="transition-[width] duration-300 ease-in-out">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -65,8 +70,13 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
                 <div className="space-y-4 py-4">
                   {Object.entries(routes).map(([key, route]) => (
                     <div key={key}>
-                      <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{key}</h2>
-                      <div className="space-y-1 ml-2">
+                      {!collapsed && (
+                        <div className="flex flex-row items-center justify-between transition-all duration-300 overflow-hidden">
+                          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{key}</h2>
+                          <SidebarTrigger className="mr-4 mb-2" />
+                        </div>
+                      )}
+                      <div className="space-y-1">
                         {route.children.map((child) => {
                           const normalizedPathname = normalizePath(pathname);
                           const normalizedRoute = normalizePath(child.route);
@@ -77,7 +87,7 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
                               variant={
                                 normalizedPathname === normalizedRoute ? "outline" : "default"
                               }
-                              className="w-full justify-start"
+                              className="w-full justify-start overflow-hidden whitespace-nowrap text-ellipsis transition-all duration-300"
                             >
                               {child.icon}
                               {child.name}
@@ -93,6 +103,7 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>{collapsed && <SidebarTrigger className="mb-2" />}</SidebarFooter>
     </Sidebar>
   );
 }

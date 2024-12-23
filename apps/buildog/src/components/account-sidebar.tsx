@@ -10,8 +10,11 @@ import {
   SidebarMenu,
   SidebarGroupContent,
   SidebarMenuButton,
+  SidebarFooter,
+  SidebarTrigger,
+  useSidebar,
 } from "@ui/components/ui/sidebar";
-import { PersonIcon, Half2Icon, LockClosedIcon } from "@ui/components/react-icons";
+import { PersonIcon, Half2Icon, LockClosedIcon, HomeIcon } from "@ui/components/react-icons";
 interface SidebarProps {
   className?: string;
 }
@@ -19,6 +22,8 @@ interface SidebarProps {
 export function AccountSidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
 
   const routes = {
     Settings: {
@@ -48,7 +53,7 @@ export function AccountSidebar({ className }: SidebarProps) {
   const normalizePath = (path: string) => path.replace(/\/$/, "");
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon" className="transition-[width] duration-300 ease-in-out">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -57,8 +62,13 @@ export function AccountSidebar({ className }: SidebarProps) {
                 <div className="space-y-4 py-4">
                   {Object.entries(routes).map(([key, route]) => (
                     <div key={key}>
-                      <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{key}</h2>
-                      <div className="space-y-1 ml-2">
+                      {!collapsed && (
+                        <div className="flex flex-row items-center justify-between transition-all duration-300 overflow-hidden">
+                          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{key}</h2>
+                          <SidebarTrigger className="mr-4 mb-2" />
+                        </div>
+                      )}
+                      <div className="space-y-1">
                         {route.children.map((child) => {
                           const normalizedPathname = normalizePath(pathname);
                           const normalizedRoute = normalizePath(child.route);
@@ -80,9 +90,12 @@ export function AccountSidebar({ className }: SidebarProps) {
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-center mt-4 px-2">
-                  <Button onClick={() => router.push("/organizations")} className="w-full">
-                    Back to Home
+                <div>
+                  <Button
+                    onClick={() => router.push("/organizations")}
+                    className={`flex justify-center px-2 w-full ${collapsed ? "mt-0" : "mt-4"}`}
+                  >
+                    {collapsed ? <HomeIcon className="" /> : "Back to Home"}
                   </Button>
                 </div>
               </div>
@@ -90,6 +103,7 @@ export function AccountSidebar({ className }: SidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>{collapsed && <SidebarTrigger className="mb-2" />}</SidebarFooter>
     </Sidebar>
   );
 }
