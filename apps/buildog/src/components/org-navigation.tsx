@@ -49,6 +49,13 @@ export default function OrgNavigation() {
       )
     : organizations;
 
+  const changeOrganization = (newOrganizationId: string) => {
+    if (typeof organizationId === "string") {
+      const newPath = pathname.replace(organizationId, newOrganizationId);
+      router.replace(newPath);
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -97,14 +104,8 @@ export default function OrgNavigation() {
                 {filteredOrganizations.map((org) => (
                   <CommandItem
                     key={org.organization_id}
-                    value={org.organization_id.toString()}
-                    onSelect={() => {
-                      const newPath = pathname.replace(
-                        organizationId as string,
-                        org.organization_id.toString()
-                      );
-                      router.replace(newPath);
-                    }}
+                    value={org.organization_id}
+                    onSelect={() => changeOrganization(org.organization_id)}
                     className={`cursor-pointer ${org.organization_id === currentOrganization?.organization_id ? "font-bold" : ""}`}
                   >
                     <Avatar className="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
