@@ -14,6 +14,7 @@ import {
   useSidebar,
 } from "@ui/components/ui/sidebar";
 import { Pencil2Icon, FrameIcon, GlobeIcon, GearIcon } from "@ui/components/react-icons";
+import AvatarDropdown from "./avatar-dropdown";
 
 interface SidebarProps {
   className?: string;
@@ -27,7 +28,7 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
   const collapsed = state === "collapsed";
 
   const routes = {
-    Main: {
+    Buildog: {
       children: [
         {
           name: "Blog",
@@ -57,9 +58,6 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
     },
   };
 
-  // Normalize pathnames
-  const normalizePath = (path: string) => path.replace(/\/$/, "");
-
   return (
     <Sidebar collapsible="icon" className="transition-[width] duration-300 ease-in-out">
       <SidebarContent>
@@ -72,28 +70,22 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
                     <div key={key}>
                       {!collapsed && (
                         <div className="flex flex-row items-center justify-between transition-all duration-300 overflow-hidden">
-                          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{key}</h2>
-                          <SidebarTrigger className="mr-4 mb-2" />
+                          <h2 className="mb-2 px-1 text-lg font-semibold tracking-tight">{key}</h2>
                         </div>
                       )}
                       <div className="space-y-1">
-                        {route.children.map((child) => {
-                          const normalizedPathname = normalizePath(pathname);
-                          const normalizedRoute = normalizePath(child.route);
-                          return (
-                            <SidebarMenuButton
-                              onClick={() => router.push(child.route)}
-                              key={child.key}
-                              variant={
-                                normalizedPathname === normalizedRoute ? "outline" : "default"
-                              }
-                              className="w-full justify-start overflow-hidden whitespace-nowrap text-ellipsis transition-all duration-300"
-                            >
-                              {child.icon}
-                              {child.name}
-                            </SidebarMenuButton>
-                          );
-                        })}
+                        {route.children.map((child) => (
+                          <SidebarMenuButton
+                            onClick={() => router.push(child.route)}
+                            key={child.key}
+                            isActive={pathname === child.route}
+                            tooltip={child.name}
+                            className="w-full justify-start overflow-hidden whitespace-nowrap text-ellipsis transition-all duration-300"
+                          >
+                            {child.icon}
+                            {child.name}
+                          </SidebarMenuButton>
+                        ))}
                       </div>
                     </div>
                   ))}
@@ -103,7 +95,10 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>{collapsed && <SidebarTrigger className="mb-2" />}</SidebarFooter>
+      <SidebarFooter>
+        <SidebarTrigger />
+        <AvatarDropdown />
+      </SidebarFooter>
     </Sidebar>
   );
 }

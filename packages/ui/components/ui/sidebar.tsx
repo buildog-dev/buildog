@@ -259,31 +259,43 @@ const SidebarTrigger = React.forwardRef<
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Button
-      ref={ref}
-      data-sidebar="trigger"
-      variant="ghost"
-      size="icon"
-      className={cn("h-7 w-7", className)}
-      onClick={(event) => {
-        onClick?.(event);
-        toggleSidebar();
-      }}
-      {...props}
-    >
-      {/* Sidebar icon */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="26"
-        height="26"
-        fill="CurrentColor"
-        viewBox="0 0 256 256"
-      >
-        <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H80V200H40ZM216,200H96V56H216V200Z"></path>
-      </svg>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          ref={ref}
+          data-sidebar="trigger"
+          variant="ghost"
+          size="icon"
+          className={cn("h-7 w-7", className)}
+          onClick={(event) => {
+            onClick?.(event);
+            toggleSidebar();
+          }}
+          {...props}
+        >
+          {/* Sidebar icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="CurrentColor"
+            viewBox="0 0 256 256"
+          >
+            <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H80V200H40ZM216,200H96V56H216V200Z"></path>
+          </svg>
 
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+          <span className="sr-only">Toggle Sidebar</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <div className="flex items-center">
+          <span>Toggle Sidebar</span>
+          <span className="ml-2 px-2 py-1 bg-gray-200 text-gray-800 rounded-md text-xs font-mono">
+            Ctrl + B
+          </span>
+        </div>
+      </TooltipContent>
+    </Tooltip>
   );
 });
 SidebarTrigger.displayName = "SidebarTrigger";
