@@ -14,7 +14,7 @@ import {
   useSidebar,
 } from "@ui/components/ui/sidebar";
 import { Pencil2Icon, FrameIcon, GlobeIcon, GearIcon } from "@ui/components/react-icons";
-import AvatarDropdown from "./avatar-dropdown";
+import SidebarAvatarMenu from "./sidebar-avatar-menu";
 
 interface SidebarProps {
   className?: string;
@@ -97,7 +97,7 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarTrigger />
-        <AvatarDropdown />
+        <SidebarAvatarMenu />
       </SidebarFooter>
     </Sidebar>
   );

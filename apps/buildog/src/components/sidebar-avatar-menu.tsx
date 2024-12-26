@@ -1,0 +1,144 @@
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/ui/popover";
+import {
+  ExitIcon,
+  GearIcon,
+  CaretSortIcon,
+  MixerHorizontalIcon,
+  SunIcon,
+  MoonIcon,
+} from "@ui/components/react-icons";
+import { Auth, Service } from "@/web-sdk";
+import { useAuth } from "@/components/auth-provider";
+import { useState, useEffect, useCallback } from "react";
+import { useSidebar } from "@ui/components/ui/sidebar";
+import { DropdownMenuSeparator } from "@ui/components/dropdown-menu";
+import { useTheme } from "next-themes";
+import { Switch } from "@ui/components/ui/switch";
+import { Label } from "@ui/components/ui/label";
+
+export default function SidebarAvatarMenu() {
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
+  const { theme, setTheme } = useTheme();
+
+  const [userCredentials, setUserCredentials] = useState<{
+    first_name: string;
+    last_name: string;
+    email: string;
+  }>({
+    first_name: "",
+    last_name: "",
+    email: "",
+  });
+
+  const fetchUser = useCallback(async () => {
+    const response = await Service.makeAuthenticatedRequest("user");
+    if (response.error) {
+      console.log(response.error);
+    } else {
+      setUserCredentials(response);
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!user) setLoading(true);
+    fetchUser();
+  }, [user, fetchUser]);
+
+  const handleLogout = () => {
+    Auth.signOut();
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger className={`outline-none rounded-lg w-full h-12 ${!collapsed ? "hover:bg-zinc-800": ""}`}>
+        <div
+          className={`flex items-center gap-2 rounded-lg bg-zinc-900/5 ${
+            collapsed ? "w-full justify-start pl-0" : "pl-2"
+          }`}
+        >
+          {loading ? (
+            <div className="h-8 w-8 bg-zinc-800 rounded-full animate-pulse" />
+          ) : (
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+          )}
+          {!collapsed && (
+            loading ? (
+              <div className="flex flex-col items-start text-sm space-y-1">
+                <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse" />
+                <div className="h-3 bg-zinc-700 rounded w-16 animate-pulse" />
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col items-start text-sm">
+                  <span className="font-medium">
+                    {userCredentials.first_name} {userCredentials.last_name}
+                  </span>
+                  <span className="text-zinc-500 text-xs">{userCredentials.email}</span>
+                </div>
+                <CaretSortIcon />
+              </>
+            )
+          )}
+        </div>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="min-w-[200px] p-2 space-y-2">
+        {collapsed && loading && (
+          <div className="mb-2 px-2 py-1.5">
+            <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse mb-1" />
+            <div className="h-3 bg-zinc-700 rounded w-16 animate-pulse" />
+          </div>
+        )}
+        {collapsed && !loading && (
+          <div className="mb-2 px-2 py-1.5">
+            <div className="font-medium">
+              {userCredentials.first_name} {userCredentials.last_name}
+            </div>
+            <div className="text-zinc-500 text-xs">{userCredentials.email}</div>
+          </div>
+        )}
+        <Link href="/account/settings" className="block">
+          <div className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-800 cursor-pointer">
+            <GearIcon className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </div>
+        </Link>
+        <div
+          className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-800 cursor-pointer text-red-500"
+          onClick={handleLogout}
+        >
+          <ExitIcon className="mr-2 h-4 w-4" />
+          <span>Logout</span>
+        </div>
+        <DropdownMenuSeparator />
+        <div className="flex items-center px-2 py-1.5">
+          <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+          <span>Preferences</span>
+        </div>
+        <div className="p-2 flex justify-between items-center">
+          <p className="text-sm font-medium">Theme</p>
+          <div className="flex items-center gap-2">
+            <SunIcon className="h-4 w-4" />
+            <Switch id="theme-toggle" checked={theme === "dark"} onCheckedChange={toggleTheme} />
+            <MoonIcon className="h-4 w-4" />
+            <Label htmlFor="theme-toggle" className="sr-only">
+              Toggle theme
+            </Label>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}

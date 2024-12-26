@@ -14,7 +14,7 @@ import {
   useSidebar,
 } from "@ui/components/ui/sidebar";
 import { PersonIcon, Half2Icon, LockClosedIcon, ResetIcon } from "@ui/components/react-icons";
-import AvatarDropdown from "./avatar-dropdown";
+import SidebarAvatarMenu from "./sidebar-avatar-menu";
 interface SidebarProps {
   className?: string;
 }
@@ -99,7 +99,7 @@ export function AccountSidebar({ className }: SidebarProps) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarTrigger />
-        <AvatarDropdown />
+        <SidebarAvatarMenu />
       </SidebarFooter>
     </Sidebar>
   );
