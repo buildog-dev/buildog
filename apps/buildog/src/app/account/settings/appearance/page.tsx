@@ -19,7 +19,7 @@ import { toast } from "@ui/components/use-toast";
 import { Tabs, TabsContent } from "@ui/components/tabs";
 
 const settingsThemeFormSchema = z.object({
-  theme: z.enum(["dark", "light"], {
+  theme: z.enum(["dark", "light", "system"], {
     invalid_type_error: "Select a theme",
     required_error: "Please select a theme.",
   }),
@@ -62,7 +62,7 @@ export default function Page() {
                 <FormField
                   control={themeForm.control}
                   name="theme"
-                  defaultValue={theme as "dark" | "light"}
+                  defaultValue={theme as "dark" | "light" | "system"}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Select interface theme</FormLabel>
@@ -77,6 +77,7 @@ export default function Page() {
                           >
                             <option value="dark">Dark</option>
                             <option value="light">Light</option>
+                            <option value="system">System Theme</option>
                           </select>
                         </FormControl>
                         <ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />

@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange>
           <AuthProvider>
             <div className="flex w-full min-h-screen justify-center">{children}</div>
             <Toaster />
