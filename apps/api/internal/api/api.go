@@ -17,12 +17,14 @@ type api struct {
 	organizationsRepo     *repository.OrganizationRepository
 	organizationUsersRepo *repository.OrganizationUserRepository
 	userRepo              *repository.UserRepository
+	authService           auth.AuthorizationService
 }
 
 func NewApi(db *database.DB) (*api, error) {
 	organizationRepo := repository.NewOrganizationRepository(db)
 	organizationUserRepo := repository.NewOrganizationUserRepository(db)
 	userRepo := repository.NewUserRepository(db)
+	authService := auth.NewAuthService(organizationUserRepo)
 
 	return &api{
 		db: db,
@@ -30,6 +32,7 @@ func NewApi(db *database.DB) (*api, error) {
 		organizationsRepo:     organizationRepo,
 		organizationUsersRepo: organizationUserRepo,
 		userRepo:              userRepo,
+		authService:           authService,
 	}, nil
 
 }
@@ -43,7 +46,6 @@ func (a *api) Server(port int) *http.Server {
 
 func (a *api) Routes() http.Handler {
 	router := mux.NewRouter()
-	authService := auth.NewAuthService(a.organizationUsersRepo)
 
 	healthRouter := router.PathPrefix("/health").Subrouter()
 	healthRouter.HandleFunc("", a.healthCheckHandler).Methods(http.MethodGet, http.MethodOptions)
@@ -60,15 +62,15 @@ func (a *api) Routes() http.Handler {
 	protectedRouter.HandleFunc("/organizations", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
 
 	protectedRouter.HandleFunc("/organizations",
-		auth.RequirePermission(authService, auth.PermissionUpdateOrganization)(a.updateOrganizationHandler),
+		auth.RequirePermission(a.authService, auth.PermissionUpdateOrganization)(a.updateOrganizationHandler),
 	).Methods(http.MethodPut, http.MethodOptions)
 
 	protectedRouter.HandleFunc("/organizations",
-		auth.RequirePermission(authService, auth.PermissionDeleteOrganization)(a.deleteOrganizationHandler),
+		auth.RequirePermission(a.authService, auth.PermissionDeleteOrganization)(a.deleteOrganizationHandler),
 	).Methods(http.MethodDelete, http.MethodOptions)
 
 	protectedRouter.HandleFunc("/organization",
-		auth.RequirePermission(authService, auth.PermissionReadOrganization)(a.getOrganizationHandler),
+		auth.RequirePermission(a.authService, auth.PermissionReadOrganization)(a.getOrganizationHandler),
 	).Methods(http.MethodGet, http.MethodOptions)
 
 	protectedRouter.HandleFunc("/user", a.getUserHandler).Methods(http.MethodGet, http.MethodOptions)

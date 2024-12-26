@@ -15,21 +15,21 @@ type OrganizationUsersRepository interface {
 	GetOrganizationUserRole(organizationID, userID string) (Role, error)
 }
 
-type authService struct {
+type AuthService struct {
 	organizationUsersRepo OrganizationUsersRepository
 }
 
 func NewAuthService(repo OrganizationUsersRepository) AuthorizationService {
-	return &authService{
+	return &AuthService{
 		organizationUsersRepo: repo,
 	}
 }
 
-func (s *authService) GetUserRole(organizationID, userID string) (Role, error) {
+func (s *AuthService) GetUserRole(organizationID, userID string) (Role, error) {
 	return s.organizationUsersRepo.GetOrganizationUserRole(organizationID, userID)
 }
 
-func (s *authService) HasPermission(role Role, permission Permission) bool {
+func (s *AuthService) HasPermission(role Role, permission Permission) bool {
 	permissions, exists := RolePermissions[role]
 	if !exists {
 		return false

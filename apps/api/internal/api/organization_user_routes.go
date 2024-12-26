@@ -8,25 +8,23 @@ import (
 )
 
 func (a *api) registerOrganizationUserRoutes(router *mux.Router) {
-	authService := auth.NewAuthService(a.organizationUsersRepo)
-
 	router.HandleFunc("/organization-user",
-		auth.RequirePermission(authService, auth.PermissionReadUser)(a.listOrganizationUsers),
+		auth.RequirePermission(a.authService, auth.PermissionReadUser)(a.listOrganizationUsers),
 	).Methods(http.MethodGet, http.MethodOptions)
 
 	router.HandleFunc("/organization-user",
-		auth.RequirePermission(authService, auth.PermissionCreateUser)(a.addUserToOrganization),
+		auth.RequirePermission(a.authService, auth.PermissionCreateUser)(a.addUserToOrganization),
 	).Methods(http.MethodPost, http.MethodOptions)
 
 	router.HandleFunc("/organization-user",
-		auth.RequirePermission(authService, auth.PermissionUpdateUser)(a.updateUserRoleInOrganization),
+		auth.RequirePermission(a.authService, auth.PermissionUpdateUser)(a.updateUserRoleInOrganization),
 	).Methods(http.MethodPut, http.MethodOptions)
 
 	router.HandleFunc("/organization-user",
-		auth.RequirePermission(authService, auth.PermissionDeleteUser)(a.deleteUserFromOrganization),
+		auth.RequirePermission(a.authService, auth.PermissionDeleteUser)(a.deleteUserFromOrganization),
 	).Methods(http.MethodDelete, http.MethodOptions)
 
 	router.HandleFunc("/organization-user/{user_id}",
-		auth.RequirePermission(authService, auth.PermissionReadUser)(a.getOrganizationUserInfo),
+		auth.RequirePermission(a.authService, auth.PermissionReadUser)(a.getOrganizationUserInfo),
 	).Methods(http.MethodGet, http.MethodOptions)
 }
