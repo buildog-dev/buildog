@@ -60,7 +60,9 @@ export default function SidebarAvatarMenu() {
 
   return (
     <Popover>
-      <PopoverTrigger className={`outline-none rounded-lg w-full h-12 ${!collapsed ? "hover:bg-zinc-800": ""}`}>
+      <PopoverTrigger
+        className={`outline-none rounded-lg w-full h-12 ${!collapsed ? "hover:bg-zinc-800" : ""}`}
+      >
         <div
           className={`flex items-center gap-2 rounded-lg bg-zinc-900/5 ${
             collapsed ? "w-full justify-start pl-0" : "pl-2"
@@ -74,8 +76,8 @@ export default function SidebarAvatarMenu() {
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
           )}
-          {!collapsed && (
-            loading ? (
+          {!collapsed &&
+            (loading ? (
               <div className="flex flex-col items-start text-sm space-y-1">
                 <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse" />
                 <div className="h-3 bg-zinc-700 rounded w-16 animate-pulse" />
@@ -90,8 +92,7 @@ export default function SidebarAvatarMenu() {
                 </div>
                 <CaretSortIcon />
               </>
-            )
-          )}
+            ))}
         </div>
       </PopoverTrigger>
       <PopoverContent align="start" className="min-w-[200px] p-2 space-y-2">
