@@ -1,6 +1,7 @@
 package api
 
 import (
+	"api/internal/auth"
 	"api/internal/middleware"
 	"api/internal/repository"
 	"api/pkg/database"
@@ -42,6 +43,7 @@ func (a *api) Server(port int) *http.Server {
 
 func (a *api) Routes() http.Handler {
 	router := mux.NewRouter()
+	authService := auth.NewAuthService(a.organizationUsersRepo)
 
 	healthRouter := router.PathPrefix("/health").Subrouter()
 	healthRouter.HandleFunc("", a.healthCheckHandler).Methods(http.MethodGet, http.MethodOptions)
@@ -56,10 +58,19 @@ func (a *api) Routes() http.Handler {
 
 	protectedRouter.HandleFunc("/organizations", a.getOrganizationsHandler).Methods(http.MethodGet, http.MethodOptions)
 	protectedRouter.HandleFunc("/organizations", a.createOrganizationHandler).Methods(http.MethodPost, http.MethodOptions)
-	protectedRouter.HandleFunc("/organizations", a.checkAdminOrOwner(a.updateOrganizationHandler)).Methods(http.MethodPut, http.MethodOptions)
-	protectedRouter.HandleFunc("/organizations", a.checkAdminOrOwner(a.deleteOrganizationHandler)).Methods(http.MethodDelete, http.MethodOptions)
 
-	protectedRouter.HandleFunc("/organization", a.checkParticipant(a.getOrganizationHandler)).Methods(http.MethodGet, http.MethodOptions)
+	protectedRouter.HandleFunc("/organizations",
+		auth.RequirePermission(authService, auth.PermissionUpdateOrganization)(a.updateOrganizationHandler),
+	).Methods(http.MethodPut, http.MethodOptions)
+
+	protectedRouter.HandleFunc("/organizations",
+		auth.RequirePermission(authService, auth.PermissionDeleteOrganization)(a.deleteOrganizationHandler),
+	).Methods(http.MethodDelete, http.MethodOptions)
+
+	protectedRouter.HandleFunc("/organization",
+		auth.RequirePermission(authService, auth.PermissionReadOrganization)(a.getOrganizationHandler),
+	).Methods(http.MethodGet, http.MethodOptions)
+
 	protectedRouter.HandleFunc("/user", a.getUserHandler).Methods(http.MethodGet, http.MethodOptions)
 
 	a.registerOrganizationUserRoutes(protectedRouter)

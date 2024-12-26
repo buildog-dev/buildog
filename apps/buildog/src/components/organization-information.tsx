@@ -38,7 +38,7 @@ export default function OrganizationInformation({ organizationId }: { organizati
         setOrganization(response);
       }
     } catch (error) {
-      router.push("/not-found");
+      console.log(error);
     } finally {
       setLoading(false);
     }
