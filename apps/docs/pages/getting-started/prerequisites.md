@@ -20,13 +20,13 @@ This documentation guide provides instructions for installing the proper prerequ
 
 ### Packages
 
-- Node.js (version 18 LTS or later)
+- Node.js (LTS versions starting from version 18)
 - pnpm (version 8.x.x)
 
 #### Node.js and pnpm Setup
 1. Install Node.js:
-   - Download from [Node.js website](https://nodejs.org/)
-   - Choose the LTS version (18.x or later)
+   - Download from [Node.js website](https://nodejs.org/en/download/package-manager)
+   - Choose one of the LTS versions (18 or later)
 2. Install pnpm globally:
 
    ```bash
