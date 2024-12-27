@@ -44,6 +44,6 @@ var RolePermissions = map[Role][]Permission{
 		PermissionReadUser,
 	},
 	RoleReader: {
-		// PermissionReadUser,
+		PermissionReadUser,
 	},
 }
