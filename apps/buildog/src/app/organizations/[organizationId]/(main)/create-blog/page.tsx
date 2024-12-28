@@ -71,12 +71,8 @@ export default function Page() {
 
   return (
     <div>
-      <div className="flex flex-col gap-2">
-        <Input placeholder="Title" />
-        <Editor onSave={onSave} />
-      </div>
-
-      {markdownData && <RenderMarkdown nodes={markdownData} />}
+      <Input placeholder="Title" />
+      <Editor />
     </div>
   );
 }
