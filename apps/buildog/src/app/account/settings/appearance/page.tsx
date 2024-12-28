@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ChevronDownIcon } from "@ui/components/react-icons";
+import { CaretDown } from "@ui/components/react-icons";
 import { cn } from "@repo/ui/lib/utils";
 import { buttonVariants } from "@ui/components/button";
 import {
@@ -80,7 +80,7 @@ export default function Page() {
                             <option value="system">System Theme</option>
                           </select>
                         </FormControl>
-                        <ChevronDownIcon className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
+                        <CaretDown className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
                       </div>
                       <FormMessage />
                     </FormItem>

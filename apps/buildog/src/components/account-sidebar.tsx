@@ -13,7 +13,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@ui/components/ui/sidebar";
-import { PersonIcon, Half2Icon, LockClosedIcon, ResetIcon } from "@ui/components/react-icons";
+import { User, CircleHalf, LockSimple, ArrowUUpLeft } from "@ui/components/react-icons";
 import AvatarDropdown from "./avatar-dropdown";
 interface SidebarProps {
   className?: string;
@@ -30,19 +30,19 @@ export function AccountSidebar({ className }: SidebarProps) {
       children: [
         {
           name: "Profile",
-          icon: <PersonIcon className="mr-1 h-4 w-4" />,
+          icon: <User className="mr-1 h-4 w-4" />,
           route: `/account/settings/profile`,
           key: "account-profile",
         },
         {
           name: "Security",
-          icon: <LockClosedIcon className="mr-1 h-4 w-4" />,
+          icon: <LockSimple className="mr-1 h-4 w-4" />,
           route: `/account/settings/security`,
           key: "account-security",
         },
         {
           name: "Appearance",
-          icon: <Half2Icon className="mr-1 h-4 w-4" />,
+          icon: <CircleHalf weight="fill" className="mr-1 h-4 w-4" />,
           route: `/account/settings/appearance`,
           key: "account-appearance",
         },
@@ -89,7 +89,7 @@ export function AccountSidebar({ className }: SidebarProps) {
                     variant="outline"
                     tooltip={"Back to Organizations"}
                   >
-                    {collapsed ? <ResetIcon /> : "Back to Organizations"}
+                    {collapsed ? <ArrowUUpLeft /> : "Back to Organizations"}
                   </SidebarMenuButton>
                 </div>
               </div>

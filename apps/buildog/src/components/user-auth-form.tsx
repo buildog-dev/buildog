@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
-import { ReloadIcon } from "@ui/components/react-icons";
+import { ArrowClockwise } from "@ui/components/react-icons";
 import { Auth } from "@/web-sdk";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -102,7 +102,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               )}
             />
             <Button disabled={loading}>
-              {loading && <ReloadIcon />}
+              {loading && <ArrowClockwise />}
               Sign in
             </Button>
           </div>

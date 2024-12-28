@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GitHubLogoIcon, LinkedInLogoIcon, TwitterLogoIcon } from "@ui/components/react-icons";
+import { GithubLogo, LinkedinLogo, TwitterLogo } from "@ui/components/react-icons";
 
 export default function EnhancedFooter() {
   return (
@@ -21,7 +21,7 @@ export default function EnhancedFooter() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground"
               >
-                <LinkedInLogoIcon className="h-5 w-5" />
+                <LinkedinLogo className="h-5 w-5" />
                 <span className="sr-only">LinkedIn</span>
               </Link>
               <Link
@@ -30,7 +30,7 @@ export default function EnhancedFooter() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground"
               >
-                <GitHubLogoIcon className="h-5 w-5" />
+                <GithubLogo className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link
@@ -39,7 +39,7 @@ export default function EnhancedFooter() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground"
               >
-                <TwitterLogoIcon className="h-5 w-5" />
+                <TwitterLogo className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
             </div>

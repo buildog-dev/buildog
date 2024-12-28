@@ -1,1 +1,1 @@
-export * from "@radix-ui/react-icons";
+export * from "@phosphor-icons/react";

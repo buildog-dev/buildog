@@ -13,7 +13,7 @@ import {
 
 import { Badge } from "@ui/components/ui/badge";
 
-import { CalendarIcon, Pencil2Icon, CheckCircledIcon } from "@ui/components/ui/react-icons";
+import { CalendarDots, NotePencil, CheckCircle } from "@ui/components/react-icons";
 
 // Define the Blog type
 type Blog = {
@@ -101,11 +101,11 @@ export default function Page() {
       const getStatusIcon = (status: string) => {
         switch (status) {
           case "Scheduled":
-            return <CalendarIcon className="w-4 h-4" />;
+            return <CalendarDots className="w-4 h-4" />;
           case "Draft":
-            return <Pencil2Icon className="w-4 h-4" />;
+            return <NotePencil className="w-4 h-4" />;
           case "Published":
-            return <CheckCircledIcon className="w-4 h-4" />;
+            return <CheckCircle className="w-4 h-4" />;
           default:
             return null;
         }
