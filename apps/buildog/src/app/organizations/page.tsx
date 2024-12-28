@@ -15,7 +15,7 @@ import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
 import { useRouter } from "next/navigation";
 import { Card } from "@repo/ui/components/ui/card";
-import { ArrowRightIcon, PlusCircledIcon } from "@ui/components/ui/react-icons";
+import { ArrowRight, PlusCircle } from "@ui/components/react-icons";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
 import OrganizationsHeader from "@/components/organizations-header";
@@ -60,7 +60,7 @@ export default function Page() {
         <OrganizationsHeader />
         {organizations.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center space-y-4">
-            <PlusCircledIcon className="h-12 w-12 text-gray-500" />
+            <PlusCircle className="h-12 w-12 text-gray-500" />
             <p className="text-lg text-gray-700">You don’t have any organizations yet.</p>
             <p className="text-sm text-gray-500">Click the button below to add a new one.</p>
             <Button size="lg" onClick={() => setIsModalOpen(true)}>
@@ -89,7 +89,7 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="text-xl text-gray-500">
-                    <ArrowRightIcon className="h-6 w-6" />
+                    <ArrowRight className="h-6 w-6" />
                   </div>
                 </Card>
               ))}

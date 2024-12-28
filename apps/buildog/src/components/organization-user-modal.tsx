@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@ui/components/dialog";
 import { Label } from "@ui/components/label";
-import { CaretDownIcon } from "@ui/components/react-icons";
+import { CaretDown } from "@ui/components/react-icons";
 import { Input } from "@ui/components/input";
 import {
   DropdownMenu,
@@ -213,7 +213,7 @@ export default function OrganizationUserModal({
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="flex items-center justify-between">
                     {role || "Select role"}
-                    <CaretDownIcon className="w-4 h-4 ml-2" />
+                    <CaretDown className="w-4 h-4 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

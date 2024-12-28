@@ -1,4 +1,4 @@
-import { InstagramLogoIcon, TwitterLogoIcon, LinkedInLogoIcon } from "@ui/components/react-icons";
+import { InstagramLogo, TwitterLogo, LinkedinLogo } from "@ui/components/react-icons";
 import Link from "next/link";
 
 export default function NameCenterHeader() {
@@ -7,15 +7,15 @@ export default function NameCenterHeader() {
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-            <TwitterLogoIcon className="h-5 w-5" />
+            <TwitterLogo className="h-5 w-5" />
             <span className="sr-only">Twitter</span>
           </Link>
           <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-            <LinkedInLogoIcon className="h-5 w-5" />
+            <LinkedinLogo className="h-5 w-5" />
             <span className="sr-only">LinkedIn</span>
           </Link>
           <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-            <InstagramLogoIcon className="h-5 w-5" />
+            <InstagramLogo className="h-5 w-5" />
             <span className="sr-only">Instagram</span>
           </Link>
         </div>
