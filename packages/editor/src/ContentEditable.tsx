@@ -14,26 +14,21 @@ interface SelectionStyle {
 
 const ContentEditable: React.FC<ContentEditableProps> = ({ isLast, onAddEditor, focusOnMount }) => {
   const editorRef = useRef<HTMLDivElement>(null);
-  const [selectionStyles, setSelectionStyles] = useState<SelectionStyle[]>([]);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
-  useEffect(() => {
-    console.log("selectionStyles", selectionStyles);
-  }, [selectionStyles]);
-
-  useEffect(() => {
+  const updateDom = (b: any) => {
     if (editorRef.current) {
       const content = editorRef.current.textContent || "";
       let styledContent = "";
       let lastIndex = 0;
 
       // Sort selectionStyles by start position
-      const sortedSelectionStyles = [...selectionStyles].sort((a, b) => a.start - b.start);
+      const sortedSelectionStyles = [...b].sort((a, b) => a.start - b.start);
 
       sortedSelectionStyles.forEach(({ start, end, types }) => {
         styledContent += content.slice(lastIndex, start);
         let styledText = content.slice(start, end);
-        types.forEach((type) => {
+        types.forEach((type: any) => {
           styledText = `<${type}>${styledText}</${type}>`;
         });
         styledContent += styledText;
@@ -43,7 +38,7 @@ const ContentEditable: React.FC<ContentEditableProps> = ({ isLast, onAddEditor, 
       styledContent += content.slice(lastIndex);
       editorRef.current.innerHTML = styledContent;
     }
-  }, [selectionStyles]);
+  };
 
   useEffect(() => {
     if (focusOnMount && editorRef.current) {
@@ -71,59 +66,59 @@ const ContentEditable: React.FC<ContentEditableProps> = ({ isLast, onAddEditor, 
 
   const updateSelectionStyles = (format: string) => {
     const { start, end } = selection;
+    if (!editorRef.current) return;
 
-    setSelectionStyles((prevStyles) => {
-      const overlappingRanges = prevStyles.filter(
-        (range) => range.start <= end && range.end >= start
-      );
+    const currentStyles = parseHTMLToSelectionStyles(editorRef.current.innerHTML);
+    const overlappingRanges = currentStyles.filter(
+      (range) => range.start < end && range.end > start
+    );
 
-      const newStyledRanges = prevStyles.filter(
-        (range) => !(range.start <= end && range.end >= start)
-      );
+    const newStyledRanges = currentStyles.filter(
+      (range) => range.start >= end || range.end <= start
+    );
 
-      const hasFormat = overlappingRanges.some((range) => range.types.includes(format));
+    const hasFormat = overlappingRanges.some((range) => range.types.includes(format));
 
-      overlappingRanges.forEach((range) => {
-        if (range.start < start && range.end > end) {
-          newStyledRanges.push({ start: range.start, end: start, types: range.types });
-          newStyledRanges.push({
-            start,
-            end,
-            types: hasFormat
-              ? range.types.filter((type) => type !== format)
-              : range.types.includes(format)
-                ? range.types
-                : [...range.types, format],
-          });
-          newStyledRanges.push({ start: end, end: range.end, types: range.types });
-        } else {
-          if (range.start < start) {
-            newStyledRanges.push({ start: range.start, end: start, types: range.types });
-          }
-          if (range.end > end) {
-            newStyledRanges.push({ start: end, end: range.end, types: range.types });
-          }
-          const newRange = {
-            start: Math.max(start, range.start),
-            end: Math.min(end, range.end),
-            types: hasFormat
-              ? range.types.filter((type) => type !== format)
-              : range.types.includes(format)
-                ? range.types
-                : [...range.types, format],
-          };
-          if (newRange.start < newRange.end) {
-            newStyledRanges.push(newRange);
-          }
-        }
-      });
-
-      if (overlappingRanges.length === 0) {
-        newStyledRanges.push({ start, end, types: [format] });
+    overlappingRanges.forEach((range) => {
+      if (range.start < start) {
+        newStyledRanges.push({ start: range.start, end: start, types: range.types });
       }
-
-      return newStyledRanges;
+      if (range.end > end) {
+        newStyledRanges.push({ start: end, end: range.end, types: range.types });
+      }
+      const newRange = {
+        start: Math.max(start, range.start),
+        end: Math.min(end, range.end),
+        types: hasFormat ? range.types.filter((type) => type !== format) : [...range.types, format],
+      };
+      if (newRange.start < newRange.end) {
+        newStyledRanges.push(newRange);
+      }
     });
+
+    if (overlappingRanges.length === 0) {
+      newStyledRanges.push({ start, end, types: [format] });
+    }
+
+    // Merge consecutive ranges with the same types
+    newStyledRanges.sort((a, b) => a.start - b.start);
+    const mergedRanges: SelectionStyle[] = [];
+    newStyledRanges.forEach((range) => {
+      const lastRange = mergedRanges[mergedRanges.length - 1];
+      if (
+        lastRange &&
+        lastRange.end >= range.start &&
+        JSON.stringify(lastRange.types) === JSON.stringify(range.types)
+      ) {
+        lastRange.end = Math.max(lastRange.end, range.end);
+      } else {
+        mergedRanges.push(range);
+      }
+    });
+
+    console.log("mergedRanges", mergedRanges);
+
+    updateDom(mergedRanges);
   };
 
   const getTextOffset = (root: Node, target: Node, offset: number): number => {
@@ -159,6 +154,7 @@ const ContentEditable: React.FC<ContentEditableProps> = ({ isLast, onAddEditor, 
   };
 
   const parseHTMLToSelectionStyles = (html: string) => {
+    console.log("parseHTMLToSelectionStyles", html);
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     const styles: SelectionStyle[] = [];
@@ -177,16 +173,30 @@ const ContentEditable: React.FC<ContentEditableProps> = ({ isLast, onAddEditor, 
 
         // Add style for this element
         if (["B", "I", "U"].includes(element.tagName)) {
-          styles.push({
-            start: startOffset,
-            end: totalOffset,
-            types: [
-              ...(element.parentElement
-                ? styles.find((s) => s.start === startOffset && s.end === totalOffset)?.types || []
-                : []),
-              element.tagName.toLowerCase(),
-            ],
-          });
+          const tagName = element.tagName.toLowerCase();
+          const existingStyle = styles.find(
+            (s) => s.start === startOffset && s.end === totalOffset
+          );
+
+          if (existingStyle) {
+            // If range exists, just add the new type if not already present
+            if (!existingStyle.types.includes(tagName)) {
+              existingStyle.types.push(tagName);
+            }
+          } else {
+            // If range doesn't exist, create new style entry
+            styles.push({
+              start: startOffset,
+              end: totalOffset,
+              types: [
+                ...(element.parentElement
+                  ? styles.find((s) => s.start === startOffset && s.end === totalOffset)?.types ||
+                    []
+                  : []),
+                tagName,
+              ],
+            });
+          }
         }
       }
     };
