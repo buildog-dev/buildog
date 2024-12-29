@@ -13,7 +13,7 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@ui/components/ui/sidebar";
-import { Pencil2Icon, FrameIcon, GlobeIcon, GearIcon } from "@ui/components/react-icons";
+import { NotePencil, HashStraight, Globe, Gear } from "@ui/components/react-icons";
 import AvatarDropdown from "./avatar-dropdown";
 
 interface SidebarProps {
@@ -32,25 +32,25 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
       children: [
         {
           name: "Blog",
-          icon: <FrameIcon className="mr-1 h-4 w-4" />,
+          icon: <HashStraight className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/blog`,
           key: "main-blog",
         },
         {
           name: "Create Blog",
-          icon: <Pencil2Icon className="mr-1 h-4 w-4" />,
+          icon: <NotePencil className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/create-blog`,
           key: "main-create-blog",
         },
         {
           name: "Web",
-          icon: <GlobeIcon className="mr-1 h-4 w-4" />,
+          icon: <Globe className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/web`,
           key: "main-web",
         },
         {
           name: "Settings",
-          icon: <GearIcon className="mr-1 h-4 w-4" />,
+          icon: <Gear className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/settings`,
           key: "main-settings",
         },

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Input } from "@ui/components/input";
 import { Button } from "@ui/components/button";
-import { ReloadIcon } from "@ui/components/react-icons";
+import { ArrowClockwise } from "@ui/components/react-icons";
 import { Auth, Service } from "@/web-sdk";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -139,7 +139,7 @@ export function SignUpForm({ className, ...props }: UserAuthFormProps) {
                 )}
               />
               <Button disabled={loading}>
-                {loading && <ReloadIcon />}
+                {loading && <ArrowClockwise />}
                 Sign up
               </Button>
               {error && <Label className="text-red-500">{error}</Label>}
