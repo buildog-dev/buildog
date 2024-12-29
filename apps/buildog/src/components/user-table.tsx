@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { DataTable } from "@ui/components/ui/data-table";
-import { PersonIcon } from "@ui/components/react-icons";
 import { useParams } from "next/navigation";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
