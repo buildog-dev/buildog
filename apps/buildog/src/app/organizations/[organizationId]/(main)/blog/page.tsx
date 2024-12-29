@@ -114,7 +114,9 @@ export default function Page() {
       return {
         id: blog.id,
         title: blog.title,
-        tags: blog.tags.join(", "),
+        tags: (
+          <div className="flex flex-wrap gap-2 overflow-x-auto whitespace-nowrap">{tagsBadges}</div>
+        ),
         status: (
           <div className="flex items-center space-x-2">
             {getStatusIcon(blog.status)}
@@ -123,9 +125,6 @@ export default function Page() {
         ),
         preview: (
           <div className="flex items-start mb-2 max-w-[70%] overflow-hidden">
-            <div className="flex flex-wrap space-x-2 overflow-x-auto whitespace-nowrap">
-              {tagsBadges}
-            </div>
             <p className="flex-1 ml-2 truncate">{`${blog.text.slice(0, 100)}...`}</p>
           </div>
         ),
@@ -139,6 +138,12 @@ export default function Page() {
       accessorKey: "title",
       header: "Title",
       enableSorting: true,
+    },
+    {
+      accessorKey: "tags",
+      header: "Tags",
+      enableSorting: false,
+      cell: ({ getValue }) => <div>{getValue()}</div>,
     },
     {
       accessorKey: "preview",
