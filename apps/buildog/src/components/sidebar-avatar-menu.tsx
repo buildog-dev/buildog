@@ -2,12 +2,12 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/ui/popover";
 import {
-  ExitIcon,
-  GearIcon,
-  CaretSortIcon,
-  MixerHorizontalIcon,
-  SunIcon,
-  MoonIcon,
+  SignOut,
+  Gear,
+  CaretUpDown,
+  FadersHorizontal,
+  Sun,
+  Moon,
 } from "@ui/components/react-icons";
 import { Auth, Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
@@ -99,7 +99,7 @@ export default function SidebarAvatarMenu() {
                   </span>
                   <span className="text-zinc-500 text-xs">{userCredentials.email}</span>
                 </div>
-                <CaretSortIcon />
+                <CaretUpDown />
               </>
             ))}
         </div>
@@ -121,7 +121,7 @@ export default function SidebarAvatarMenu() {
         )}
         <Link href="/account/settings" className="block">
           <div className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-800 cursor-pointer">
-            <GearIcon className="mr-2 h-4 w-4" />
+            <Gear className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </div>
         </Link>
@@ -129,20 +129,20 @@ export default function SidebarAvatarMenu() {
           className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-800 cursor-pointer text-red-500"
           onClick={handleLogout}
         >
-          <ExitIcon className="mr-2 h-4 w-4" />
+          <SignOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </div>
         <DropdownMenuSeparator />
-        <div className="flex items-center px-2 py-1.5">
-          <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-          <span>Preferences</span>
+        <div className="flex items-center px-2 py-1.5 cursor-default ">
+          <FadersHorizontal className="mr-2 h-4 w-4" />
+          <span className="select-none">Preferences</span>
         </div>
         <div className="p-2 flex justify-between items-center">
-          <p className="text-sm font-medium">Theme</p>
+          <p className="text-sm font-medium select-none">Theme</p>
           <div className="flex items-center gap-2">
-            <SunIcon className="h-4 w-4" />
+            <Sun className="h-4 w-4" />
             <Switch id="theme-toggle" checked={theme === "dark"} onCheckedChange={toggleTheme} />
-            <MoonIcon className="h-4 w-4" />
+            <Moon className="h-4 w-4" />
             <Label htmlFor="theme-toggle" className="sr-only">
               Toggle theme
             </Label>
