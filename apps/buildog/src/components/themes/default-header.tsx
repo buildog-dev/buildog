@@ -1,4 +1,4 @@
-import { GitHubLogoIcon, LinkedInLogoIcon, TwitterLogoIcon } from "@ui/components/react-icons";
+import { GithubLogo, LinkedinLogo, TwitterLogo } from "@ui/components/react-icons";
 import Link from "next/link";
 
 export default function DefaultHeader() {
@@ -14,15 +14,15 @@ export default function DefaultHeader() {
           </div>
           <div className="flex items-center space-x-5">
             <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-              <TwitterLogoIcon className="h-5 w-5" />
+              <TwitterLogo className="h-5 w-5" />
               <span className="sr-only">Twitter</span>
             </Link>
             <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-              <GitHubLogoIcon className="h-5 w-5" />
+              <GithubLogo className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
             </Link>
             <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-              <LinkedInLogoIcon className="h-5 w-5" />
+              <LinkedinLogo className="h-5 w-5" />
               <span className="sr-only">LinkedIn</span>
             </Link>
           </div>

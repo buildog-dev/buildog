@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { CheckIcon, CaretSortIcon, PlusCircledIcon } from "@ui/components/react-icons";
+import { Check, CaretUpDown, PlusCircle } from "@ui/components/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/ui/avatar";
 import { cn } from "@repo/ui/lib/utils";
 import { Button } from "@ui/components/button";
@@ -80,7 +80,7 @@ export default function OrgNavigation() {
           ) : (
             "Select Organization"
           )}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <CaretUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
@@ -117,7 +117,7 @@ export default function OrgNavigation() {
                       <AvatarFallback>{org.organization_name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     {org.organization_name}
-                    <CheckIcon
+                    <Check
                       className={cn(
                         "mr-0 ml-auto h-4 w-4",
                         currentOrganization?.organization_id === org.organization_id
@@ -135,7 +135,7 @@ export default function OrgNavigation() {
             href="/organizations"
             className="flex items-center py-1 px-1 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white"
           >
-            <PlusCircledIcon className="ml-1.5 h-5 w-5" />
+            <PlusCircle className="ml-1.5 h-5 w-5" />
             <span className="ml-2">Create Organization</span>
           </Link>
         </Command>

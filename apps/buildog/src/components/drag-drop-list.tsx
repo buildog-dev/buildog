@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { Card } from "./drag-drop-card";
 import { Button } from "@ui/components/button";
 import { Textarea } from "@ui/components/textarea";
-import { Cross1Icon, LockClosedIcon, LockOpen2Icon } from "@ui/components/react-icons";
+import { X, LockSimple, LockSimpleOpen } from "@ui/components/react-icons";
 
 export interface Item {
   id: string;
@@ -74,7 +74,7 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
               className="h-6 w-6"
               onClick={() => removeCard(index)}
             >
-              <Cross1Icon className="h-3 w-3" />
+              <X className="h-3 w-3" />
             </Button>
             <Button
               variant="secondary"
@@ -83,9 +83,9 @@ export const DragDropList: FC<DragDropList> = ({ cards, setCards }) => {
               onClick={() => toggleLock(card.id, card.lock)}
             >
               {card.lock ? (
-                <LockClosedIcon className="h-3 w-3" />
+                <LockSimple className="h-3 w-3" />
               ) : (
-                <LockOpen2Icon className="h-3 w-3" />
+                <LockSimpleOpen className="h-3 w-3" />
               )}
             </Button>
           </div>

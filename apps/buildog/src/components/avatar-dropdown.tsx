@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@ui/components/ui/dropdown-menu";
-import { ExitIcon, GearIcon } from "@ui/components/react-icons";
+import { SignOut, Gear } from "@ui/components/react-icons";
 import { Auth } from "@/web-sdk";
 
 export default function AvatarDropdown() {
@@ -26,13 +26,13 @@ export default function AvatarDropdown() {
       <DropdownMenuContent align="end" className="min-w-[200px]">
         <Link href="/account/settings">
           <DropdownMenuItem className="cursor-pointer">
-            <GearIcon className="mr-1 h-4 w-4" />
+            <Gear className="mr-1 h-4 w-4" />
             <span>Settings</span>
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer text-red-600" onClick={handleLogout}>
-          <ExitIcon className="mr-1 h-4 w-4" />
+          <SignOut className="mr-1 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
