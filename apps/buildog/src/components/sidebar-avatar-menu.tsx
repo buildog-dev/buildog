@@ -17,6 +17,7 @@ import { DropdownMenuSeparator } from "@ui/components/dropdown-menu";
 import { useTheme } from "next-themes";
 import { Switch } from "@ui/components/ui/switch";
 import { Label } from "@ui/components/ui/label";
+import { Skeleton } from "@ui/components/skeleton";
 
 export default function SidebarAvatarMenu() {
   const [loading, setLoading] = useState(true);
@@ -36,17 +37,25 @@ export default function SidebarAvatarMenu() {
   });
 
   const fetchUser = useCallback(async () => {
-    const response = await Service.makeAuthenticatedRequest("user");
-    if (response.error) {
-      console.log(response.error);
-    } else {
-      setUserCredentials(response);
+    if (!user) return;
+
+    try {
+      const response = await Service.makeAuthenticatedRequest("user");
+      if (!response.error) {
+        setUserCredentials(response);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+    } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    if (!user) setLoading(true);
+    if (!user) {
+      setLoading(true);
+      return;
+    }
     fetchUser();
   }, [user, fetchUser]);
 
@@ -69,7 +78,7 @@ export default function SidebarAvatarMenu() {
           }`}
         >
           {loading ? (
-            <div className="h-8 w-8 bg-zinc-800 rounded-full animate-pulse" />
+            <Skeleton className="h-8 w-8 rounded-full animate-pulse" />
           ) : (
             <Avatar className="h-8 w-8">
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -79,8 +88,8 @@ export default function SidebarAvatarMenu() {
           {!collapsed &&
             (loading ? (
               <div className="flex flex-col items-start text-sm space-y-1">
-                <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse" />
-                <div className="h-3 bg-zinc-700 rounded w-16 animate-pulse" />
+                <Skeleton className="h-4 w-24 animate-pulse" />
+                <Skeleton className="h-3 w-16 animate-pulse" />
               </div>
             ) : (
               <>
@@ -98,8 +107,8 @@ export default function SidebarAvatarMenu() {
       <PopoverContent align="start" className="min-w-[200px] p-2 space-y-2">
         {collapsed && loading && (
           <div className="mb-2 px-2 py-1.5">
-            <div className="h-4 bg-zinc-800 rounded w-24 animate-pulse mb-1" />
-            <div className="h-3 bg-zinc-700 rounded w-16 animate-pulse" />
+            <Skeleton className="h-4 w-24 animate-pulse" />
+            <Skeleton className="h-3 w-16 animate-pulse" />
           </div>
         )}
         {collapsed && !loading && (
