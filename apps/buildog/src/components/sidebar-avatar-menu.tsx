@@ -70,10 +70,10 @@ export default function SidebarAvatarMenu() {
   return (
     <Popover>
       <PopoverTrigger
-        className={`outline-none rounded-lg w-full h-12 ${!collapsed && "hover:bg-zinc-800"}`}
+        className={`outline-none rounded-lg w-full h-12 ${!collapsed && "hover:bg-zinc-100 dark:hover:bg-zinc-800"}`}
       >
         <div
-          className={`flex items-center gap-2 rounded-lg bg-zinc-900/5 ${
+          className={`flex items-center gap-2 rounded-lg ${
             collapsed ? "w-full justify-start pl-0" : "pl-0"
           }`}
         >
@@ -120,13 +120,13 @@ export default function SidebarAvatarMenu() {
           </div>
         )}
         <Link href="/account/settings" className="block">
-          <div className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-800 cursor-pointer">
+          <div className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
             <Gear className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </div>
         </Link>
         <div
-          className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-800 cursor-pointer text-red-500"
+          className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer text-red-500"
           onClick={handleLogout}
         >
           <SignOut className="mr-2 h-4 w-4" />
