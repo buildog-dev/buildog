@@ -70,17 +70,17 @@ export default function SidebarAvatarMenu() {
   return (
     <Popover>
       <PopoverTrigger
-        className={`outline-none rounded-lg w-full h-12 ${!collapsed ? "hover:bg-zinc-800" : ""}`}
+        className={`outline-none rounded-lg w-full h-12 ${!collapsed && "hover:bg-zinc-800"}`}
       >
         <div
           className={`flex items-center gap-2 rounded-lg bg-zinc-900/5 ${
-            collapsed ? "w-full justify-start pl-0" : "pl-2"
+            collapsed ? "w-full justify-start pl-0" : "pl-0"
           }`}
         >
           {loading ? (
             <Skeleton className="h-8 w-8 rounded-full animate-pulse" />
           ) : (
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-8 w-8 p-1">
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
