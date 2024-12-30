@@ -1,42 +1,56 @@
 "use client";
 
 import { cn } from "@repo/ui/lib/utils";
-import { Button } from "@ui/components/button";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarMenu,
+  SidebarGroupContent,
+  SidebarMenuButton,
+  SidebarTrigger,
+  SidebarFooter,
+  useSidebar,
+} from "@ui/components/ui/sidebar";
+import { NotePencil, HashStraight, Globe, Gear } from "@ui/components/react-icons";
+import AvatarDropdown from "./avatar-dropdown";
 
 interface SidebarProps {
   className?: string;
-  organizationId: string; // Accept organizationName as a prop
+  organizationId: string;
 }
 
-export function Sidebar({ className, organizationId }: SidebarProps) {
+export function AppSidebar({ className, organizationId }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
 
   const routes = {
-    Main: {
+    Buildog: {
       children: [
         {
           name: "Blog",
-          icon: "",
-          route: `/organizations/${organizationId}/blog`, // Dynamic route
+          icon: <HashStraight className="mr-1 h-4 w-4" />,
+          route: `/organizations/${organizationId}/blog`,
           key: "main-blog",
         },
         {
           name: "Create Blog",
-          icon: "",
+          icon: <NotePencil className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/create-blog`,
           key: "main-create-blog",
         },
         {
           name: "Web",
-          icon: "",
+          icon: <Globe className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/web`,
           key: "main-web",
         },
         {
           name: "Settings",
-          icon: "",
+          icon: <Gear className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/settings`,
           key: "main-settings",
         },
@@ -44,37 +58,47 @@ export function Sidebar({ className, organizationId }: SidebarProps) {
     },
   };
 
-  // Normalize pathnames
-  const normalizePath = (path: string) => path.replace(/\/$/, "");
-
   return (
-    <div className={cn("pb-12", className)}>
-      <div className="space-y-4 py-4">
-        <div className="px-3 py-2">
-          {Object.entries(routes).map(([key, route]) => (
-            <div key={key}>
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">{key}</h2>
-              <div className="space-y-1">
-                {route.children.map((child) => {
-                  const normalizedPathname = normalizePath(pathname);
-                  const normalizedRoute = normalizePath(child.route);
-
-                  return (
-                    <Button
-                      onClick={() => router.push(child.route)}
-                      key={child.key}
-                      variant={normalizedPathname === normalizedRoute ? "secondary" : "ghost"}
-                      className="w-full justify-start"
-                    >
-                      {child.name}
-                    </Button>
-                  );
-                })}
+    <Sidebar collapsible="icon" className="transition-[width] duration-300 ease-in-out">
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <div className={cn("pb-12", className)}>
+                <div className="space-y-4 py-4">
+                  {Object.entries(routes).map(([key, route]) => (
+                    <div key={key}>
+                      {!collapsed && (
+                        <div className="flex flex-row items-center justify-between transition-all duration-300 overflow-hidden">
+                          <h2 className="mb-2 px-1 text-lg font-semibold tracking-tight">{key}</h2>
+                        </div>
+                      )}
+                      <div className="space-y-1">
+                        {route.children.map((child) => (
+                          <SidebarMenuButton
+                            onClick={() => router.push(child.route)}
+                            key={child.key}
+                            isActive={pathname === child.route}
+                            tooltip={child.name}
+                            className="w-full justify-start overflow-hidden whitespace-nowrap text-ellipsis transition-all duration-300"
+                          >
+                            {child.icon}
+                            {child.name}
+                          </SidebarMenuButton>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarTrigger />
+        <AvatarDropdown />
+      </SidebarFooter>
+    </Sidebar>
   );
 }

@@ -4,7 +4,6 @@ import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ChevronDownIcon } from "@ui/components/react-icons";
 import { cn } from "@repo/ui/lib/utils";
 import { Button, buttonVariants } from "@ui/components/button";
 import {

@@ -1,4 +1,5 @@
 {
+  "prerequisites": "Prerequisites",
   "environment-variables": "Environment Variables",
   "authentication": "Authentication",
   "database": "Database"
