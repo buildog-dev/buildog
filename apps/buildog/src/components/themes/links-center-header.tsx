@@ -1,10 +1,5 @@
 "use client";
-import {
-  FileIcon,
-  GitHubLogoIcon,
-  LinkedInLogoIcon,
-  TwitterLogoIcon,
-} from "@ui/components/react-icons";
+import { File, GithubLogo, LinkedinLogo, TwitterLogo } from "@ui/components/react-icons";
 import Link from "next/link";
 
 export default function LinksCenterHeader() {
@@ -12,7 +7,7 @@ export default function LinksCenterHeader() {
     <header className="sticky top-0 z-50 bg-background border-b">
       <div className="container flex items-center justify-between h-16 px-4 md:px-6">
         <Link href="#" className="flex items-center" prefetch={false}>
-          <FileIcon className="h-6 w-6" />
+          <File className="h-6 w-6" />
           <span className="ml-2 font-bold text-lg">Blog</span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6">
@@ -47,15 +42,15 @@ export default function LinksCenterHeader() {
         </nav>
         <div className="flex items-center space-x-4">
           <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-            <TwitterLogoIcon className="h-5 w-5" />
+            <TwitterLogo className="h-5 w-5" />
             <span className="sr-only">Twitter</span>
           </Link>
           <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-            <GitHubLogoIcon className="h-5 w-5" />
+            <GithubLogo className="h-5 w-5" />
             <span className="sr-only">GitHub</span>
           </Link>
           <Link href="#" className="text-muted-foreground hover:text-foreground" prefetch={false}>
-            <LinkedInLogoIcon className="h-5 w-5" />
+            <LinkedinLogo className="h-5 w-5" />
             <span className="sr-only">LinkedIn</span>
           </Link>
         </div>
