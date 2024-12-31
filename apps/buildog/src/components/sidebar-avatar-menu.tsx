@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/ui/avatar";
-import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/ui/popover";
 import {
   SignOut,
   Gear,
@@ -13,11 +12,17 @@ import { Auth, Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
 import { useState, useEffect, useCallback } from "react";
 import { useSidebar } from "@ui/components/ui/sidebar";
-import { DropdownMenuSeparator } from "@ui/components/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@ui/components/dropdown-menu";
 import { useTheme } from "next-themes";
 import { Switch } from "@ui/components/ui/switch";
 import { Label } from "@ui/components/ui/label";
 import { Skeleton } from "@ui/components/skeleton";
+import { cn } from "@ui/lib/utils";
 
 export default function SidebarAvatarMenu() {
   const [loading, setLoading] = useState(true);
@@ -68,14 +73,18 @@ export default function SidebarAvatarMenu() {
   };
 
   return (
-    <Popover>
-      <PopoverTrigger
-        className={`outline-none rounded-lg w-full h-12 ${!collapsed && "hover:bg-zinc-100 dark:hover:bg-zinc-800"}`}
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        className={cn(
+          "outline-none rounded-lg w-full h-12",
+          !collapsed && "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+        )}
       >
         <div
-          className={`flex items-center gap-2 rounded-lg ${
+          className={cn(
+            "flex items-center gap-2 rounded-lg",
             collapsed ? "w-full justify-start pl-0" : "pl-0"
-          }`}
+          )}
         >
           {loading ? (
             <Skeleton className="h-8 w-8 rounded-full animate-pulse" />
@@ -93,18 +102,18 @@ export default function SidebarAvatarMenu() {
               </div>
             ) : (
               <>
-                <div className="flex flex-col items-start text-sm">
+                <div className="flex flex-col items-start text-sm min-w-0 flex-1">
                   <span className="font-medium">
                     {userCredentials.first_name} {userCredentials.last_name}
                   </span>
                   <span className="text-zinc-500 text-xs">{userCredentials.email}</span>
                 </div>
-                <CaretUpDown />
+                <CaretUpDown className="h-4 w-4 ml-auto mr-2" />
               </>
             ))}
         </div>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="min-w-[200px] p-2 space-y-2">
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="min-w-[240px] p-2 space-y-2">
         {collapsed && loading && (
           <div className="mb-2 px-2 py-1.5">
             <Skeleton className="h-4 w-24 animate-pulse" />
@@ -148,7 +157,7 @@ export default function SidebarAvatarMenu() {
             </Label>
           </div>
         </div>
-      </PopoverContent>
-    </Popover>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
