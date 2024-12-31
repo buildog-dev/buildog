@@ -8,9 +8,8 @@ import {
   Sun,
   Moon,
 } from "@ui/components/react-icons";
-import { Auth, Service } from "@/web-sdk";
+import { Auth } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
-import { useState, useEffect, useCallback } from "react";
 import { useSidebar } from "@ui/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -25,44 +24,10 @@ import { Skeleton } from "@ui/components/skeleton";
 import { cn } from "@ui/lib/utils";
 
 export default function SidebarAvatarMenu() {
-  const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { userCredentials, loading } = useAuth();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { theme, setTheme } = useTheme();
-
-  const [userCredentials, setUserCredentials] = useState<{
-    first_name: string;
-    last_name: string;
-    email: string;
-  }>({
-    first_name: "",
-    last_name: "",
-    email: "",
-  });
-
-  const fetchUser = useCallback(async () => {
-    if (!user) return;
-
-    try {
-      const response = await Service.makeAuthenticatedRequest("user");
-      if (!response.error) {
-        setUserCredentials(response);
-      }
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!user) {
-      setLoading(true);
-      return;
-    }
-    fetchUser();
-  }, [user, fetchUser]);
 
   const handleLogout = () => {
     Auth.signOut();
