@@ -2,6 +2,16 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { CardContent } from "@ui/components/ui/card";
 import ContentEditable from "./ContentEditable";
 import { v4 as uuidv4 } from "uuid";
+import { DotsThreeVertical, Plus } from "@ui/components/react-icons";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ui/components/select";
+import Option from "./Option";
+import CreateNewLine from "./CreateNewLine";
 
 interface SelectionStyle {
   start: number;
@@ -11,7 +21,12 @@ interface SelectionStyle {
 
 export default function Editor() {
   const [editors, setEditors] = useState([
-    { id: uuidv4(), content: "", styles: [] as SelectionStyle[] },
+    {
+      id: uuidv4(),
+      content: "",
+      styles: [] as SelectionStyle[],
+      tag: "p" as keyof JSX.IntrinsicElements,
+    },
   ]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const editorRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -23,7 +38,12 @@ export default function Editor() {
   const handleAddEditor = useCallback(
     (currentIndex: number, rightText: string = "", styles: SelectionStyle[] = []) => {
       setEditors((prevEditors) => {
-        const newEditor = { id: uuidv4(), content: rightText, styles };
+        const newEditor = {
+          id: uuidv4(),
+          content: rightText,
+          styles,
+          tag: "p" as keyof JSX.IntrinsicElements,
+        };
         const updatedEditors = [...prevEditors];
         updatedEditors.splice(currentIndex + 1, 0, newEditor);
         return updatedEditors;
@@ -69,23 +89,37 @@ export default function Editor() {
     }
   };
 
+  const handleTagChange = (index: number, tag: keyof JSX.IntrinsicElements) => {
+    setEditors((prevEditors) => {
+      const updatedEditors = [...editors];
+      updatedEditors[index].tag = tag;
+      return updatedEditors;
+    });
+  };
+
   return (
-    <CardContent className="relative">
+    <div className="relative">
       {editors.map((editor, index) => (
         <div
           key={editor.id}
-          className="flex items-center"
           draggable
           onDragStart={() => handleDragStart(index)}
           onDragOver={handleDragOver}
           onDrop={() => handleDrop(index)}
+          className="group flex items-center"
         >
+          <div className="flex gap-1">
+            <CreateNewLine handleAddEditor={() => handleAddEditor(index)} />
+            <Option handleTagChange={(e) => handleTagChange(index, e)} />
+          </div>
+
           <ContentEditable
             ref={(el: HTMLDivElement | null) => {
               if (el) editorRefs.current[index] = el;
             }}
             content={editor.content}
             styles={editor.styles}
+            tag={editor.tag}
             onContentChange={(newContent, newStyles) => {
               setEditors((prevEditors) => {
                 const updatedEditors = [...prevEditors];
@@ -94,19 +128,14 @@ export default function Editor() {
                 return updatedEditors;
               });
             }}
+            handleDeleteEditor={() => handleDeleteEditor(editor.id)}
             onAddEditor={(rightText, styles) => handleAddEditor(index, rightText, styles)}
             focusOnMount={index === editors.length - 1}
             focusUpperComponent={() => focusUpperComponent(index)}
             focusBottomComponent={() => focusBottomComponent(index)}
           />
-          <button
-            className="ml-2 p-1 bg-red-500 text-white rounded"
-            onClick={() => handleDeleteEditor(editor.id)}
-          >
-            Delete
-          </button>
         </div>
       ))}
-    </CardContent>
+    </div>
   );
 }

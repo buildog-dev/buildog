@@ -71,7 +71,6 @@ export default function Page() {
 
   return (
     <div>
-      <Input placeholder="Title" />
       <Editor />
     </div>
   );

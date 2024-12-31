@@ -7,15 +7,18 @@ import React, {
   forwardRef,
 } from "react";
 import { Toolbar } from "./Toolbar";
+import Editable from "./Editable";
 
 interface ContentEditableProps {
   onAddEditor: (text: string, styles: SelectionStyle[]) => void;
   focusOnMount?: boolean;
   content: string;
   styles: SelectionStyle[];
+  tag: keyof JSX.IntrinsicElements;
   onContentChange: (newContent: string, newStyles?: SelectionStyle[]) => void;
   focusUpperComponent: () => void;
   focusBottomComponent: () => void;
+  handleDeleteEditor: () => void;
 }
 
 interface SelectionStyle {
@@ -24,43 +27,43 @@ interface SelectionStyle {
   types: string[];
 }
 
-const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>(
+const ContentEditable = forwardRef<HTMLElement, ContentEditableProps>(
   (
     {
       onAddEditor,
       focusOnMount,
       content,
       styles,
+      tag,
       onContentChange,
       focusUpperComponent,
       focusBottomComponent,
+      handleDeleteEditor,
     },
     ref
   ) => {
-    const editorRef = useRef<HTMLDivElement>(null);
-
-    // Use useImperativeHandle to pass the ref to the parent component
-    useImperativeHandle(ref, () => editorRef.current as HTMLDivElement);
-
+    let editorRef = useRef<HTMLElement>(null);
     const [selection, setSelection] = useState({ start: 0, end: 0 });
     const [toolbarPosition, setToolbarPosition] = useState<{ top: number; left: number }>({
       top: 0,
       left: 0,
     });
 
-    const updateDom = (b: any) => {
+    useImperativeHandle(ref, () => editorRef.current as HTMLDivElement);
+
+    const updateDom = (selectionStyle: SelectionStyle[], tag: keyof JSX.IntrinsicElements) => {
       if (editorRef.current) {
         const content = editorRef.current.textContent || "";
         let styledContent = "";
         let lastIndex = 0;
 
         // Sort selectionStyles by start position
-        const sortedSelectionStyles = [...b].sort((a, b) => a.start - b.start);
+        const sortedSelectionStyles = [...selectionStyle].sort((a, b) => a.start - b.start);
 
         sortedSelectionStyles.forEach(({ start, end, types }) => {
           styledContent += content.slice(lastIndex, start);
           let styledText = content.slice(start, end);
-          types.forEach((type: any) => {
+          types.forEach((type) => {
             styledText = `<${type}>${styledText}</${type}>`;
           });
           styledContent += styledText;
@@ -80,10 +83,11 @@ const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>(
 
     useEffect(() => {
       if (editorRef.current) {
+        console.log("content", content);
         editorRef.current.textContent = content;
-        updateDom(styles);
+        updateDom(styles, tag);
       }
-    }, []);
+    }, [tag]);
 
     const handleInput = useCallback(() => {
       if (editorRef.current) {
@@ -134,19 +138,12 @@ const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>(
                 })
                 .filter(isSelectionStyle);
 
-              // Debugging: Log the rightText and rightTextStyles
-              console.log("Right Text:", rightText);
-              console.log("Right Text Styles:", rightTextStyles);
-
-              // Remove the right text from the current editor
               const leftText = content.slice(0, endOffset);
               editorRef.current.textContent = leftText;
-              updateDom(leftTextStyles);
+              updateDom(leftTextStyles, tag);
 
-              // Update the editor state for the left side
               onContentChange(leftText, leftTextStyles);
 
-              // Pass the right text and its styles to the new editor
               onAddEditor(rightText, rightTextStyles);
             }
           }
@@ -158,6 +155,8 @@ const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>(
           // Logic to focus the bottom component
           event.preventDefault();
           focusBottomComponent();
+        } else if (event.key === "Backspace" && editorRef.current?.textContent === "") {
+          handleDeleteEditor();
         }
       },
       [onAddEditor, onContentChange, styles, focusUpperComponent, focusBottomComponent]
@@ -218,9 +217,7 @@ const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>(
         }
       });
 
-      console.log("mergedRanges", mergedRanges);
-
-      updateDom(mergedRanges);
+      updateDom(mergedRanges, tag);
     };
 
     const getTextOffset = (root: Node, target: Node, offset: number): number => {
@@ -371,20 +368,34 @@ const ContentEditable = forwardRef<HTMLDivElement, ContentEditableProps>(
       return styles.sort((a, b) => a.start - b.start);
     };
 
+    // const createContentEditable = (editableTag: keyof JSX.IntrinsicElements)  => {
+    //   const tag = document.createElement(editableTag);
+    //   tag.ref = editorRef;
+    //   tag.contentEditable = 'true';
+    //   tag.className = 'p-0.5 font-mono max-w-none border outline-none dark:text-white';
+    //   tag.oninput = handleInput;
+    //   tag.onkeydown = handleKeyDown;
+    //   tag.onselect = handleSelect;
+
+    //   const parent = document.getElementById('test');
+    //   console.log(parent);
+    //   parent?.appendChild(tag);
+    // }
+
     return (
-      <div>
+      <>
         {selection.start !== selection.end && (
           <Toolbar position={toolbarPosition} onFormat={applyTag} />
         )}
-        <div
-          ref={editorRef}
-          className="w-full min-h-[calc(100vh-200px)] p-4 font-mono outline-none prose max-w-none border"
-          contentEditable
+        <Editable
+          className={tag === "h1" ? "text-2xl" : ""}
           onInput={handleInput}
           onKeyDown={handleKeyDown}
           onSelect={handleSelect}
+          ref={editorRef as React.Ref<HTMLDivElement>}
+          as={tag}
         />
-      </div>
+      </>
     );
   }
 );
