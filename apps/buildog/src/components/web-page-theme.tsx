@@ -9,14 +9,12 @@ import DefaultFooter from "./footers/default-footer";
 import EnhancedFooter from "./footers/enhanced-footer";
 import LinksCenterFooter from "./footers/links-center-footer";
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@ui/components/dropdown-menu";
-import { Button } from "@ui/components/button";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ui/components/select";
 
 export default function WebPageTheme() {
   const [header, setHeader] = useState<string>("DefaultHeader");
@@ -33,108 +31,63 @@ export default function WebPageTheme() {
 
   return (
     <div className="flex">
-      <div className="shrink-0 w-[300px] min-h-[calc(100vh_-_52px)] space-y-2 p-2 border-r">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="bg-slate-800 text-white" variant="outline">
-              Welcome To Buildog
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Choose the Header You Want</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={header === "DefaultHeader"}
-              onCheckedChange={() => setHeader("DefaultHeader")}
-              className="cursor-pointer"
-            >
-              Default Header
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={header === "LinksCenterHeader"}
-              onCheckedChange={() => setHeader("LinksCenterHeader")}
-              className="cursor-pointer"
-            >
-              Links Center Header
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={header === "NameCenterHeader"}
-              onCheckedChange={() => setHeader("NameCenterHeader")}
-              className="cursor-pointer"
-            >
-              Name Center Header
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <div className="mt-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="bg-slate-800 text-white" variant="outline">
-                Choose Blog Card
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Select a Blog Card</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem
-                checked={card === "DefaultCard"}
-                onCheckedChange={() => setCard("DefaultCard")}
-                className="cursor-pointer"
-              >
-                Default Blog Card
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={card === "DateCard"}
-                onCheckedChange={() => setCard("DateCard")}
-                className="cursor-pointer"
-              >
-                Blog Card With Date
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={card === "ImageCard"}
-                onCheckedChange={() => setCard("ImageCard")}
-                className="cursor-pointer"
-              >
-                Image Card
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+      <div className="shrink-0 w-[300px] min-h-[calc(100vh_-_122px)] space-y-2 p-4 border-r">
+        <div>
+          <label className="block text-sm font-medium mb-1">Header</label>
+          <Select
+            value={header}
+            onValueChange={(value) =>
+              setHeader(value as "DefaultHeader" | "LinksCenterHeader" | "NameCenterHeader")
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Choose Header" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="DefaultHeader">Default Header</SelectItem>
+              <SelectItem value="LinksCenterHeader">Links Center Header</SelectItem>
+              <SelectItem value="NameCenterHeader">Name Center Header</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <div className="mt-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="bg-slate-800 text-white" variant="outline">
-                Choose Footer
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Select a Footer</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem
-                checked={footer === "DefaultFooter"}
-                onCheckedChange={() => setFooter("DefaultFooter")}
-                className="cursor-pointer"
-              >
-                Default Footer
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={footer === "EnhancedFooter"}
-                onCheckedChange={() => setFooter("EnhancedFooter")}
-                className="cursor-pointer"
-              >
-                Enhanced Footer
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={footer === "LinksCenterFooter"}
-                onCheckedChange={() => setFooter("LinksCenterFooter")}
-                className="cursor-pointer"
-              >
-                Social Links Center Footer
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Blog Card</label>
+          <Select
+            value={card}
+            onValueChange={(value) => setCard(value as "DefaultCard" | "DateCard" | "ImageCard")}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Choose Blog Card" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="DefaultCard">Default Blog Card</SelectItem>
+              <SelectItem value="DateCard">Blog Card With Date</SelectItem>
+              <SelectItem value="ImageCard">Image Card</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Footer</label>
+          <Select
+            value={footer}
+            onValueChange={(value) =>
+              setFooter(value as "DefaultFooter" | "EnhancedFooter" | "LinksCenterFooter")
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Choose Footer" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="DefaultFooter">Default Footer</SelectItem>
+              <SelectItem value="EnhancedFooter">Enhanced Footer</SelectItem>
+              <SelectItem value="LinksCenterFooter">Social Links Center Footer</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
       <div className="p-4">
         {/* Header Rendering */}
         {header === "DefaultHeader" && <DefaultHeader />}
