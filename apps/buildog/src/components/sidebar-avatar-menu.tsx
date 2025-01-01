@@ -14,8 +14,11 @@ import { useSidebar } from "@ui/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
 } from "@ui/components/dropdown-menu";
 import { useTheme } from "next-themes";
 import { Switch } from "@ui/components/ui/switch";
@@ -67,7 +70,7 @@ export default function SidebarAvatarMenu() {
               </div>
             ) : (
               <>
-                <div className="flex flex-col items-start text-sm min-w-0 flex-1">
+                <div className="flex flex-col items-start text-sm min-w-100 flex-1">
                   <span className="font-medium">
                     {userCredentials.first_name} {userCredentials.last_name}
                   </span>
@@ -80,48 +83,50 @@ export default function SidebarAvatarMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[240px] p-2 space-y-2">
         {collapsed && loading && (
-          <div className="mb-2 px-2 py-1.5">
+          <DropdownMenuGroup className="">
             <Skeleton className="h-4 w-24 animate-pulse" />
             <Skeleton className="h-3 w-16 animate-pulse" />
-          </div>
+          </DropdownMenuGroup>
         )}
         {collapsed && !loading && (
-          <div className="mb-2 px-2 py-1.5">
-            <div className="font-medium">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="font-medium">
               {userCredentials.first_name} {userCredentials.last_name}
-            </div>
-            <div className="text-zinc-500 text-xs">{userCredentials.email}</div>
-          </div>
+            </DropdownMenuLabel>
+            <DropdownMenuLabel className="text-zinc-500 text-xs">
+              {userCredentials.email}
+            </DropdownMenuLabel>
+          </DropdownMenuGroup>
         )}
         <Link href="/account/settings" className="block">
-          <div className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
+          <DropdownMenuItem className="flex items-center cursor-pointer">
             <Gear className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </div>
+            <DropdownMenuLabel>Settings</DropdownMenuLabel>
+          </DropdownMenuItem>
         </Link>
-        <div
-          className="flex items-center px-2 py-1.5 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer text-red-500"
+        <DropdownMenuItem
+          className="flex items-center cursor-pointer text-red-500"
           onClick={handleLogout}
         >
           <SignOut className="mr-2 h-4 w-4" />
-          <span>Logout</span>
-        </div>
+          <DropdownMenuLabel>Logout</DropdownMenuLabel>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <div className="flex items-center px-2 py-1.5 cursor-default ">
+        <DropdownMenuGroup className="pl-2 flex items-center">
           <FadersHorizontal className="mr-2 h-4 w-4" />
-          <span className="select-none">Preferences</span>
-        </div>
-        <div className="p-2 flex justify-between items-center">
-          <p className="text-sm font-medium select-none">Theme</p>
-          <div className="flex items-center gap-2">
+          <DropdownMenuLabel className="select-none">Preferences</DropdownMenuLabel>
+        </DropdownMenuGroup>
+        <DropdownMenuGroup className=" flex justify-between items-center">
+          <DropdownMenuLabel className="select-none">Theme</DropdownMenuLabel>
+          <DropdownMenuGroup className="flex items-center gap-2">
             <Sun className="h-4 w-4" />
             <Switch id="theme-toggle" checked={theme === "dark"} onCheckedChange={toggleTheme} />
             <Moon className="h-4 w-4" />
             <Label htmlFor="theme-toggle" className="sr-only">
               Toggle theme
             </Label>
-          </div>
-        </div>
+          </DropdownMenuGroup>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
