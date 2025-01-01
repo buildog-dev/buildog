@@ -19,7 +19,7 @@ export default function Layout({
         <AppSidebar organizationId={organizationId} />
         <div className="flex flex-col w-full">
           <Appbar />
-          <main className="flex-grow p-5 mx-auto overflow-auto w-full">{children}</main>
+          <main className="flex-grow mx-auto overflow-auto w-full">{children}</main>
         </div>
       </div>
     </SidebarProvider>
