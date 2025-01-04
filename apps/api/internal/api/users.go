@@ -22,8 +22,7 @@ func (a *api) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var payload models.User
-	if err := utils.DecodeRequestBody(r, &payload); err != nil {
-		utils.JSONError(w, http.StatusBadRequest, "Invalid request body")
+	if !utils.DecodeJSONBody(w, r, &payload) {
 		return
 	}
 
@@ -39,7 +38,7 @@ func (a *api) createUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	success, err := a.userRepo.CreateUser(user)
 	if err != nil {
-		log.Printf("Error creating user: %v", err) // Use logging instead of fmt.Println
+		log.Printf("Error creating user: %v", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create user")
 		return
 	}
@@ -83,13 +82,14 @@ func (a *api) updateUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var payload models.User
-	if err := utils.DecodeRequestBody(r, &payload); err != nil {
-		utils.JSONError(w, http.StatusBadRequest, "Invalid request body")
+	if !utils.DecodeJSONBody(w, r, &payload) {
+		return
 	}
 
 	success, err := a.userRepo.UpdateUser(userID, payload.FirstName, payload.LastName)
 	if err != nil {
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to update user")
+		return
 	}
 
 	utils.JSONResponse(w, http.StatusOK, success)
