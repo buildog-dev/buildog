@@ -12,6 +12,11 @@ const (
 	PermissionCreateOrganization Permission = "create:organization"
 	PermissionUpdateOrganization Permission = "update:organization"
 	PermissionDeleteOrganization Permission = "delete:organization"
+
+	PermissionCreateDocument Permission = "create:document"
+	PermissionUpdateDocument Permission = "update:document"
+	PermissionDeleteDocument Permission = "delete:document"
+	PermissionReadDocument   Permission = "read:document"
 )
 
 type Role string
@@ -33,17 +38,30 @@ var RolePermissions = map[Role][]Permission{
 		PermissionCreateOrganization,
 		PermissionUpdateOrganization,
 		PermissionDeleteOrganization,
+		PermissionCreateDocument,
+		PermissionUpdateDocument,
+		PermissionDeleteDocument,
+		PermissionReadDocument,
 	},
 	RoleAdmin: {
 		PermissionReadUser,
 		PermissionCreateUser,
 		PermissionUpdateUser,
 		PermissionDeleteUser,
+		PermissionCreateDocument,
+		PermissionUpdateDocument,
+		PermissionDeleteDocument,
+		PermissionReadDocument,
 	},
 	RoleWriter: {
 		PermissionReadUser,
+		PermissionCreateDocument,
+		PermissionUpdateDocument,
+		PermissionDeleteDocument,
+		PermissionReadDocument,
 	},
 	RoleReader: {
 		PermissionReadUser,
+		PermissionReadDocument,
 	},
 }

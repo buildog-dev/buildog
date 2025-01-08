@@ -9,6 +9,7 @@ import (
 // Returns true if successful, false if there was an error.
 // In case of error, it will write an appropriate error response to the ResponseWriter.
 func DecodeJSONBody(w http.ResponseWriter, r *http.Request, v interface{}) bool {
+	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(v); err != nil {
 		JSONError(w, http.StatusBadRequest, "Invalid request payload")
 		return false
