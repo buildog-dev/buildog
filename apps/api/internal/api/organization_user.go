@@ -4,7 +4,6 @@ import (
 	"api/internal/models"
 	"api/internal/repository"
 	"api/pkg/utils"
-	"encoding/json"
 	"log"
 	"net/http"
 	"strings"
@@ -12,8 +11,7 @@ import (
 
 func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
 	var payload models.AddUserOrganizationPayload
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+	if !utils.DecodeJSONBody(w, r, &payload) {
 		return
 	}
 	organizationID := r.Header.Get("organization_id")
@@ -32,9 +30,7 @@ func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
 	}
 
 	createdOrganizationUser, err := a.organizationUsersRepo.CreateOrganizationUser(organizationUser)
-	if err != nil {
-		log.Printf("Error creating organization user: %v", err)
-		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization user")
+	if a.handleOrganizationUserError(w, err, "creating organization user") {
 		return
 	}
 
@@ -51,22 +47,13 @@ func (a *api) addUserToOrganization(w http.ResponseWriter, r *http.Request) {
 
 func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Request) {
 	var payload models.UpdateUserRolePayload
-	err := json.NewDecoder(r.Body).Decode(&payload)
-	if err != nil {
-		utils.JSONError(w, http.StatusBadRequest, "Invalid request payload")
+	if !utils.DecodeJSONBody(w, r, &payload) {
 		return
 	}
 
 	organizationID := r.Header.Get("organization_id")
-
-	err = a.organizationUsersRepo.UpdateOrganizationUserRole(organizationID, payload.UserID, payload.Role)
-	if err != nil {
-		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
-			utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
-		} else {
-			log.Printf("Error updating user role: %v", err)
-			utils.JSONError(w, http.StatusInternalServerError, "Failed to update user role")
-		}
+	err := a.organizationUsersRepo.UpdateOrganizationUserRole(organizationID, payload.UserID, payload.Role)
+	if a.handleOrganizationUserError(w, err, "updating user role") {
 		return
 	}
 
@@ -75,22 +62,13 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 
 func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request) {
 	var payload models.DeleteOrganizationUserPayload
-	err := json.NewDecoder(r.Body).Decode(&payload)
-	if err != nil {
-		utils.JSONError(w, http.StatusBadRequest, "Invalid request payload")
+	if !utils.DecodeJSONBody(w, r, &payload) {
 		return
 	}
 
 	organizationID := r.Header.Get("organization_id")
-
-	err = a.organizationUsersRepo.DeleteOrganizationUser(organizationID, payload.UserID)
-	if err != nil {
-		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
-			utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
-		} else {
-			log.Printf("Error deleting user from organization: %v", err)
-			utils.JSONError(w, http.StatusInternalServerError, "Failed to delete user from organization")
-		}
+	err := a.organizationUsersRepo.DeleteOrganizationUser(organizationID, payload.UserID)
+	if a.handleOrganizationUserError(w, err, "deleting user from organization") {
 		return
 	}
 
@@ -108,16 +86,8 @@ func (a *api) getOrganizationUserInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	organizationID := r.Header.Get("organization_id")
-
 	userInfo, err := a.organizationUsersRepo.GetOrganizationUserInfo(userID, organizationID)
-
-	if err != nil {
-		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
-			utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
-		} else {
-			log.Printf("Error getting user information: %v", err)
-			utils.JSONError(w, http.StatusInternalServerError, "Failed to get user information")
-		}
+	if a.handleOrganizationUserError(w, err, "getting user information") {
 		return
 	}
 
@@ -132,9 +102,7 @@ func (a *api) listOrganizationUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	users, err := a.organizationUsersRepo.ListOrganizationUsers(organizationID)
-	if err != nil {
-		log.Printf("Error listing organization users: %v", err)
-		utils.JSONError(w, http.StatusInternalServerError, "Failed to list organization users")
+	if a.handleOrganizationUserError(w, err, "listing organization users") {
 		return
 	}
 
@@ -144,4 +112,17 @@ func (a *api) listOrganizationUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.JSONResponse(w, http.StatusOK, users)
+}
+
+func (a *api) handleOrganizationUserError(w http.ResponseWriter, err error, operation string) bool {
+	if err != nil {
+		if _, ok := err.(repository.ErrOrganizationUserNotFound); ok {
+			utils.JSONError(w, http.StatusNotFound, "User not found in the organization")
+		} else {
+			log.Printf("Error %s: %v", operation, err)
+			utils.JSONError(w, http.StatusInternalServerError, "Failed to "+operation)
+		}
+		return true
+	}
+	return false
 }

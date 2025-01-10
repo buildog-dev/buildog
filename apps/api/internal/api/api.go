@@ -17,6 +17,7 @@ type api struct {
 	organizationsRepo     *repository.OrganizationRepository
 	organizationUsersRepo *repository.OrganizationUserRepository
 	userRepo              *repository.UserRepository
+	documentRepo          *repository.DocumentRepository
 	authService           auth.AuthorizationService
 }
 
@@ -25,6 +26,7 @@ func NewApi(db *database.DB) (*api, error) {
 	organizationUserRepo := repository.NewOrganizationUserRepository(db)
 	userRepo := repository.NewUserRepository(db)
 	authService := auth.NewAuthService(organizationUserRepo)
+	documentRepo := repository.NewDocumentRepository(db)
 
 	return &api{
 		db: db,
@@ -32,6 +34,7 @@ func NewApi(db *database.DB) (*api, error) {
 		organizationsRepo:     organizationRepo,
 		organizationUsersRepo: organizationUserRepo,
 		userRepo:              userRepo,
+		documentRepo:          documentRepo,
 		authService:           authService,
 	}, nil
 
@@ -59,6 +62,7 @@ func (a *api) Routes() http.Handler {
 	a.userRoutes(protectedRouter)
 	a.organizationRoutes(protectedRouter)
 	a.organizationUserRoutes(protectedRouter)
+	a.documentRoutes(protectedRouter)
 
 	return router
 }
@@ -106,6 +110,22 @@ func (a *api) userRoutes(protectedRouter *mux.Router) {
 	protectedRouter.HandleFunc("/user", a.createUserHandler).Methods(http.MethodPost, http.MethodOptions)
 	protectedRouter.HandleFunc("/user", a.updateUserHandler).Methods(http.MethodPut, http.MethodOptions)
 	protectedRouter.HandleFunc("/user", a.getUserHandler).Methods(http.MethodGet, http.MethodOptions)
+}
+
+func (a *api) documentRoutes(protectedRouter *mux.Router) {
+	protectedRouter.HandleFunc("/documents",
+		auth.RequirePermission(a.authService, auth.PermissionCreateDocument)(a.createDocumentHandler),
+	).Methods(http.MethodPost, http.MethodOptions)
+
+	protectedRouter.HandleFunc("/documents", func(w http.ResponseWriter, r *http.Request) { fmt.Println("a") }).Methods(http.MethodGet, http.MethodOptions)
+
+	// protectedRouter.HandleFunc("/docs",
+	// 	auth.RequirePermission(a.authService, auth.PermissionUpdateDocument)(a.updateDocumentHandler),
+	// ).Methods(http.MethodPut, http.MethodOptions)
+
+	// protectedRouter.HandleFunc("/docs",
+	// 	auth.RequirePermission(a.authService, auth.PermissionDeleteDocument)(a.deleteDocumentHandler),
+	// ).Methods(http.MethodDelete, http.MethodOptions)
 }
 
 func (a *api) healthRoutes(router *mux.Router) {
