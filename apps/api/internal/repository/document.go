@@ -54,6 +54,47 @@ func (r *DocumentRepository) CreateDocument(document *models.Document) (models.D
 	return createdDocument, nil
 }
 
+func (r *DocumentRepository) GetDocuments(organizationId string) ([]models.Document, error) {
+	query := `
+		SELECT id, organization_id, title, preview, status, tags, created_by, updated_by, created_at, updated_at
+		FROM documents
+		WHERE organization_id = $1
+	`
+
+	rows, err := r.db.Query(query, organizationId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var documents []models.Document
+	for rows.Next() {
+		var document models.Document
+		err := rows.Scan(
+			&document.Id,
+			&document.OrganizationId,
+			&document.Title,
+			&document.Preview,
+			&document.Status,
+			pq.Array(&document.Tags),
+			&document.CreatedBy,
+			&document.UpdatedBy,
+			&document.CreatedAt,
+			&document.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		documents = append(documents, document)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return documents, nil
+}
+
 func (r *DocumentRepository) UpdateDocument(document *models.Document) error {
 	return nil
 }

@@ -50,3 +50,15 @@ func (a *api) createDocumentHandler(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusCreated, createdDocument)
 }
+
+func (a *api) getDocumentsHandler(w http.ResponseWriter, r *http.Request) {
+	organizationId := r.Header.Get("organization_id")
+	documents, err := a.documentRepo.GetDocuments(organizationId)
+	if err != nil {
+		log.Println("Failed to get documents", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to get documents")
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, documents)
+}
