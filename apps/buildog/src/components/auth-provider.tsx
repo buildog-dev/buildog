@@ -2,40 +2,40 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Auth, User, Service } from "@/web-sdk";
 
-interface UserCredentials {
+interface UserInformation {
   first_name: string;
   last_name: string;
   email: string;
 }
 
-interface AuthContextType {
+interface AuthStateType {
   user: User | null;
-  userCredentials: UserCredentials | null;
+  userInformation: UserInformation | null;
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<AuthStateType>({
   user: null,
-  userCredentials: null,
+  userInformation: null,
   loading: true,
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthContextType>({
+  const [authState, setAuthState] = useState<AuthStateType>({
     user: null,
-    userCredentials: null,
+    userInformation: null,
     loading: true,
   });
   const router = useRouter();
   const pathname = usePathname();
 
-  const fetchUserCredentials = async (user: User) => {
+  const fetchUserInformation = async (user: User) => {
     try {
       const response = await Service.makeAuthenticatedRequest("user");
       if (!response.error) {
         setAuthState((prev) => ({
           ...prev,
-          userCredentials: response,
+          userInformation: response,
           loading: false,
         }));
       }
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         setAuthState((prev) => ({ ...prev, user, loading: true }));
-        await fetchUserCredentials(user);
+        await fetchUserInformation(user);
 
         // Redirect based on sign-in state and current pathname
         if (pathname === "/login" || pathname === "/signup") {
@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      setAuthState({ user: null, userCredentials: null, loading: false });
+      setAuthState({ user: null, userInformation: null, loading: false });
       if (!(pathname === "/login" || pathname === "/signup")) {
         router.push("/login");
       }

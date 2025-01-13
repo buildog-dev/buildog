@@ -29,19 +29,13 @@ import { useEffect } from "react";
 
 export default function SidebarAvatarMenu() {
   const { isMobile } = useSidebar();
-  const { userCredentials, loading } = useAuth();
+  const { userInformation, loading } = useAuth();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
 
   const handleLogout = () => {
     Auth.signOut();
   };
-
-  useEffect(() => {
-    if (!loading && !userCredentials) {
-      router.push("/login"); // Automatically redirect
-    }
-  }, [loading, userCredentials, router]);
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -79,9 +73,9 @@ export default function SidebarAvatarMenu() {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {userCredentials?.first_name} {userCredentials?.last_name}
+                  {userInformation?.first_name} {userInformation?.last_name}
                 </span>
-                <span className="truncate text-xs">{userCredentials?.email}</span>
+                <span className="truncate text-xs">{userInformation?.email}</span>
               </div>
               <CaretUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -100,15 +94,17 @@ export default function SidebarAvatarMenu() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {userCredentials?.first_name} {userCredentials?.last_name}
+                    {userInformation?.first_name} {userInformation?.last_name}
                   </span>
-                  <span className="truncate text-xs">{userCredentials?.email}</span>
+                  <span className="truncate text-xs">{userInformation?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="text-xs font-medium">Preferences</DropdownMenuLabel>
+              <DropdownMenuLabel className="font-medium text-gray-500">
+                Preferences
+              </DropdownMenuLabel>
               <div className="flex items-center justify-between px-2 py-2 hover:bg-transparent">
                 <span className="text-sm">Theme</span>
                 <div className="flex items-center gap-2">
@@ -124,14 +120,14 @@ export default function SidebarAvatarMenu() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
+              <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/account/settings" className="flex items-center">
                   <Gear className="mr-1" />
                   Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="text-red-500 hover:bg-red-500 dark:hover:bg-red-900/50 dark:bg-transparent"
+                className="text-red-500 hover:bg-red-500 dark:hover:bg-red-900/50 dark:bg-transparent cursor-pointer"
                 onClick={handleLogout}
               >
                 <SignOut className="mr-1" />
