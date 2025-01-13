@@ -24,14 +24,10 @@ import { useTheme } from "next-themes";
 import { Switch } from "@ui/components/ui/switch";
 import Link from "next/link";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
 export default function SidebarAvatarMenu() {
   const { isMobile } = useSidebar();
   const { userInformation, loading } = useAuth();
   const { theme, setTheme } = useTheme();
-  const router = useRouter();
 
   const handleLogout = () => {
     Auth.signOut();
