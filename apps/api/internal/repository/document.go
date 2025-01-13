@@ -96,6 +96,18 @@ func (r *DocumentRepository) GetDocuments(organizationId string) ([]models.Docum
 }
 
 func (r *DocumentRepository) UpdateDocument(document *models.Document) error {
+	query := `
+		UPDATE documents
+		SET title = $2, preview = $3, status = $4, tags = $5, updated_by = $6, updated_at = $7
+		WHERE id = $1
+	`
+	now := time.Now()
+
+	_, err := r.db.Exec(query, document.Id, document.Title, document.Preview, document.Status, pq.Array(document.Tags), document.UpdatedBy, now)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

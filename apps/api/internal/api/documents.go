@@ -62,3 +62,44 @@ func (a *api) getDocumentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusOK, documents)
 }
+
+func (a *api) updateDocumentHandler(w http.ResponseWriter, r *http.Request) {
+	organizationId := r.Header.Get("organization_id")
+	claims, ok := utils.GetTokenClaims(r)
+	if !ok {
+		utils.JSONError(w, http.StatusUnauthorized, "Token claims missing")
+		return
+	}
+
+	userID, ok := utils.GetUserIDFromClaims(claims)
+	if !ok {
+		utils.JSONError(w, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
+
+	var payload models.DocumentUpdateRequest
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	document := &models.Document{
+		OrganizationId: organizationId,
+		Id:             payload.Id,
+		Title:          payload.Title,
+		Preview:        payload.Preview,
+		Status:         payload.Status,
+		Tags:           payload.Tags,
+		UpdatedBy:      userID,
+		UpdatedAt:      time.Now(),
+	}
+
+	err := a.documentRepo.UpdateDocument(document)
+	if err != nil {
+		log.Println("Failed to update document", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to update document")
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, document)
+}

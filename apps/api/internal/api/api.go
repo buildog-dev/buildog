@@ -121,9 +121,9 @@ func (a *api) documentRoutes(protectedRouter *mux.Router) {
 		auth.RequirePermission(a.authService, auth.PermissionReadDocument)(a.getDocumentsHandler),
 	).Methods(http.MethodGet, http.MethodOptions)
 
-	// protectedRouter.HandleFunc("/docs",
-	// 	auth.RequirePermission(a.authService, auth.PermissionUpdateDocument)(a.updateDocumentHandler),
-	// ).Methods(http.MethodPut, http.MethodOptions)
+	protectedRouter.HandleFunc("/documents",
+		auth.RequirePermission(a.authService, auth.PermissionUpdateDocument)(a.updateDocumentHandler),
+	).Methods(http.MethodPut, http.MethodOptions)
 
 	// protectedRouter.HandleFunc("/docs",
 	// 	auth.RequirePermission(a.authService, auth.PermissionDeleteDocument)(a.deleteDocumentHandler),

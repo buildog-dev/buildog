@@ -20,6 +20,7 @@ type DocumentCreateRequest struct {
 }
 
 type DocumentUpdateRequest struct {
+	Id      string         `json:"id" validate:"required"`
 	Name    string         `json:"name,omitempty"`
 	Title   string         `json:"title,omitempty"`
 	Preview string         `json:"preview,omitempty"`
