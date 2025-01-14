@@ -48,30 +48,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const handleAuthStateChange = async (user: User | null) => {
       if (user) {
-        if (!user.emailVerified && (pathname === "/login/" || pathname === "/signup/")) {
-          return;
-        }
+        await handleUserAuthenticated(user);
+      } else {
+        handleUserNotAuthenticated();
+      }
+    };
 
-        setAuthState((prev) => ({ ...prev, user, loading: true }));
-        await fetchUserInformation(user);
-
-        // Redirect based on sign-in state and current pathname
-        if (pathname === "/login" || pathname === "/signup") {
-          router.push("/organizations/");
-        }
+    const handleUserAuthenticated = async (user: User) => {
+      if (!user.emailVerified && isAuthPath(pathname)) {
         return;
       }
 
+      setAuthState((prev) => ({ ...prev, user, loading: true }));
+      await fetchUserInformation(user);
+
+      if (isAuthPath(pathname)) {
+        router.push("/organizations/");
+      }
+    };
+
+    const handleUserNotAuthenticated = () => {
       setAuthState({ user: null, userInformation: null, loading: false });
-      if (!(pathname === "/login" || pathname === "/signup")) {
+      if (!isAuthPath(pathname)) {
         router.push("/login");
       }
     };
 
-    // Listen for auth state changes
+    const isAuthPath = (path: string) => path === "/login" || path === "/signup";
+
     const listen = Auth.onAuthStateChange(handleAuthStateChange);
 
-    // Clean up the auth state listener on unmount
     return () => listen();
   }, [router, pathname]);
 
