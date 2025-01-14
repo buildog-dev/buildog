@@ -114,3 +114,30 @@ func (r *DocumentRepository) UpdateDocument(document *models.Document) error {
 func (r *DocumentRepository) DeleteDocument(documentID string) error {
 	return nil
 }
+
+func (r *DocumentRepository) GetDocument(organizationId, documentId string) (models.Document, error) {
+	query := `
+		SELECT id, organization_id, title, preview, status, tags, created_by, updated_by, created_at, updated_at
+		FROM documents
+		WHERE id = $1 AND organization_id = $2
+	`
+
+	var document models.Document
+	err := r.db.QueryRow(query, documentId, organizationId).Scan(
+		&document.Id,
+		&document.OrganizationId,
+		&document.Title,
+		&document.Preview,
+		&document.Status,
+		pq.Array(&document.Tags),
+		&document.CreatedBy,
+		&document.UpdatedBy,
+		&document.CreatedAt,
+		&document.UpdatedAt,
+	)
+	if err != nil {
+		return document, err
+	}
+
+	return document, nil
+}

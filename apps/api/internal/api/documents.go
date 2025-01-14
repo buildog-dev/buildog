@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 func (a *api) createDocumentHandler(w http.ResponseWriter, r *http.Request) {
@@ -98,6 +100,21 @@ func (a *api) updateDocumentHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Failed to update document", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to update document")
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, document)
+}
+
+func (a *api) getDocumentHandler(w http.ResponseWriter, r *http.Request) {
+	organizationId := r.Header.Get("organization_id")
+	vars := mux.Vars(r)
+	documentId := vars["document_id"]
+
+	document, err := a.documentRepo.GetDocument(organizationId, documentId)
+	if err != nil {
+		log.Println("Failed to get document", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to get document")
 		return
 	}
 
