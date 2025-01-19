@@ -1,15 +1,18 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
 	"net/http"
 
-	"cloud.google.com/go/storage"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-const bucketName = "buildog"
+const bucketName = "buildog-web"
 
 func UploadMarkdownHandler(w http.ResponseWriter, r *http.Request, organization_id string, folderPath string) error {
 	if err := r.ParseMultipartForm(10 << 20); err != nil { // Limit upload size to 10MB
@@ -37,34 +40,35 @@ func UploadMarkdownHandler(w http.ResponseWriter, r *http.Request, organization_
 }
 
 func UploadFileToBucket(ctx context.Context, file io.Reader, filename string, folderName string) error {
-	// Create a storage client
-	client, err := storage.NewClient(ctx)
+	fileBytes, err := io.ReadAll(file)
 	if err != nil {
-		return fmt.Errorf("failed to create storage client: %v", err)
+		return fmt.Errorf("failed to read file: %v", err)
 	}
-	defer client.Close()
 
-	// Create a bucket handle
-	bucket := client.Bucket(bucketName)
+	fileReader := bytes.NewReader(fileBytes)
 
-	// Generate the object path (include folder structure if provided)
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-east-2"), // Specify your region
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create AWS session: %v", err)
+	}
+
+	svc := s3.New(sess)
+
 	objectPath := filename
+
 	if folderName != "" {
 		objectPath = fmt.Sprintf("%s/%s", folderName, filename)
 	}
 
-	// Create a writer for the object
-	object := bucket.Object(objectPath)
-	writer := object.NewWriter(ctx)
-	defer func() {
-		if closeErr := writer.Close(); closeErr != nil {
-			fmt.Printf("Warning: failed to close writer: %v\n", closeErr)
-		}
-	}()
-
-	// Copy the file contents to the bucket
-	if _, err := io.Copy(writer, file); err != nil {
-		return fmt.Errorf("failed to upload file to bucket: %v", err)
+	_, err = svc.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(objectPath),
+		Body:   fileReader,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to upload file to S3: %v", err)
 	}
 
 	fmt.Printf("File %s uploaded to bucket %s in folder %s\n", filename, bucketName, folderName)
