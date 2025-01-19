@@ -12,9 +12,11 @@ import {
   SidebarTrigger,
   SidebarFooter,
   useSidebar,
+  SidebarHeader,
 } from "@ui/components/ui/sidebar";
 import SidebarAvatarMenu from "./sidebar-avatar-menu";
 import { NotePencil, HashStraight, Globe, Gear } from "@ui/components/react-icons";
+import SidebarOrganizationSelect from "./sidebar-organization-select";
 
 interface SidebarProps {
   className?: string;
@@ -60,12 +62,15 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
 
   return (
     <Sidebar collapsible="icon" className="transition-[width] duration-300 ease-in-out">
+      <SidebarHeader>
+        <SidebarOrganizationSelect />
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <div className={cn("pb-12", className)}>
-                <div className="space-y-4 py-4">
+                <div className="space-y-4">
                   {Object.entries(routes).map(([key, route]) => (
                     <div key={key}>
                       {!collapsed && (
