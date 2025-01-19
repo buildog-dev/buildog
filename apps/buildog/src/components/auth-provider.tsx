@@ -60,7 +60,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       setAuthState((prev) => ({ ...prev, user, loading: true }));
-      await fetchUserInformation(user);
+
+      if (!authState.userInformation) {
+        await fetchUserInformation(user);
+      } else {
+        setAuthState((prev) => ({ ...prev, loading: false }));
+      }
 
       if (isAuthPath(pathname)) {
         router.push("/organizations/");
@@ -79,7 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const listen = Auth.onAuthStateChange(handleAuthStateChange);
 
     return () => listen();
-  }, [router, pathname]);
+  }, [router, pathname, authState.userInformation]);
 
   return <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>;
 };
