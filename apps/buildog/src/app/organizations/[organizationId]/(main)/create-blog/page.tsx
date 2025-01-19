@@ -34,10 +34,14 @@ export default function Page({ params }) {
 
     const formData = new FormData();
     formData.append("file", markdownFile);
+    formData.append("title", documentName);
+    formData.append("preview", "preview test string");
+    formData.append("status", "draft");
+    formData.append("tags", JSON.stringify(["react", "markdown", "test"]));
 
     try {
       setStatus("Uploading...");
-      const response = await Service.uploadMd("upload-md", "POST", formData, {
+      const response = await Service.makeAuthenticatedRequest("documents", "POST", formData, {
         organization_id: organizationId as string,
       });
       setStatus(`Upload successful: ${response.data}`);
