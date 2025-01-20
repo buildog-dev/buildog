@@ -2,6 +2,7 @@ package api
 
 import (
 	"api/internal/models"
+	"api/internal/service"
 	"api/pkg/utils"
 	"encoding/json"
 	"log"
@@ -73,6 +74,13 @@ func (a *api) createOrganizationHandler(w http.ResponseWriter, r *http.Request) 
 	organizationUser, err := a.organizationUsersRepo.CreateOrganizationUser(user)
 	if err != nil {
 		log.Printf("Error creating user: %v", err)
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
+		return
+	}
+
+	err = service.CreateCodebuild(organization.Id)
+	if err != nil {
+		log.Printf("Error codebuild: %v", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")
 		return
 	}
