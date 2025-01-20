@@ -7,9 +7,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 type StorageService struct {
@@ -48,33 +48,30 @@ func (s *StorageService) UploadMarkdownHandler(w http.ResponseWriter, r *http.Re
 func (s *StorageService) UploadFileToBucket(ctx context.Context, file io.Reader, filename string, folderName string) error {
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
-		return fmt.Errorf("failed to read file: %v", err)
+		return fmt.Errorf("failed to read file: %w", err)
 	}
 
 	fileReader := bytes.NewReader(fileBytes)
 
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-east-2"), // Specify your region
-	})
+	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to create AWS session: %v", err)
+		return fmt.Errorf("failed to load AWS configuration: %w", err)
 	}
 
-	svc := s3.New(sess)
+	client := s3.NewFromConfig(cfg)
 
 	objectPath := filename
-
 	if folderName != "" {
 		objectPath = fmt.Sprintf("%s/%s", folderName, filename)
 	}
 
-	_, err = svc.PutObject(&s3.PutObjectInput{
+	_, err = client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(s.bucketName),
 		Key:    aws.String(objectPath),
 		Body:   fileReader,
 	})
 	if err != nil {
-		return fmt.Errorf("failed to upload file to S3: %v", err)
+		return fmt.Errorf("failed to upload file to S3: %w", err)
 	}
 
 	fmt.Printf("File %s uploaded to bucket %s in folder %s\n", filename, s.bucketName, folderName)
