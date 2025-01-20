@@ -2,7 +2,6 @@ package api
 
 import (
 	"api/internal/models"
-	"api/internal/service"
 	"api/pkg/utils"
 	"encoding/json"
 	"log"
@@ -78,7 +77,7 @@ func (a *api) createOrganizationHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = service.CreateCodebuild(organization.Id)
+	err = a.cloudService.CodebuildService.CreateCodebuild(organization.Id)
 	if err != nil {
 		log.Printf("Error codebuild: %v", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create organization")

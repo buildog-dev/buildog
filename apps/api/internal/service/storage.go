@@ -12,9 +12,15 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-const bucketName = "buildog-web"
+type StorageService struct {
+	bucketName string
+}
 
-func UploadMarkdownHandler(w http.ResponseWriter, r *http.Request, organization_id string, folderPath string) error {
+func NewStorageService(bucketName string) *StorageService {
+	return &StorageService{bucketName: bucketName}
+}
+
+func (s *StorageService) UploadMarkdownHandler(w http.ResponseWriter, r *http.Request, organization_id string, folderPath string) error {
 	if err := r.ParseMultipartForm(10 << 20); err != nil { // Limit upload size to 10MB
 		return fmt.Errorf("Error parsing form data")
 	}
@@ -31,7 +37,7 @@ func UploadMarkdownHandler(w http.ResponseWriter, r *http.Request, organization_
 
 	path := organization_id + folderPath
 	ctx := context.Background()
-	if err := UploadFileToBucket(ctx, file, header.Filename, path); err != nil {
+	if err := s.UploadFileToBucket(ctx, file, header.Filename, path); err != nil {
 		return fmt.Errorf("Error uploading file: %v", err)
 
 	}
@@ -39,7 +45,7 @@ func UploadMarkdownHandler(w http.ResponseWriter, r *http.Request, organization_
 	return nil
 }
 
-func UploadFileToBucket(ctx context.Context, file io.Reader, filename string, folderName string) error {
+func (s *StorageService) UploadFileToBucket(ctx context.Context, file io.Reader, filename string, folderName string) error {
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
 		return fmt.Errorf("failed to read file: %v", err)
@@ -63,7 +69,7 @@ func UploadFileToBucket(ctx context.Context, file io.Reader, filename string, fo
 	}
 
 	_, err = svc.PutObject(&s3.PutObjectInput{
-		Bucket: aws.String(bucketName),
+		Bucket: aws.String(s.bucketName),
 		Key:    aws.String(objectPath),
 		Body:   fileReader,
 	})
@@ -71,6 +77,6 @@ func UploadFileToBucket(ctx context.Context, file io.Reader, filename string, fo
 		return fmt.Errorf("failed to upload file to S3: %v", err)
 	}
 
-	fmt.Printf("File %s uploaded to bucket %s in folder %s\n", filename, bucketName, folderName)
+	fmt.Printf("File %s uploaded to bucket %s in folder %s\n", filename, s.bucketName, folderName)
 	return nil
 }

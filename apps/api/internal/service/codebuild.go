@@ -10,7 +10,15 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/codebuild/types"
 )
 
-func CreateCodebuild(organization_id string) error {
+type CodebuildService struct {
+	client *codebuild.Client
+}
+
+func NewCodebuildService(client *codebuild.Client) *CodebuildService {
+	return &CodebuildService{client: client}
+}
+
+func (s *CodebuildService) CreateCodebuild(organization_id string) error {
 	// Load the AWS configuration
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
@@ -60,7 +68,7 @@ func CreateCodebuild(organization_id string) error {
 	return nil
 }
 
-func StartCodebuild(projectName string) error {
+func (s *CodebuildService) StartCodebuild(projectName string) error {
 	// Load the AWS configuration
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {

@@ -2,7 +2,6 @@ package api
 
 import (
 	"api/internal/models"
-	"api/internal/service"
 	"api/pkg/utils"
 	"encoding/json"
 	"log"
@@ -46,7 +45,7 @@ func (a *api) createDocumentHandler(w http.ResponseWriter, r *http.Request) {
 		Tags:    tags,
 	}
 
-	err := service.UploadMarkdownHandler(w, r, organization_id, "/documents")
+	err := a.cloudService.StorageService.UploadMarkdownHandler(w, r, organization_id, "/documents")
 	if err != nil {
 		log.Println("Failed to create document", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create document")
