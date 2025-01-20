@@ -11,6 +11,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+firebase-admin.json
 
 # Testing
 coverage
@@ -26,6 +27,8 @@ coverage
 out/
 build
 dist
+main
+main.exe
 
 
 # Debug
@@ -36,3 +39,7 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# IDE
+.idea
+

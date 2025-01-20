@@ -1,137 +1,117 @@
-import React, { useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@ui/components/dropdown-menu";
-import { PlusCircledIcon } from "@ui/components/react-icons";
+"use client";
 
-const ParagraphBlock = ({ data, onChange }) => {
-  return (
-    <div contentEditable="true" onBlur={(e) => onChange(e.target.innerText)}>
-      {data.text}
-    </div>
-  );
+import React, { useState, useRef, useCallback } from "react";
+import { Card, CardContent } from "@ui/components/card";
+import { Textarea } from "@ui/components/textarea";
+import { Button } from "@ui/components/button";
+import { parseMarkdown } from "./utils/markdownParser";
+
+type Editor = {
+  onSave: (e: unknown) => unknown;
 };
 
-const HeaderBlock = ({ data, onChange }) => {
-  return (
-    <h1
-      contentEditable="true"
-      onBlur={(e) => onChange(e.target.innerText)}
-      className="font-bold text-xl"
-    >
-      {data.text}
-    </h1>
+export default function Editor({ onSave }: Editor) {
+  const [markdown, setMarkdown] = useState(
+    "# Hello, **Markdown**!\n\nStart _typing_ here...\n\nUse `inline code` like this."
   );
-};
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
+  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-const ImageBlock = ({ data, onChange }) => {
-  return (
-    <div>
-      <img src={data.url} alt={data.alt} />
-      <input
-        type="text"
-        value={data.alt}
-        onChange={(e) => onChange({ ...data, alt: e.target.value })}
-      />
-    </div>
-  );
-};
-
-const BlockWrapper = ({ block, index, updateBlockType, updateBlockData }) => {
-  const { type, data } = block;
-
-  const handleTypeChange = (value) => {
-    updateBlockType(index, value);
+  const handleParse = () => {
+    const parsed = parseMarkdown(markdown);
+    onSave(parsed);
   };
 
-  const renderBlock = () => {
-    switch (type) {
-      case "paragraph":
-        return <ParagraphBlock data={data} onChange={(text) => updateBlockData(index, { text })} />;
-      case "header":
-        return <HeaderBlock data={data} onChange={(text) => updateBlockData(index, { text })} />;
-      case "image":
-        return <ImageBlock data={data} onChange={(data) => updateBlockData(index, data)} />;
-      default:
-        return null;
+  const handleSelect = () => {
+    if (textareaRef.current) {
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        const textareaRect = textareaRef.current.getBoundingClientRect();
+
+        setToolbarPosition({
+          top: rect.top, // 40px above the selection
+          left: rect.left,
+        });
+      }
+
+      setSelection({
+        start: textareaRef.current.selectionStart,
+        end: textareaRef.current.selectionEnd,
+      });
     }
   };
 
-  return (
-    <div className="flex items-start mb-2.5">
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <PlusCircledIcon />
-        </DropdownMenuTrigger>
+  const applyFormatting = useCallback(
+    (format: string) => {
+      if (textareaRef.current) {
+        const start = textareaRef.current.selectionStart;
+        const end = textareaRef.current.selectionEnd;
+        const selectedText = markdown.substring(start, end);
+        let formattedText = "";
 
-        <DropdownMenuContent align="end" className="min-w-[200px]">
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => handleTypeChange("paragraph")}
-          >
-            Paragraph
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer" onClick={() => handleTypeChange("header")}>
-            Header
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer" onClick={() => handleTypeChange("image")}>
-            Image
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <div className="border">{renderBlock()}</div>
-    </div>
+        switch (format) {
+          case "bold":
+            formattedText = `**${selectedText}**`;
+            break;
+          case "italic":
+            formattedText = `_${selectedText}_`;
+            break;
+          // case 'underline':
+          //   formattedText = `<u>${selectedText}</u>`
+          //   break
+        }
+
+        const newText = markdown.substring(0, start) + formattedText + markdown.substring(end);
+        setMarkdown(newText);
+
+        // Reset selection
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.focus();
+            textareaRef.current.setSelectionRange(start, end + 4); // 4 is the length of the added markdown syntax
+          }
+        }, 0);
+      }
+    },
+    [markdown]
   );
-};
-
-export default function Editor() {
-  const [blocks, setBlocks] = useState<any>([
-    { type: "paragraph", data: { text: "This is a paragraph" } },
-    { type: "header", data: { text: "This is a header", level: 2 } },
-    { type: "image", data: { url: "https://picsum.photos/200/300", alt: "Image description" } },
-  ]);
-
-  const addBlock = (type) => {
-    setBlocks([...blocks, { type, data: {} }]);
-  };
-
-  const updateBlockType = (index, newType) => {
-    const newBlocks = [...blocks];
-    newBlocks[index].type = newType;
-    newBlocks[index].data = newType === "image" ? { url: "", alt: "" } : newBlocks[index].data;
-    setBlocks(newBlocks);
-  };
-
-  const updateBlockData = (index, newData) => {
-    const newBlocks = [...blocks];
-    newBlocks[index].data = newData;
-    setBlocks(newBlocks);
-  };
-
-  const saveContent = () => {
-    const content = JSON.stringify(blocks);
-    console.log(content);
-    // You can send this content to a backend or save it to local storage
-  };
 
   return (
-    <div className="editor-container">
-      {blocks.map((block, index) => (
-        <BlockWrapper
-          key={index}
-          block={block}
-          index={index}
-          updateBlockType={updateBlockType}
-          updateBlockData={updateBlockData}
-        />
-      ))}
-      <div>
-        <button onClick={() => addBlock("paragraph")}>Add Paragraph</button>
-        <button onClick={() => addBlock("header")}>Add Header</button>
-        <button onClick={() => addBlock("image")}>Add Image</button>
+    <div>
+      <Textarea
+        ref={textareaRef}
+        className="w-full h-[calc(100vh-300px)]"
+        value={markdown}
+        onChange={(e) => setMarkdown(e.target.value)}
+        onSelect={handleSelect}
+        placeholder="Type your markdown here..."
+      />
+      {selection.start !== selection.end && (
+        <div
+          className="absolute bg-white border rounded shadow-lg p-1"
+          style={{
+            top: `${toolbarPosition.top}px`,
+            left: `${toolbarPosition.left}px`,
+          }}
+        >
+          <div className="flex space-x-1">
+            <Button size="sm" variant="ghost" onClick={() => applyFormatting("bold")}>
+              Bold
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => applyFormatting("italic")}>
+              Italic
+            </Button>
+            {/* <Button size="sm" variant="ghost" onClick={() => applyFormatting('underline')}>
+                    Underline
+                  </Button> */}
+          </div>
+        </div>
+      )}
+      <div className="mt-4 space-x-2">
+        <Button onClick={handleParse}>Save</Button>
       </div>
     </div>
   );

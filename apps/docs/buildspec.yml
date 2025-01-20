@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies"
+      - cd apps/docs
+      - npm install -g pnpm
+  pre_build:
+    commands:
+      - pnpm install
+  build:
+    commands:
+      - echo "Building the project"
+      - pnpm build
+  post_build:
+    commands:
+      - echo "Syncing files to S3"
+      - aws s3 sync out/ s3://docs.buildog.dev --delete
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: apps/docs/out

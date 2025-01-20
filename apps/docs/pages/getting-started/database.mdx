@@ -1,0 +1,96 @@
+# Database Configuration
+
+This document outlines the steps for configuring the PostgreSQL database for the Buildog project. We assume that PostgreSQL is already installed on your system. If not, refer to [prerequisites documentation](/getting-started/prerequisites#postgresql-setup).
+
+- PostgreSQL is installed and running on 5432 port. (default)
+
+## Configuration Steps
+
+### Create a New User
+
+First, we need to create a new PostgreSQL user. Execute the following SQL command in the PostgreSQL command line interface (psql):
+
+```sql
+CREATE USER buildog WITH PASSWORD 'your-beautiful-password';
+```
+
+### Create a New Database
+
+Next, create a new database named buildog:
+```sql
+CREATE DATABASE buildog;
+```
+
+### Grant Privileges to the User
+
+Grant the newly created user the necessary privileges on the buildog database:
+```sql
+GRANT ALL PRIVILEGES ON DATABASE buildog TO buildog;
+```
+
+### Update Project Code
+
+You need to update an '.env' file for our backend application under **apps/api**. `your-beautiful-password` needs to be hear. Also, we need to descibe some other environment 
+variables for PostgreSQL. These values are required for the database connection.
+
+```env
+/* ... other keys */
+DB_PASSWORD=your-beautiful-password
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=buildog
+DB_NAME=buildog
+DB_SLL_MODE=disable
+```
+
+Navigate to the apps/api/scripts directory in your project using the terminal. This scripts folder contains a setup-db.sh script for creating tables. The chmod +x command is used to make the script executable. Once the script is executable, you can run it directly.
+```
+chmod +x setup-db.sh
+./setup-db.sh
+```
+
+Your PostgreSQL database is now configured and ready for the Buildog project. You have created the necessary user, database, and tables, and updated your project code to handle table creation.
+
+## Blog Platform Database Design
+
+This database design outlines the structure for a blog platform. The design includes tables for organizations, users, organization-user relationships, and blogs, with appropriate columns and constraints. The design aims to support multiple organizations, each with its own users and blogs.
+
+### Users
+
+Represents individuals who can belong to one or more organizations.
+
+| Column        | Data Type      | Constraints                     | Description                                         |
+|---------------|----------------|---------------------------------|-----------------------------------------------------|
+| id            | VARCHAR(128)   | PRIMARY KEY                     | Unique identifier for the user.                     |
+| first_name    | VARCHAR(255)   | NOT NULL                        | First name for the user                             |
+| last_name     | VARCHAR(255)   | NOT NULL                        | Last name for the user                              |
+| email         | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique email for the user                           |
+| created_at    | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the user was created.             |
+| updated_at    | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the user.           |
+
+### Organizations
+
+Represents a collection of users and blogs, essentially acting as a tenant in the multi-tenant system.
+
+| Column                     | Data Type      | Constraints                     | Description                                         |
+|----------------------------|----------------|---------------------------------|-----------------------------------------------------|
+| id                         | SERIAL         | PRIMARY KEY                     | Unique identifier for the organization.             |
+| name                       | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique name of the organization.                    |
+| description                | VARCHAR(255)   | NOT NULL, UNIQUE                | Unique name of the organization.                    |
+| created_by                 | VARCHAR(255)   | NOT NULL, UNIQUE                | Email for the organization creator.                 |
+| created_at                 | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of when the organization was created.     |
+| updated_at                 | TIMESTAMP      | NOT NULL, DEFAULT NOW()         | Timestamp of the last update to the organization.   |
+
+
+### Organization Users
+
+A join table that associates users with organizations, including their role within the organization.
+
+| Column            | Data Type      | Constraints                                                | Description                                                            |
+|-------------------|----------------|------------------------------------------------------------|------------------------------------------------------------------------|
+| organization_id   | INTEGER        | FOREIGN KEY REFERENCES Organizations(id) ON DELETE CASCADE | Identifier for the associated organization.                            |
+| user_id           | VARCHAR(128)   | FOREIGN KEY REFERENCES Users(id) ON DELETE CASCADE         | Identifier for the associated user.                                    |
+| role              | VARCHAR(50)    | NOT NULL                                                   | Role of the user within the organization (e.g., admin, member).        |
+| created_at        | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of when the association was created.                         |
+| updated_at        | TIMESTAMP      | NOT NULL, DEFAULT NOW()                                    | Timestamp of the last update to the association.                       |
+| PRIMARY KEY       |                | (organization_id, user_id)                                 | Composite primary key to ensure unique user-organization associations. |

@@ -1,11 +1,9 @@
 import Authenticator from "./authenticator";
-import axios, { Method } from "axios";
 
 interface ServiceClientConfig {
   serviceBaseUrl: string;
 }
 
-// ServiceClient Class
 class ServiceClient {
   private serviceBaseUrl: string;
   private authenticator: Authenticator;
@@ -17,35 +15,49 @@ class ServiceClient {
 
   async makeAuthenticatedRequest(
     endpoint: string,
-    method: Method = "GET",
-    data: any = null
+    method: string = "GET",
+    data: any = null,
+    headers: { [key: string]: string } = {}
   ): Promise<any> {
     try {
-      let token = this.authenticator.getAccessToken();
-
-      if (this.authenticator.isTokenExpired()) {
-        await this.authenticator.getRefreshToken();
-        token = this.authenticator.getAccessToken();
+      const token = await this.authenticator.getCurrentUserToken();
+      if (!token) {
+        throw new Error("User is not authenticated.");
       }
 
-      const response = await axios({
+      // Default headers
+      const defaultHeaders: { [key: string]: string } = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      // Combine default headers with dynamic headers passed as argument
+      const finalHeaders = { ...defaultHeaders, ...headers };
+
+      const options: RequestInit = {
         method,
-        url: `${this.serviceBaseUrl}/${endpoint}`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data,
-      });
+        headers: finalHeaders,
+      };
 
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        this.authenticator.removeLocalStoragedToken();
-        console.log("Unauthorized User");
+      if (data && method !== "GET") {
+        options.body = JSON.stringify(data);
       }
 
+      const response = await fetch(`${this.serviceBaseUrl}/${endpoint}`, options);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.log("Unauthorized User");
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error making request:", error);
       throw error;
     }
   }
 }
+
 export default ServiceClient;

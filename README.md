@@ -16,6 +16,16 @@
 
 Thank you for your interest in Buildog and your willingness to contribute!
 
+Recognizing the challenges bloggers face in managing their content, we’re committed to making the process smoother and more efficient. We are building this tool to provide bloggers with an intuitive platform to streamline their blogging workflow.
+
+To get started, it’s helpful to understand what Buildog is and how it operates:
+
+- **[What is buildog?](https://docs.buildog.dev):**
+Buildog is a web-based application designed to help bloggers write, schedule, and publish their content efficiently. It aims to streamline the blogging process and provide valuable insights into content performance.
+
+- **[How Buildog Works?](https://docs.buildog.dev/how-buildog-works/):**
+This section provides a high-level overview of Buildog's functionality and user interface. It outlines the key features and components that you’ll interact with, offering insight into how the application supports your tasks and workflows. It’s a great starting point to understand how to navigate and utilize Buildog effectively.
+
 ### Install dependencies
 
 You will need to install and configure the following dependencies on your machine to build Buildog:
@@ -64,10 +74,13 @@ pnpm dev
 | --------------- | ----------------------------- | ------------------------ |
 | `/apps/buildog` | The main web application.     | http://localhost:3000    |
 | `/apps/api`     | The main backend application. | http://localhost:3010    |
+| `/apps/docs`    | The main documentation.       | http://localhost:8080    |
 
 #### Environment variables
 
-Auth0 - [How to setup Auth0](https://github.com/burasibizim/buildog/wiki/Auth0-Implementation)
+Environment variables documentation includes instructions on how to set up Firebase and the database for Buildog. Providing [environment variables documentation](https://docs.buildog.dev/getting-started/environment-variables/) is highly recommended to getting started.
+Firebase - [How to setup Firebase](https://docs.buildog.dev/getting-started/authentication/)
+Database - [How to setup Database](https://docs.buildog.dev/getting-started/database/)
 
 #### Shared components
 
@@ -98,7 +111,7 @@ pnpm uninstall <package> --filter <workspace>
 
 For example:
 
-- `pnpm add react --filter buildog` installs into ./apps/buildog
+- `pnpm add react --filter ./apps/buildog` installs into ./apps/buildog
 
 ## Create a pull request
 

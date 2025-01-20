@@ -1,158 +1,91 @@
-import axios from "axios";
-import { EventEmitter } from "events";
-import { jwtDecode } from "jwt-decode";
+import { initializeApp, FirebaseApp } from "firebase/app";
+import {
+  getAuth,
+  Auth,
+  User,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  getIdToken,
+  sendEmailVerification,
+  signOut,
+  Unsubscribe,
+} from "firebase/auth";
 
-interface Credentials {
-  email: string;
-  password: string;
+interface FirebaseConfig {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
 }
 
-interface AuthenticatorConfig {
-  authEndpoint: string;
-}
+class Authenticator {
+  public auth: Auth;
 
-class Authenticator extends EventEmitter {
-  private authEndpoint: string;
-  private accessToken: string | null;
-  private refreshToken: string | null;
-
-  constructor(config: AuthenticatorConfig) {
-    super();
-    this.authEndpoint = config.authEndpoint;
-    this.accessToken =
-      typeof window !== "undefined" ? this.loadAccessTokenFromLocalStorage() : null;
-    this.refreshToken =
-      typeof window !== "undefined" ? this.loadRefreshTokenFromLocalStorage() : null;
+  constructor(firebaseConfig: FirebaseConfig) {
+    const app: FirebaseApp = initializeApp(firebaseConfig);
+    this.auth = getAuth(app);
   }
 
-  async authenticate(credentials: Credentials): Promise<{
-    auth: boolean;
-    error?: {
-      error?: string;
-      error_description: string;
-    };
-  }> {
+  async signUp(email: string, password: string): Promise<User | { error: string }> {
     try {
-      const response = await axios.post(this.authEndpoint + "/auth/login", credentials);
-      this.accessToken = response.data.access_token;
-      this.refreshToken = response.data.refresh_token;
-
-      localStorage.setItem("buildog-sdk", JSON.stringify(response.data));
-      this.emit("authenticated");
-
-      return { auth: true };
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      userCredential.user &&
+        sendEmailVerification(userCredential.user).then(() => {
+          return this.signOut();
+        });
+      return userCredential.user;
     } catch (error: any) {
-      this.emit("authentication_failed");
-
-      // Check if the error has the expected structure
-      if (error.response && typeof error.response.code === "string") {
-        return {
-          auth: false,
-          error: error.response.data,
-        };
-      } else {
-        // Handle unexpected error formats
-        return {
-          auth: false,
-          error: {
-            error_description: "An unknown error occurred",
-          },
-        };
-      }
+      return { error: error.message };
     }
   }
 
-  async getRefreshToken(): Promise<void> {
+  async signIn(email: string, password: string): Promise<User | { error: string }> {
     try {
-      const response = await axios.post(
-        this.authEndpoint + "/auth/refresh",
-        { refresh_token: this.refreshToken },
-        {
-          headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        }
-      );
-
-      this.accessToken = response.data.access_token;
-
-      localStorage.setItem(
-        "buildog-sdk",
-        JSON.stringify({
-          refresh_token: this.refreshToken,
-          ...response.data,
-        })
-      );
-
-      this.emit("refresh");
-    } catch (error) {
-      this.emit("refresh_failed");
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      return userCredential.user;
+    } catch (error: any) {
+      return { error: error.message };
     }
   }
 
-  emitInitialState() {
-    if (this.accessToken && !this.isTokenExpired()) {
-      this.emit("authenticated");
+  async getCurrentUserToken(forceRefresh: boolean = false): Promise<string | null> {
+    const user: User | null = this.auth.currentUser;
+
+    if (user) {
+      try {
+        const idToken = await getIdToken(user, forceRefresh);
+        return idToken;
+      } catch (error) {
+        throw new Error("Failed to retrieve ID token: " + (error as Error).message);
+      }
     } else {
-      this.emit("authentication_failed");
+      return null; // User is not signed in
     }
   }
 
-  removeLocalStoragedToken() {
-    localStorage.removeItem("buildog-sdk");
-    this.emit("authentication_failed");
+  onAuthStateChange(callback: (user: User | null) => void): Unsubscribe {
+    return onAuthStateChanged(this.auth, (user) => {
+      if (user) {
+        callback(user);
+      } else {
+        callback(null);
+      }
+    });
   }
 
-  onAuthenticationChange(callback: (eventType: string, data?: any) => void) {
-    this.on("authenticated", () => callback("authenticated"));
-    this.on("authentication_failed", () =>
-      callback("authentication_failed", {
-        error: "Authentication failed",
-      })
-    );
-    this.on("refresh", () => callback("refresh"));
-    this.on("refresh_failed", () =>
-      callback("refresh_failed", {
-        error: "Refresh failed",
-      })
-    );
-    this.emitInitialState();
-  }
-
-  async logout(): Promise<void> {
-    return this.removeLocalStoragedToken();
-  }
-
-  hasExpired(unixTimestamp: number): boolean {
-    const now = Math.floor(Date.now() / 1000);
-    return unixTimestamp < now;
-  }
-
-  isTokenExpired(): boolean {
-    const decodedHeader = jwtDecode(this.accessToken as string);
-    return this.hasExpired(decodedHeader.exp as number);
-  }
-
-  getAccessToken(): string | null {
-    return this.accessToken;
-  }
-
-  private loadAccessTokenFromLocalStorage(): string | null {
-    const storedData = localStorage.getItem("buildog-sdk");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      return parsedData.access_token;
+  async signOut(): Promise<void> {
+    try {
+      await signOut(this.auth);
+      // Sign-out successful, you can add any additional logic here if needed
+      console.log("Sign-out successful.");
+    } catch (error: any) {
+      // Handle error during sign-out
+      console.error("Sign-out failed:", error.message);
+      throw new Error("Sign-out failed: " + error.message);
     }
-    return null;
-  }
-
-  private loadRefreshTokenFromLocalStorage(): string | null {
-    const storedData = localStorage.getItem("buildog-sdk");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      return parsedData.refresh_token;
-    }
-    return null;
   }
 }
 

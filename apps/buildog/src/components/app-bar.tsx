@@ -1,44 +1,17 @@
+"use client";
+
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@ui/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@ui/components/ui/dropdown-menu";
-import { Auth } from "@/web-sdk";
-import { useRouter } from "next/navigation";
+
+import OrgNavigation from "./org-navigation";
+import { SidebarTrigger, useSidebar } from "@ui/components/ui/sidebar";
 
 const Appbar = () => {
-  const route = useRouter();
-
-  const handleLogout = () => {
-    Auth.logout()
-      .then(() => {
-        route.push("/");
-      })
-      .catch((error) => {
-        console.log("Logout Error", error.message);
-      });
-  };
-
+  const { isMobile } = useSidebar();
   return (
     <header className="px-4 border-b">
-      <nav className="w-full flex items-center justify-end py-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Avatar className="w-8 h-8">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[200px]">
-            <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <nav className="w-full flex items-center py-2">
+        {isMobile && <SidebarTrigger className="mr-4" />}
+        <OrgNavigation />
       </nav>
     </header>
   );
