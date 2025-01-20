@@ -16,24 +16,15 @@ import (
 )
 
 type api struct {
-	db                    *database.DB
-	organizationsRepo     *repository.OrganizationRepository
-	organizationUsersRepo *repository.OrganizationUserRepository
-	userRepo              *repository.UserRepository
-	documentRepo          *repository.DocumentRepository
-	authService           *auth.AuthService
-	cloudService          *service.CloudService
+	db           *database.DB
+	authService  *auth.AuthService
+	cloudService *service.CloudService
+	repository   *repository.Repository
 }
 
 func NewApi(db *database.DB) (*api, error) {
-	// repositories
-	organizationRepo := repository.NewOrganizationRepository(db)
-	organizationUserRepo := repository.NewOrganizationUserRepository(db)
-	userRepo := repository.NewUserRepository(db)
-	documentRepo := repository.NewDocumentRepository(db)
-
-	// auth service
-	authService := auth.NewAuthService(organizationUserRepo)
+	repo := repository.NewRepository(db)
+	authService := auth.NewAuthService(repo.OrganizationUsers)
 
 	// cloud services
 	cfg, err := config.LoadDefaultConfig(context.TODO())
@@ -45,13 +36,10 @@ func NewApi(db *database.DB) (*api, error) {
 	cloudService := service.NewCloudService(codebuildService, storageService)
 
 	return &api{
-		db:                    db,
-		organizationsRepo:     organizationRepo,
-		organizationUsersRepo: organizationUserRepo,
-		userRepo:              userRepo,
-		documentRepo:          documentRepo,
-		authService:           authService,
-		cloudService:          cloudService,
+		db:           db,
+		authService:  authService,
+		cloudService: cloudService,
+		repository:   repo,
 	}, nil
 
 }

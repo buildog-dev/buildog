@@ -76,7 +76,7 @@ func (a *api) createDocumentHandler(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	createdDocument, err := a.documentRepo.CreateDocument(document)
+	createdDocument, err := a.repository.Documents.CreateDocument(document)
 	if err != nil {
 		log.Println("Failed to create document", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to create document")
@@ -88,7 +88,7 @@ func (a *api) createDocumentHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a *api) getDocumentsHandler(w http.ResponseWriter, r *http.Request) {
 	organizationId := r.Header.Get("organization_id")
-	documents, err := a.documentRepo.GetDocuments(organizationId)
+	documents, err := a.repository.Documents.GetDocuments(organizationId)
 	if err != nil {
 		log.Println("Failed to get documents", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to get documents")
@@ -129,7 +129,7 @@ func (a *api) updateDocumentHandler(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      time.Now(),
 	}
 
-	err := a.documentRepo.UpdateDocument(document)
+	err := a.repository.Documents.UpdateDocument(document)
 	if err != nil {
 		log.Println("Failed to update document", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to update document")
@@ -144,7 +144,7 @@ func (a *api) getDocumentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	documentId := vars["document_id"]
 
-	document, err := a.documentRepo.GetDocument(organizationId, documentId)
+	document, err := a.repository.Documents.GetDocument(organizationId, documentId)
 	if err != nil {
 		log.Println("Failed to get document", err)
 		utils.JSONError(w, http.StatusInternalServerError, "Failed to get document")

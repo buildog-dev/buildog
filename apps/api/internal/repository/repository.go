@@ -3,19 +3,19 @@ package repository
 import "api/pkg/database"
 
 type Repository struct {
-	db                          *database.DB
-	documentsRepository         *DocumentRepository
-	organizationsRepository     *OrganizationRepository
-	organizationUsersRepository *OrganizationUserRepository
-	usersRepository             *UserRepository
+	DB                *database.DB
+	Documents         *DocumentRepository
+	Organizations     *OrganizationRepository
+	OrganizationUsers *OrganizationUserRepository
+	Users             *UserRepository
 }
 
 func NewRepository(db *database.DB) *Repository {
 	return &Repository{
-		db:                          db,
-		documentsRepository:         NewDocumentRepository(db),
-		organizationsRepository:     NewOrganizationRepository(db),
-		organizationUsersRepository: NewOrganizationUserRepository(db),
-		usersRepository:             NewUserRepository(db),
+		DB:                db,
+		Documents:         NewDocumentRepository(db),
+		Organizations:     NewOrganizationRepository(db),
+		OrganizationUsers: NewOrganizationUserRepository(db),
+		Users:             NewUserRepository(db),
 	}
 }
