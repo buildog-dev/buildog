@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Auth, User, Service } from "@/web-sdk";
 
 interface UserInformation {
@@ -27,9 +27,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loading: true,
   });
   const router = useRouter();
-  const pathname = usePathname();
 
   const fetchUserInformation = async (user: User) => {
+    setAuthState((prev) => ({ ...prev, user, loading: true }));
     try {
       const response = await Service.makeAuthenticatedRequest("user");
       if (!response.error) {
@@ -47,44 +47,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const handleAuthStateChange = async (user: User | null) => {
-      if (user) {
-        await handleUserAuthenticated(user);
-      } else {
-        handleUserNotAuthenticated();
-      }
-    };
-
-    const handleUserAuthenticated = async (user: User) => {
-      if (!user.emailVerified && isAuthPath(pathname)) {
-        return;
-      }
-
-      setAuthState((prev) => ({ ...prev, user, loading: true }));
-
-      if (!authState.userInformation) {
+      if (user && user.emailVerified) {
         await fetchUserInformation(user);
       } else {
-        setAuthState((prev) => ({ ...prev, loading: false }));
-      }
-
-      if (isAuthPath(pathname)) {
-        router.push("/organizations/");
-      }
-    };
-
-    const handleUserNotAuthenticated = () => {
-      setAuthState({ user: null, userInformation: null, loading: false });
-      if (!isAuthPath(pathname)) {
+        setAuthState({ user: null, userInformation: null, loading: false });
         router.push("/login");
       }
     };
 
-    const isAuthPath = (path: string) => path === "/login" || path === "/signup";
-
     const listen = Auth.onAuthStateChange(handleAuthStateChange);
 
     return () => listen();
-  }, [router, pathname, authState.userInformation]);
+  }, []);
 
   return <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>;
 };

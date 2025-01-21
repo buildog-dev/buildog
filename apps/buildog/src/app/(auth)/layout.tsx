@@ -1,6 +1,23 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/components/auth-provider";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { user } = useAuth();
+
+  const isAuthPath = (path: string) => path === "/login" || path === "/signup";
+
+  useEffect(() => {
+    if (isAuthPath(pathname) && user) {
+      router.push("/organizations");
+    }
+  }, [pathname, user]);
+
   return (
     <>
       <div className="container relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
