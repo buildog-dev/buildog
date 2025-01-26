@@ -52,7 +52,7 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if !a.IsOwnerDeleteOrUpdateHimself(r, payload.UserID) {
+	if a.IsOwnerDeleteOrUpdateHimself(r, payload.UserID) {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
@@ -72,7 +72,7 @@ func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if !a.IsOwnerDeleteOrUpdateHimself(r, payload.UserID) {
+	if a.IsOwnerDeleteOrUpdateHimself(r, payload.UserID) {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
@@ -141,22 +141,22 @@ func (a *api) handleOrganizationUserError(w http.ResponseWriter, err error, oper
 func (s *api) IsOwnerDeleteOrUpdateHimself(r *http.Request, targetUserId string) bool {
 	claims, ok := utils.GetTokenClaims(r)
 	if !ok {
-		return false
+		return true
 	}
 
 	userId, ok := utils.GetUserIDFromClaims(claims)
 	if !ok {
-		return false
+		return true
 	}
 
 	role := r.Context().Value("userRole")
 	if role == nil {
-		return false
+		return true
 	}
 
 	if role == auth.RoleOwner && userId == targetUserId {
-		return false
+		return true
 	}
 
-	return true
+	return false
 }
