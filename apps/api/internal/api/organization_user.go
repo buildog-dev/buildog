@@ -1,6 +1,7 @@
 package api
 
 import (
+	"api/internal/auth"
 	"api/internal/models"
 	"api/internal/repository"
 	"api/pkg/utils"
@@ -51,7 +52,7 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == "owner" {
+	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == auth.RoleOwner {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
@@ -71,7 +72,7 @@ func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == "owner" {
+	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == auth.RoleOwner {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
