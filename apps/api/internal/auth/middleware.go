@@ -1,18 +1,19 @@
 package auth
 
 import (
+	"api/internal/models"
 	"api/pkg/utils"
 	"context"
 	"net/http"
 )
 
 type AuthorizationService interface {
-	GetUserRole(organizationID, userID string) (Role, error)
-	HasPermission(role Role, permission Permission) bool
+	GetUserRole(organizationID, userID string) (models.Role, error)
+	HasPermission(role models.Role, permission Permission) bool
 }
 
 type OrganizationUsersRepository interface {
-	GetOrganizationUserRole(organizationID, userID string) (Role, error)
+	GetOrganizationUserRole(organizationID, userID string) (models.Role, error)
 }
 
 type AuthService struct {
@@ -25,11 +26,11 @@ func NewAuthService(repo OrganizationUsersRepository) AuthorizationService {
 	}
 }
 
-func (s *AuthService) GetUserRole(organizationID, userID string) (Role, error) {
+func (s *AuthService) GetUserRole(organizationID, userID string) (models.Role, error) {
 	return s.organizationUsersRepo.GetOrganizationUserRole(organizationID, userID)
 }
 
-func (s *AuthService) HasPermission(role Role, permission Permission) bool {
+func (s *AuthService) HasPermission(role models.Role, permission Permission) bool {
 	permissions, exists := RolePermissions[role]
 	if !exists {
 		return false
@@ -71,13 +72,16 @@ func RequirePermission(authService AuthorizationService, requiredPermission Perm
 				return
 			}
 
-			if !authService.HasPermission(Role(role), requiredPermission) {
+			if !authService.HasPermission(models.Role(role), requiredPermission) {
 				utils.JSONError(w, http.StatusForbidden, "Permission denied")
 				return
 			}
 
 			// Add role to context for potential use in handlers
-			ctx := context.WithValue(r.Context(), "userRole", role)
+			ctx := r.Context()
+			ctx = context.WithValue(ctx, "userRole", role)
+			ctx = context.WithValue(ctx, "organizationID", organizationID)
+			ctx = context.WithValue(ctx, "userID", userID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	}

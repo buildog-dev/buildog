@@ -1,7 +1,6 @@
 package api
 
 import (
-	"api/internal/auth"
 	"api/internal/models"
 	"api/internal/repository"
 	"api/pkg/utils"
@@ -52,7 +51,7 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if a.IsOwnerDeleteOrUpdateHimself(r, payload.UserID) {
+	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == "owner" {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
@@ -72,7 +71,7 @@ func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if a.IsOwnerDeleteOrUpdateHimself(r, payload.UserID) {
+	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == "owner" {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
@@ -135,28 +134,5 @@ func (a *api) handleOrganizationUserError(w http.ResponseWriter, err error, oper
 		}
 		return true
 	}
-	return false
-}
-
-func (s *api) IsOwnerDeleteOrUpdateHimself(r *http.Request, targetUserId string) bool {
-	claims, ok := utils.GetTokenClaims(r)
-	if !ok {
-		return true
-	}
-
-	userId, ok := utils.GetUserIDFromClaims(claims)
-	if !ok {
-		return true
-	}
-
-	role := r.Context().Value("userRole")
-	if role == nil {
-		return true
-	}
-
-	if role == auth.RoleOwner && userId == targetUserId {
-		return true
-	}
-
 	return false
 }
