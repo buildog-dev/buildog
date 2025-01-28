@@ -52,7 +52,10 @@ func (a *api) updateUserRoleInOrganization(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == auth.RoleOwner {
+	userID := utils.GetUserIDFromContext(r)
+	userRole := utils.GetUserRoleFromContext(r)
+
+	if userID == payload.UserID && userRole == auth.RoleOwner {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
@@ -72,7 +75,10 @@ func (a *api) deleteUserFromOrganization(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if utils.GetUserIDFromContext(r) == payload.UserID && utils.GetUserRoleFromContext(r) == auth.RoleOwner {
+	userID := utils.GetUserIDFromContext(r)
+	userRole := utils.GetUserRoleFromContext(r)
+
+	if userID == payload.UserID && userRole == auth.RoleOwner {
 		utils.JSONError(w, http.StatusForbidden, "Owner cannot delete or update himself")
 		return
 	}
