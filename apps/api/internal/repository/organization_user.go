@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"api/internal/auth"
 	"api/internal/models"
 	"api/pkg/database"
 	"database/sql"
@@ -46,7 +45,7 @@ func (r *OrganizationUserRepository) CreateOrganizationUser(user *models.Organiz
 	return createdOrganizationUser, nil
 }
 
-func (r *OrganizationUserRepository) GetOrganizationUserRole(organizationID, userID string) (auth.Role, error) {
+func (r *OrganizationUserRepository) GetOrganizationUserRole(organizationID, userID string) (models.Role, error) {
 	query := `
 		SELECT role FROM organization_users where organization_id = $1 and user_id = $2
 	`
@@ -55,10 +54,10 @@ func (r *OrganizationUserRepository) GetOrganizationUserRole(organizationID, use
 	err := r.db.QueryRow(query, organizationID, userID).Scan(&role)
 
 	if err != nil {
-		return auth.Role(role), err
+		return models.Role(role), err
 	}
 
-	return auth.Role(role), nil
+	return models.Role(role), nil
 }
 
 func (r *OrganizationUserRepository) UpdateOrganizationUserRole(organizationID, userID, newRole string) error {

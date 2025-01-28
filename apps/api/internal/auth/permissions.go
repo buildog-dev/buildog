@@ -1,5 +1,7 @@
 package auth
 
+import "api/internal/models"
+
 type Permission string
 
 const (
@@ -19,16 +21,14 @@ const (
 	PermissionReadDocument   Permission = "read:document"
 )
 
-type Role string
-
 const (
-	RoleOwner  Role = "owner"
-	RoleAdmin  Role = "admin"
-	RoleWriter Role = "writer"
-	RoleReader Role = "reader"
+	RoleOwner  models.Role = "owner"
+	RoleAdmin  models.Role = "admin"
+	RoleWriter models.Role = "writer"
+	RoleReader models.Role = "reader"
 )
 
-var RolePermissions = map[Role][]Permission{
+var RolePermissions = map[models.Role][]Permission{
 	RoleOwner: {
 		PermissionReadUser,
 		PermissionCreateUser,
