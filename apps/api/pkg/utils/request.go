@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"api/internal/models"
 	"encoding/json"
 	"net/http"
 )
@@ -31,4 +32,19 @@ func GetUserIDFromClaims(claims map[string]any) (string, bool) {
 	}
 	userID, ok := userIDInterface.(string)
 	return userID, ok
+}
+
+func GetUserIDFromContext(r *http.Request) string {
+	userID := r.Context().Value("userID")
+	return userID.(string)
+}
+
+func GetUserRoleFromContext(r *http.Request) models.Role {
+	userRole := r.Context().Value("userRole")
+	return userRole.(models.Role)
+}
+
+func GetOrganizationIDFromContext(r *http.Request) string {
+	organizationID := r.Context().Value("organizationID")
+	return organizationID.(string)
 }
