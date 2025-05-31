@@ -8,7 +8,7 @@ import WebBlogTheme from "@/components/web-blog-theme";
 export default function Page() {
   return (
     <Tabs defaultValue="web">
-      <div className="border-b p-4 w-full">
+      <div className="border-b pb-4 w-full">
         <TabsList className="grid w-full grid-cols-2 max-w-[200px]">
           <TabsTrigger value="web">Web</TabsTrigger>
           <TabsTrigger value="blog">Blog</TabsTrigger>

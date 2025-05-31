@@ -101,7 +101,6 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarTrigger />
         <SidebarAvatarMenu />
       </SidebarFooter>
     </Sidebar>

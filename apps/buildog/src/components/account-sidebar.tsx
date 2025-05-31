@@ -98,7 +98,6 @@ export function AccountSidebar({ className }: SidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarTrigger />
         <SidebarAvatarMenu />
       </SidebarFooter>
     </Sidebar>
