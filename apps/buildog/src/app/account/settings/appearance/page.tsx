@@ -34,6 +34,9 @@ export default function Page() {
   const themeForm = useForm<SettingsThemeFormValues>({
     resolver: zodResolver(settingsThemeFormSchema),
     mode: "onChange",
+    defaultValues: {
+      theme: (theme as "dark" | "light" | "system") || "system",
+    },
   });
 
   function onThemeChange(data: SettingsThemeFormValues) {
@@ -62,7 +65,6 @@ export default function Page() {
                 <FormField
                   control={themeForm.control}
                   name="theme"
-                  defaultValue={theme as "dark" | "light" | "system"}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Select interface theme</FormLabel>

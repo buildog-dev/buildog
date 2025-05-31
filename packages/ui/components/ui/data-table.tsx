@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex justify-between items-center py-4">
+      <div className="flex justify-between items-center pb-4">
         <Input
           placeholder="Search"
           value={(table.getColumn(filterColumnId)?.getFilterValue() as string) ?? ""}

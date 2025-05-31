@@ -1,5 +1,6 @@
 "use client";
 
+import { use } from "react";
 import Appbar from "@/components/app-bar";
 import { SidebarProvider } from "@ui/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar";
@@ -9,9 +10,9 @@ export default function Layout({
   params,
 }: {
   children: React.ReactNode;
-  params: { organizationId: string };
+  params: Promise<{ organizationId: string }>;
 }) {
-  const { organizationId } = params;
+  const { organizationId } = use(params);
 
   return (
     <SidebarProvider>

@@ -4,6 +4,9 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:docs": "pnpm --filter docs dev",
+    "dev:api": "pnpm --filter api dev",
+    "dev:buildog": "pnpm --filter buildog dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "check-format": "prettier --check \"**/*.{ts,tsx}\"",

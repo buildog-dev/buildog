@@ -3,7 +3,6 @@
 import { useCallback, useState, useEffect } from "react";
 import { Service } from "@/web-sdk";
 import { useAuth } from "@/components/auth-provider";
-import { useRouter } from "next/navigation";
 import { Organization } from "@/types/organization";
 import { Card, CardDescription, CardHeader, CardTitle } from "@ui/components/card";
 import { Skeleton } from "@ui/components/skeleton";
@@ -17,7 +16,6 @@ const organizationCardNames = {
 
 export default function OrganizationInformation({ organizationId }: { organizationId: string }) {
   const { user } = useAuth();
-  const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [organization, setOrganization] = useState<Organization>({
@@ -61,10 +59,10 @@ export default function OrganizationInformation({ organizationId }: { organizati
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {organization &&
         Object.entries(organization).map(([key, value]) => (
-          <Card className="w-[350px]">
+          <Card key={key}>
             <CardHeader>
               <CardTitle>{organizationCardNames[key]}</CardTitle>
               <CardDescription>{value}</CardDescription>
