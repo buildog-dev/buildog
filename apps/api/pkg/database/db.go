@@ -34,7 +34,7 @@ func New() (*DB, error) {
 		User:     os.Getenv("DB_USER"),
 		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   os.Getenv("DB_NAME"),
-		SSLMode:  os.Getenv("DB_SLL_MODE"),
+		SSLMode:  os.Getenv("DB_SSLMODE"),
 	}
 
 	if portStr := os.Getenv("DB_PORT"); portStr != "" {
