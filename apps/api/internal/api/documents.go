@@ -120,3 +120,22 @@ func (a *api) getDocumentHandler(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSONResponse(w, http.StatusOK, document)
 }
+
+func (a *api) deleteDocumentHandler(w http.ResponseWriter, r *http.Request) {
+	organizationId := r.Header.Get("organization_id")
+	vars := mux.Vars(r)
+	documentId := vars["document_id"]
+
+	err := a.documentRepo.DeleteDocument(organizationId, documentId)
+	if err != nil {
+		log.Println("Failed to delete document", err)
+		if err.Error() == "document not found" {
+			utils.JSONError(w, http.StatusNotFound, "Document not found")
+			return
+		}
+		utils.JSONError(w, http.StatusInternalServerError, "Failed to delete document")
+		return
+	}
+
+	utils.JSONResponse(w, http.StatusOK, map[string]string{"message": "Document deleted successfully"})
+}

@@ -3,6 +3,7 @@ package repository
 import (
 	"api/internal/models"
 	"api/pkg/database"
+	"fmt"
 	"time"
 
 	"github.com/lib/pq"
@@ -111,7 +112,25 @@ func (r *DocumentRepository) UpdateDocument(document *models.Document) error {
 	return nil
 }
 
-func (r *DocumentRepository) DeleteDocument(documentID string) error {
+func (r *DocumentRepository) DeleteDocument(organizationId, documentID string) error {
+	query := `
+		DELETE FROM documents
+		WHERE id = $1 AND organization_id = $2
+	`
+
+	result, err := r.db.Exec(query, documentID, organizationId)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("document not found")
+	}
 	return nil
 }
 
