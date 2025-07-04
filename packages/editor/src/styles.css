@@ -1,0 +1,244 @@
+/* Editor styles */
+.prose-editor-content .ProseMirror {
+  outline: none;
+  padding: 1rem;
+  min-height: 200px;
+}
+
+.prose-editor-content .ProseMirror:empty:before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+
+.prose-editor-content .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Dark mode editor */
+.dark .prose-editor-content .ProseMirror {
+  color: #e5e7eb;
+}
+
+.dark .prose-editor-content .ProseMirror:empty:before,
+.dark .prose-editor-content .ProseMirror p.is-editor-empty:first-child::before {
+  color: #6b7280;
+}
+
+/* Table styles */
+.prose-editor-content .ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.prose-editor-content .ProseMirror table td,
+.prose-editor-content .ProseMirror table th {
+  min-width: 1em;
+  border: 2px solid #ced4da;
+  padding: 3px 5px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.prose-editor-content .ProseMirror table th {
+  font-weight: bold;
+  text-align: left;
+  background-color: #f1f3f4;
+}
+
+/* Dark mode tables */
+.dark .prose-editor-content .ProseMirror table td,
+.dark .prose-editor-content .ProseMirror table th {
+  border: 2px solid #4b5563;
+}
+
+.dark .prose-editor-content .ProseMirror table th {
+  background-color: #374151;
+}
+
+.prose-editor-content .ProseMirror table .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
+  pointer-events: none;
+}
+
+/* Blockquote styles */
+.prose-editor-content .ProseMirror blockquote {
+  padding-left: 1rem;
+  border-left: 4px solid #e9ecef;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #6c757d;
+}
+
+/* Dark mode blockquote */
+.dark .prose-editor-content .ProseMirror blockquote {
+  border-left: 4px solid #4b5563;
+  color: #9ca3af;
+}
+
+/* Code styles */
+.prose-editor-content .ProseMirror code {
+  background-color: #f8f9fa;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  color: #e83e8c;
+}
+
+/* Dark mode code */
+.dark .prose-editor-content .ProseMirror code {
+  background-color: #374151;
+  color: #fbbf24;
+}
+
+.prose-editor-content .ProseMirror pre {
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: "JetBrainsMono", "SFMono-Regular", "SF Mono", "Consolas", "Liberation Mono", "Menlo",
+    monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.prose-editor-content .ProseMirror pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+/* List styles */
+.prose-editor-content .ProseMirror ul,
+.prose-editor-content .ProseMirror ol {
+  padding-left: 1rem;
+}
+
+/* Highlight styles */
+.prose-editor-content .ProseMirror mark {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+/* Dark mode highlight */
+.dark .prose-editor-content .ProseMirror mark {
+  background-color: #92400e;
+  color: #fbbf24;
+}
+
+/* Link styles */
+.prose-editor-content .ProseMirror a {
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.prose-editor-content .ProseMirror a:hover {
+  color: #004499;
+}
+
+/* Dark mode links */
+.dark .prose-editor-content .ProseMirror a {
+  color: #60a5fa;
+}
+
+.dark .prose-editor-content .ProseMirror a:hover {
+  color: #93c5fd;
+}
+
+/* Image styles */
+.prose-editor-content .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+/* Heading styles */
+.prose-editor-content .ProseMirror h1,
+.prose-editor-content .ProseMirror h2,
+.prose-editor-content .ProseMirror h3,
+.prose-editor-content .ProseMirror h4,
+.prose-editor-content .ProseMirror h5,
+.prose-editor-content .ProseMirror h6 {
+  line-height: 1.1;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  text-wrap: pretty;
+}
+
+.prose-editor-content .ProseMirror h1:first-child,
+.prose-editor-content .ProseMirror h2:first-child,
+.prose-editor-content .ProseMirror h3:first-child,
+.prose-editor-content .ProseMirror h4:first-child,
+.prose-editor-content .ProseMirror h5:first-child,
+.prose-editor-content .ProseMirror h6:first-child {
+  margin-top: 0;
+}
+
+/* Text alignment */
+.prose-editor-content .ProseMirror .has-text-align-left {
+  text-align: left;
+}
+
+.prose-editor-content .ProseMirror .has-text-align-center {
+  text-align: center;
+}
+
+.prose-editor-content .ProseMirror .has-text-align-right {
+  text-align: right;
+}
+
+/* Selection styles */
+.prose-editor-content .ProseMirror-selectednode {
+  outline: 2px solid #68cef8;
+}
+
+/* Focus styles */
+.prose-editor-content .ProseMirror-focused {
+  outline: none;
+}
+
+/* Bubble menu styles */
+.prose-editor-content .tippy-box[data-theme~="light"] {
+  background-color: white;
+  color: black;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+}
+
+.prose-editor-content .tippy-box[data-theme~="light"] .tippy-arrow {
+  color: white;
+}
+
+/* Dark mode bubble menu */
+.dark .prose-editor-content .tippy-box[data-theme~="light"] {
+  background-color: #374151;
+  color: #e5e7eb;
+  border: 1px solid #4b5563;
+}
+
+.dark .prose-editor-content .tippy-box[data-theme~="light"] .tippy-arrow {
+  color: #374151;
+}
