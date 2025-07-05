@@ -182,6 +182,12 @@ importers:
       '@tiptap/extension-table-row':
         specifier: ^2.24.1
         version: 2.24.1(@tiptap/core@2.24.0)
+      '@tiptap/extension-task-item':
+        specifier: ^2.24.2
+        version: 2.24.2(@tiptap/core@2.24.0)(@tiptap/pm@2.24.0)
+      '@tiptap/extension-task-list':
+        specifier: ^2.24.2
+        version: 2.24.2(@tiptap/core@2.24.0)
       '@tiptap/extension-text-align':
         specifier: ^2.24.1
         version: 2.24.1(@tiptap/core@2.24.0)
@@ -3489,6 +3495,24 @@ packages:
     dependencies:
       '@tiptap/core': 2.24.0(@tiptap/pm@2.24.0)
       '@tiptap/pm': 2.24.0
+    dev: false
+
+  /@tiptap/extension-task-item@2.24.2(@tiptap/core@2.24.0)(@tiptap/pm@2.24.0):
+    resolution: {integrity: sha512-8xKmSWKhmfaoyGgea41ZGab9fYQlE4sHazlbk5Tipe8FrEKn5t/TxumtjiN6aBbCSuvk+pR8wXWVJeZtdtaoHg==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+      '@tiptap/pm': ^2.7.0
+    dependencies:
+      '@tiptap/core': 2.24.0(@tiptap/pm@2.24.0)
+      '@tiptap/pm': 2.24.0
+    dev: false
+
+  /@tiptap/extension-task-list@2.24.2(@tiptap/core@2.24.0):
+    resolution: {integrity: sha512-83ahktl9NvtqQpVqYuwHVUrt/kEGG/q2qEQWJ0FkjNuut8l0yT+Mad2J/2aXskN8XSgFTiNlTeWFrkDcGrTCzw==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
+    dependencies:
+      '@tiptap/core': 2.24.0(@tiptap/pm@2.24.0)
     dev: false
 
   /@tiptap/extension-text-align@2.24.1(@tiptap/core@2.24.0):

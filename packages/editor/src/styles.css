@@ -129,7 +129,60 @@
 /* List styles */
 .prose-editor-content .ProseMirror ul,
 .prose-editor-content .ProseMirror ol {
-  padding-left: 1rem;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.prose-editor-content .ProseMirror ul {
+  list-style-type: disc;
+}
+
+.prose-editor-content .ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.prose-editor-content .ProseMirror li {
+  margin: 0.25rem 0;
+  display: list-item;
+}
+
+.prose-editor-content .ProseMirror ul li {
+  list-style-type: disc;
+}
+
+.prose-editor-content .ProseMirror ol li {
+  list-style-type: decimal;
+}
+
+/* Task List styles */
+.prose-editor-content .ProseMirror ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose-editor-content .ProseMirror ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  margin: 0.25rem 0;
+}
+
+.prose-editor-content .ProseMirror ul[data-type="taskList"] li > label {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+  user-select: none;
+}
+
+.prose-editor-content .ProseMirror ul[data-type="taskList"] li > div {
+  flex: 1 1 auto;
+}
+
+.prose-editor-content .ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div {
+  text-decoration: line-through;
+  color: #6b7280;
+}
+
+.dark .prose-editor-content .ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div {
+  color: #9ca3af;
 }
 
 /* Highlight styles */

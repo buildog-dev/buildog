@@ -45,12 +45,6 @@ export function AppSidebar({ className, organizationId }: SidebarProps) {
           key: "main-create-blog",
         },
         {
-          name: "Editor Demo",
-          icon: <NotePencil className="mr-1 h-4 w-4" />,
-          route: `/organizations/${organizationId}/editor-demo`,
-          key: "main-editor-demo",
-        },
-        {
           name: "Web",
           icon: <Globe className="mr-1 h-4 w-4" />,
           route: `/organizations/${organizationId}/web`,

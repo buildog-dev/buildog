@@ -1,6 +1,12 @@
 import { Editor } from "@tiptap/react";
 import { Button } from "@repo/ui/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@repo/ui/components/ui/dropdown-menu";
+import {
   TextB,
   TextItalic,
   TextStrikethrough,
@@ -8,10 +14,8 @@ import {
   TextHOne,
   TextHTwo,
   TextHThree,
-  List,
   ListNumbers,
   Quotes,
-  Minus,
   ArrowCounterClockwise,
   ArrowClockwise,
   TextAlignLeft,
@@ -22,6 +26,10 @@ import {
   Link,
   Image,
   Table,
+  Plus,
+  CaretDown,
+  ListBullets,
+  ListChecks,
 } from "@phosphor-icons/react";
 
 interface ToolbarProps {
@@ -33,10 +41,97 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
     return null;
   }
 
+  const getCurrentHeading = () => {
+    if (editor.isActive("heading", { level: 1 })) return "H1";
+    if (editor.isActive("heading", { level: 2 })) return "H2";
+    if (editor.isActive("heading", { level: 3 })) return "H3";
+    return "H1";
+  };
+
+  // Check if user is on the first paragraph/position
+  const isOnFirstParagraph = () => {
+    const doc = editor.state.doc;
+    let blockCount = 0;
+    doc.descendants((node) => {
+      if (node.isBlock) {
+        blockCount++;
+      }
+    });
+    return blockCount <= 1;
+  };
+
+  const headersEnabled = isOnFirstParagraph();
+
   return (
-    <div className="border-b border-gray-200 p-2 flex flex-wrap gap-1">
+    <div className="border-b p-2 flex flex-wrap gap-1">
+      {/* Undo/Redo */}
+      <div className="flex gap-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().chain().focus().undo().run()}
+        >
+          <ArrowCounterClockwise className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().chain().focus().redo().run()}
+        >
+          <ArrowClockwise className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Heading Dropdown - Only headers are grouped */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="mr-2" disabled={!headersEnabled}>
+            {getCurrentHeading()}
+            <CaretDown className="h-4 w-4 ml-1" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem
+            onClick={() => {
+              if (headersEnabled) {
+                editor.chain().focus().toggleHeading({ level: 1 }).run();
+              }
+            }}
+            disabled={!headersEnabled}
+          >
+            <TextHOne className="h-4 w-4 mr-2" />
+            Heading 1
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              if (headersEnabled) {
+                editor.chain().focus().toggleHeading({ level: 2 }).run();
+              }
+            }}
+            disabled={!headersEnabled}
+          >
+            <TextHTwo className="h-4 w-4 mr-2" />
+            Heading 2
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              if (headersEnabled) {
+                editor.chain().focus().toggleHeading({ level: 3 }).run();
+              }
+            }}
+            disabled={!headersEnabled}
+          >
+            <TextHThree className="h-4 w-4 mr-2" />
+            Heading 3
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       {/* Text Formatting */}
-      <div className="flex gap-1 border-r border-gray-200 pr-2 mr-2">
+      <div className="flex gap-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
         <Button
           variant={editor.isActive("bold") ? "default" : "outline"}
           size="sm"
@@ -92,8 +187,50 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         </Button>
       </div>
 
+      {/* Lists */}
+      <div className="flex gap-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
+        <Button
+          variant={editor.isActive("bulletList") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+        >
+          <ListBullets className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant={editor.isActive("orderedList") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        >
+          <ListNumbers className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant={editor.isActive("taskList") ? "default" : "outline"}
+          size="sm"
+          onClick={() => {
+            if (editor.isActive("taskList")) {
+              editor.chain().focus().liftListItem("taskItem").run();
+            } else {
+              editor.chain().focus().toggleList("taskList", "taskItem").run();
+            }
+          }}
+          title="Task List"
+        >
+          <ListChecks className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant={editor.isActive("blockquote") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        >
+          <Quotes className="h-4 w-4" />
+        </Button>
+      </div>
+
       {/* Text Alignment */}
-      <div className="flex gap-1 border-r border-gray-200 pr-2 mr-2">
+      <div className="flex gap-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
         <Button
           variant={editor.isActive({ textAlign: "left" }) ? "default" : "outline"}
           size="sm"
@@ -120,7 +257,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
       </div>
 
       {/* Links and Media */}
-      <div className="flex gap-1 border-r border-gray-200 pr-2 mr-2">
+      <div className="flex gap-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
         <Button
           variant={editor.isActive("link") ? "default" : "outline"}
           size="sm"
@@ -158,91 +295,15 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         </Button>
       </div>
 
-      {/* Headings */}
-      <div className="flex gap-1 border-r border-gray-200 pr-2 mr-2">
-        <Button
-          variant={editor.isActive("heading", { level: 1 }) ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        >
-          <TextHOne className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant={editor.isActive("heading", { level: 2 }) ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        >
-          <TextHTwo className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant={editor.isActive("heading", { level: 3 }) ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        >
-          <TextHThree className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Lists */}
-      <div className="flex gap-1 border-r border-gray-200 pr-2 mr-2">
-        <Button
-          variant={editor.isActive("bulletList") ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-        >
-          <List className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant={editor.isActive("orderedList") ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        >
-          <ListNumbers className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant={editor.isActive("blockquote") ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        >
-          <Quotes className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Actions */}
-      <div className="flex gap-1 border-r border-gray-200 pr-2 mr-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        >
-          <Minus className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Undo/Redo */}
-      <div className="flex gap-1">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().chain().focus().undo().run()}
-        >
-          <ArrowCounterClockwise className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().chain().focus().redo().run()}
-        >
-          <ArrowClockwise className="h-4 w-4" />
-        </Button>
-      </div>
+      {/* Add Button */}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+      >
+        <Plus className="h-4 w-4 mr-1" />
+        Add
+      </Button>
     </div>
   );
 };
