@@ -48,6 +48,13 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
     return "H1";
   };
 
+  const getCurrentList = () => {
+    if (editor.isActive("bulletList")) return <ListBullets className="h-4 w-4" />;
+    if (editor.isActive("orderedList")) return <ListNumbers className="h-4 w-4" />;
+    if (editor.isActive("taskList")) return <ListChecks className="h-4 w-4" />;
+    return <ListBullets className="h-4 w-4" />;
+  };
+
   // Check if user is on the first paragraph/position
   const isOnFirstParagraph = () => {
     const doc = editor.state.doc;
@@ -187,39 +194,40 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         </Button>
       </div>
 
-      {/* Lists */}
+      {/* Lists Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="mr-2">
+            {getCurrentList()}
+            <CaretDown className="h-4 w-4 ml-1" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
+            <ListBullets className="h-4 w-4 mr-2" />
+            Bullet List
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+            <ListNumbers className="h-4 w-4 mr-2" />
+            Ordered List
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              if (editor.isActive("taskList")) {
+                editor.chain().focus().liftListItem("taskItem").run();
+              } else {
+                editor.chain().focus().toggleList("taskList", "taskItem").run();
+              }
+            }}
+          >
+            <ListChecks className="h-4 w-4 mr-2" />
+            Task List
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Other Formatting */}
       <div className="flex gap-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
-        <Button
-          variant={editor.isActive("bulletList") ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-        >
-          <ListBullets className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant={editor.isActive("orderedList") ? "default" : "outline"}
-          size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        >
-          <ListNumbers className="h-4 w-4" />
-        </Button>
-
-        <Button
-          variant={editor.isActive("taskList") ? "default" : "outline"}
-          size="sm"
-          onClick={() => {
-            if (editor.isActive("taskList")) {
-              editor.chain().focus().liftListItem("taskItem").run();
-            } else {
-              editor.chain().focus().toggleList("taskList", "taskItem").run();
-            }
-          }}
-          title="Task List"
-        >
-          <ListChecks className="h-4 w-4" />
-        </Button>
-
         <Button
           variant={editor.isActive("blockquote") ? "default" : "outline"}
           size="sm"

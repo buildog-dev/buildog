@@ -295,3 +295,82 @@
 .dark .prose-editor-content .tippy-box[data-theme~="light"] .tippy-arrow {
   color: #374151;
 }
+
+/* Upload area styles */
+.prose-editor-content .ProseMirror .upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+  margin: 16px 0;
+  background: #f9fafb;
+  color: #6b7280;
+  width: 100%;
+  max-width: 400px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prose-editor-content .ProseMirror .upload-area:hover {
+  border-color: #8b5cf6;
+  background: #f3f4f6;
+}
+
+/* Dark mode upload area */
+.dark .prose-editor-content .ProseMirror .upload-area {
+  background: #1f2937;
+  color: #9ca3af;
+  border-color: #4b5563;
+}
+
+.dark .prose-editor-content .ProseMirror .upload-area:hover {
+  border-color: #8b5cf6;
+  background: #374151;
+}
+
+/* Legacy upload placeholder styles (keeping for backward compatibility) */
+.prose-editor-content .ProseMirror .upload-placeholder {
+  border: 2px dashed #6b7280;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  margin: 16px 0;
+  background: #f9fafb;
+  color: #6b7280;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.prose-editor-content .ProseMirror .upload-placeholder:hover {
+  border-color: #8b5cf6;
+  background: #f3f4f6;
+}
+
+/* Dark mode upload placeholder */
+.dark .prose-editor-content .ProseMirror .upload-placeholder {
+  background: #1f2937;
+  color: #9ca3af;
+  border-color: #4b5563;
+}
+
+.dark .prose-editor-content .ProseMirror .upload-placeholder:hover {
+  border-color: #8b5cf6;
+  background: #374151;
+}
+
+/* Upload placeholder clickable text */
+.prose-editor-content .ProseMirror .upload-placeholder .upload-link {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #8b5cf6;
+}
+
+.prose-editor-content .ProseMirror .upload-placeholder .upload-link:hover {
+  color: #7c3aed;
+}
