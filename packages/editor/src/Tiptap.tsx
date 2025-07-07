@@ -87,7 +87,7 @@ const Tiptap = ({
   return (
     <div className=" ">
       {editable && <Toolbar editor={editor} />}
-      <div className="prose-editor-content relative max-h-96 overflow-y-auto">
+      <div className="prose-editor-content relative">
         <EditorContent editor={editor} />
       </div>
     </div>

@@ -45,7 +45,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
     if (editor.isActive("heading", { level: 1 })) return "H1";
     if (editor.isActive("heading", { level: 2 })) return "H2";
     if (editor.isActive("heading", { level: 3 })) return "H3";
-    return "H1";
+    return "H";
   };
 
   const getCurrentList = () => {

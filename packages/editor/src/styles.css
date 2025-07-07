@@ -227,7 +227,7 @@
   margin: 0.5rem 0;
 }
 
-/* Heading styles */
+/* Heading styles - Override Tailwind prose styles */
 .prose-editor-content .ProseMirror h1,
 .prose-editor-content .ProseMirror h2,
 .prose-editor-content .ProseMirror h3,
@@ -238,6 +238,37 @@
   margin-top: 2.5rem;
   margin-bottom: 1.25rem;
   text-wrap: pretty;
+  font-weight: 600;
+}
+
+.prose-editor-content .ProseMirror h1 {
+  font-size: 2.25rem !important; /* 36px */
+  line-height: 2.5rem !important;
+}
+
+.prose-editor-content .ProseMirror h2 {
+  font-size: 1.875rem !important; /* 30px */
+  line-height: 2.25rem !important;
+}
+
+.prose-editor-content .ProseMirror h3 {
+  font-size: 1.5rem !important; /* 24px */
+  line-height: 2rem !important;
+}
+
+.prose-editor-content .ProseMirror h4 {
+  font-size: 1.25rem !important; /* 20px */
+  line-height: 1.75rem !important;
+}
+
+.prose-editor-content .ProseMirror h5 {
+  font-size: 1.125rem !important; /* 18px */
+  line-height: 1.75rem !important;
+}
+
+.prose-editor-content .ProseMirror h6 {
+  font-size: 1rem !important; /* 16px */
+  line-height: 1.5rem !important;
 }
 
 .prose-editor-content .ProseMirror h1:first-child,
