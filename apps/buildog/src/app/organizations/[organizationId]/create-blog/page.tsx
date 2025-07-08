@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tiptap } from "@repo/editor/src";
 import { useParams, useRouter } from "next/navigation";
 import { Service } from "@/web-sdk";
@@ -41,6 +41,49 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
   const [publishTitle, setPublishTitle] = useState("");
+
+  // auto-save handler
+  const handleAutoSave = (blogData: {
+    header: string | null;
+    content: string;
+    image: string | null;
+  }) => {
+    console.log("HandleAutoSave called with blogData:", JSON.stringify(blogData, null, 2));
+
+    // we can store in localStorage or send to backend here
+    localStorage.setItem(
+      `blog-draft-${organizationId}`,
+      JSON.stringify({
+        ...blogData,
+        timestamp: new Date().toISOString(),
+        organizationId,
+      })
+    );
+  };
+
+  // load saved draft on component mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem(`blog-draft-${organizationId}`);
+    if (savedDraft) {
+      try {
+        const draftData = JSON.parse(savedDraft);
+
+        if (draftData.content) {
+          setContent(draftData.content);
+        }
+        if (draftData.header && !title) {
+          setTitle(draftData.header);
+        }
+      } catch (error) {
+        console.error("Error loading saved draft:", error);
+      }
+    }
+  }, [organizationId, title]);
+
+  // clear saved draft when successfully published
+  const clearSavedDraft = () => {
+    localStorage.removeItem(`blog-draft-${organizationId}`);
+  };
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -91,7 +134,10 @@ export default function Page() {
           description: `Your blog post "${title}" has been ${status === "published" ? "published" : "saved as " + status}.`,
         });
 
-        // Navigate back to blog list
+        // clear saved draft when successfully saved/published
+        clearSavedDraft();
+
+        // navigate back to blog list
         router.push(`/organizations/${organizationId}/blog`);
       }
     } catch (error) {
@@ -157,8 +203,11 @@ export default function Page() {
           description: `Your blog post "${publishTitle}" has been published successfully.`,
         });
 
+        // clear saved draft when successfully published
+        clearSavedDraft();
+
         setIsPublishDialogOpen(false);
-        // Navigate back to blog list
+        // navigate back to blog list
         router.push(`/organizations/${organizationId}/blog`);
       }
     } catch (error) {
@@ -174,7 +223,7 @@ export default function Page() {
   };
 
   const handleOpenPublishDialog = () => {
-    setPublishTitle(title); // Pre-fill with current title if available
+    setPublishTitle(title);
     setIsPublishDialogOpen(true);
   };
 
@@ -240,7 +289,7 @@ export default function Page() {
           <Card>
             <CardContent className="space-y-4">
               <div>
-                <Tiptap content={content} onChange={setContent} />
+                <Tiptap content={content} onChange={setContent} onAutoSave={handleAutoSave} />
               </div>
             </CardContent>
           </Card>
