@@ -1,11 +1,11 @@
 import { Editor } from "@tiptap/react";
-import { Button } from "@repo/ui/components/ui/button";
+import { Button } from "@ui/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@repo/ui/components/ui/dropdown-menu";
+} from "@ui/components/ui/dropdown-menu";
 import {
   TextB,
   TextItalic,
@@ -31,12 +31,18 @@ import {
   ListBullets,
   ListChecks,
 } from "@phosphor-icons/react";
+import { useState } from "react";
+import { LinkDialog } from "./LinkDialog";
+import { ImageDialog } from "./ImageDialog";
 
 interface ToolbarProps {
   editor: Editor | null;
 }
 
 export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
+  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+
   if (!editor) {
     return null;
   }
@@ -269,26 +275,12 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("link") ? "default" : "outline"}
           size="sm"
-          onClick={() => {
-            const url = window.prompt("Enter URL:");
-            if (url) {
-              editor.chain().focus().setLink({ href: url }).run();
-            }
-          }}
+          onClick={() => setIsLinkDialogOpen(true)}
         >
           <Link className="h-4 w-4" />
         </Button>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            const url = window.prompt("Enter image URL:");
-            if (url) {
-              editor.chain().focus().setImage({ src: url }).run();
-            }
-          }}
-        >
+        <Button variant="outline" size="sm" onClick={() => setIsImageDialogOpen(true)}>
           <Image className="h-4 w-4" />
         </Button>
 
@@ -312,6 +304,20 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Plus className="h-4 w-4 mr-1" />
         Add
       </Button>
+
+      {/* Link Dialog */}
+      <LinkDialog
+        editor={editor}
+        isOpen={isLinkDialogOpen}
+        onClose={() => setIsLinkDialogOpen(false)}
+      />
+
+      {/* Image Dialog */}
+      <ImageDialog
+        editor={editor}
+        isOpen={isImageDialogOpen}
+        onClose={() => setIsImageDialogOpen(false)}
+      />
     </div>
   );
 };
