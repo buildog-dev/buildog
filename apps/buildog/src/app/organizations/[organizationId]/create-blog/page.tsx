@@ -286,13 +286,9 @@ export default function Page() {
       <div className="grid grid-cols-1 gap-6">
         {/* Main Editor Area */}
         <div className="space-y-4">
-          <Card>
-            <CardContent className="space-y-4">
-              <div>
-                <Tiptap content={content} onChange={setContent} onAutoSave={handleAutoSave} />
-              </div>
-            </CardContent>
-          </Card>
+          <div>
+            <Tiptap content={content} onChange={setContent} onAutoSave={handleAutoSave} />
+          </div>
         </div>
       </div>
     </div>

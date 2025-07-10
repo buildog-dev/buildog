@@ -2,7 +2,6 @@
 .prose-editor-content .ProseMirror {
   outline: none;
   padding: 1rem;
-  min-height: 200px;
 }
 
 .prose-editor-content .ProseMirror:empty:before {
