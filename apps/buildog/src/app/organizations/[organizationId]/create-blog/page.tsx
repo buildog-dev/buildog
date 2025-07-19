@@ -287,7 +287,7 @@ export default function Page() {
         {/* Main Editor Area */}
         <div className="space-y-4">
           <div>
-            <Tiptap content={content} onChange={setContent} onAutoSave={handleAutoSave} />
+            {/* <Tiptap content={content} onChange={setContent} onAutoSave={handleAutoSave} /> */}
           </div>
         </div>
       </div>

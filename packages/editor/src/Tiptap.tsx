@@ -1,4 +1,5 @@
 import { useEditor, EditorContent } from "@tiptap/react";
+import type { JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
@@ -14,13 +15,13 @@ import { useEffect, useRef, useCallback, useMemo } from "react";
 import { Toolbar } from "./components/Toolbar";
 import "./styles.css";
 
-interface TiptapProps {
-  content?: string;
-  onChange?: (content: string) => void;
+type TiptapProps = {
+  content?: JSONContent;
+  onChange?: (content: JSONContent) => void;
   onAutoSave?: (blogData: BlogData) => void;
   editable?: boolean;
   placeholder?: string;
-}
+};
 
 interface BlogData {
   header: string | null;
@@ -29,7 +30,7 @@ interface BlogData {
 }
 
 const Tiptap = ({
-  content = "<p>Start writing your document...</p>",
+  content = { type: "doc", content: [{ type: "paragraph" }] },
   onChange,
   onAutoSave,
   editable = true,
@@ -152,11 +153,11 @@ const Tiptap = ({
     editable,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      const htmlContent = editor.getHTML();
+      const jsonContent = editor.getJSON();
+      console.log("Editor JSON:", jsonContent);
       if (onChange) {
-        onChange(htmlContent);
+        onChange(jsonContent);
       }
-      setupAutoSave(htmlContent);
     },
     editorProps: {
       attributes: {

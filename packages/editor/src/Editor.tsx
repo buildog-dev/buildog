@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Tiptap from "./Tiptap";
+import type { JSONContent } from "@tiptap/react";
 
 interface EditorProps {
-  initialContent?: string;
-  onSave?: (content: string) => void;
+  initialContent?: JSONContent;
+  onSave?: (content: JSONContent) => void;
   placeholder?: string;
   editable?: boolean;
   className?: string;
@@ -16,15 +17,17 @@ export default function Editor({
   editable = true,
   className = "",
 }: EditorProps): JSX.Element {
-  const [content, setContent] = useState(initialContent || "");
+  const [content, setContent] = useState<JSONContent>(
+    initialContent || { type: "doc", content: [{ type: "paragraph" }] }
+  );
 
-  const handleContentChange = (newContent: string) => {
+  const handleContentChange = (newContent: JSONContent) => {
     setContent(newContent);
     console.log("New Content: ", newContent);
   };
 
   const handleSave = () => {
-    if (!content.trim()) return;
+    if (!content || !content.content || content.content.length === 0) return;
     onSave?.(content);
   };
 
