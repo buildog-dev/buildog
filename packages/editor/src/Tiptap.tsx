@@ -191,7 +191,7 @@ const Tiptap = ({
   }, [editor, saveBlogData]);
 
   return (
-    <div className=" ">
+    <div>
       {editable && <Toolbar editor={editor} />}
       <div className="prose-editor-content relative">
         <EditorContent editor={editor} />
