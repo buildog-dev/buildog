@@ -82,8 +82,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().chain().focus().undo().run()}
+          onClick={() => (editor.commands as any).undo()}
+          disabled={!(editor.can() as any).undo()}
         >
           <ArrowCounterClockwise className="h-4 w-4" />
         </Button>
@@ -91,8 +91,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().chain().focus().redo().run()}
+          onClick={() => (editor.commands as any).redo()}
+          disabled={!(editor.can() as any).redo()}
         >
           <ArrowClockwise className="h-4 w-4" />
         </Button>
@@ -110,7 +110,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
           <DropdownMenuItem
             onClick={() => {
               if (headersEnabled) {
-                editor.chain().focus().toggleHeading({ level: 1 }).run();
+                editor.chain().focus().toggleNode("heading", "paragraph", { level: 1 }).run();
               }
             }}
             disabled={!headersEnabled}
@@ -121,7 +121,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
           <DropdownMenuItem
             onClick={() => {
               if (headersEnabled) {
-                editor.chain().focus().toggleHeading({ level: 2 }).run();
+                editor.chain().focus().toggleNode("heading", "paragraph", { level: 2 }).run();
               }
             }}
             disabled={!headersEnabled}
@@ -132,7 +132,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
           <DropdownMenuItem
             onClick={() => {
               if (headersEnabled) {
-                editor.chain().focus().toggleHeading({ level: 3 }).run();
+                editor.chain().focus().toggleNode("heading", "paragraph", { level: 3 }).run();
               }
             }}
             disabled={!headersEnabled}
@@ -148,8 +148,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("bold") ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          disabled={!editor.can().chain().focus().toggleBold().run()}
+          onClick={() => editor.chain().focus().toggleMark("bold").run()}
+          disabled={!editor.can().chain().focus().toggleMark("bold").run()}
         >
           <TextB className="h-4 w-4" />
         </Button>
@@ -157,8 +157,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("italic") ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          disabled={!editor.can().chain().focus().toggleItalic().run()}
+          onClick={() => editor.chain().focus().toggleMark("italic").run()}
+          disabled={!editor.can().chain().focus().toggleMark("italic").run()}
         >
           <TextItalic className="h-4 w-4" />
         </Button>
@@ -166,8 +166,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("strike") ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          disabled={!editor.can().chain().focus().toggleStrike().run()}
+          onClick={() => editor.chain().focus().toggleMark("strike").run()}
+          disabled={!editor.can().chain().focus().toggleMark("strike").run()}
         >
           <TextStrikethrough className="h-4 w-4" />
         </Button>
@@ -175,8 +175,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("underline") ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          disabled={!editor.can().chain().focus().toggleUnderline().run()}
+          onClick={() => editor.chain().focus().toggleMark("underline").run()}
+          disabled={!editor.can().chain().focus().toggleMark("underline").run()}
         >
           <TextUnderline className="h-4 w-4" />
         </Button>
@@ -184,8 +184,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("code") ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          disabled={!editor.can().chain().focus().toggleCode().run()}
+          onClick={() => editor.chain().focus().toggleMark("code").run()}
+          disabled={!editor.can().chain().focus().toggleMark("code").run()}
         >
           <Code className="h-4 w-4" />
         </Button>
@@ -193,8 +193,8 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("highlight") ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
-          disabled={!editor.can().chain().focus().toggleHighlight().run()}
+          onClick={() => editor.chain().focus().toggleMark("highlight").run()}
+          disabled={!editor.can().chain().focus().toggleMark("highlight").run()}
         >
           <Highlighter className="h-4 w-4" />
         </Button>
@@ -209,11 +209,15 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
+          <DropdownMenuItem
+            onClick={() => editor.chain().focus().toggleList("bulletList", "listItem").run()}
+          >
             <ListBullets className="h-4 w-4 mr-2" />
             Bullet List
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+          <DropdownMenuItem
+            onClick={() => editor.chain().focus().toggleList("orderedList", "listItem").run()}
+          >
             <ListNumbers className="h-4 w-4 mr-2" />
             Ordered List
           </DropdownMenuItem>
@@ -237,7 +241,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         <Button
           variant={editor.isActive("blockquote") ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          onClick={() => editor.chain().focus().toggleNode("blockquote", "paragraph").run()}
         >
           <Quotes className="h-4 w-4" />
         </Button>
@@ -246,25 +250,31 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
       {/* Text Alignment */}
       <div className="flex gap-1 border-r border-gray-200 dark:border-gray-700 pr-2 mr-2">
         <Button
-          variant={editor.isActive({ textAlign: "left" }) ? "default" : "outline"}
+          variant={editor.isActive("paragraph", { textAlign: "left" }) ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          onClick={() =>
+            editor.chain().focus().updateAttributes("paragraph", { textAlign: "left" }).run()
+          }
         >
           <TextAlignLeft className="h-4 w-4" />
         </Button>
 
         <Button
-          variant={editor.isActive({ textAlign: "center" }) ? "default" : "outline"}
+          variant={editor.isActive("paragraph", { textAlign: "center" }) ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          onClick={() =>
+            editor.chain().focus().updateAttributes("paragraph", { textAlign: "center" }).run()
+          }
         >
           <TextAlignCenter className="h-4 w-4" />
         </Button>
 
         <Button
-          variant={editor.isActive({ textAlign: "right" }) ? "default" : "outline"}
+          variant={editor.isActive("paragraph", { textAlign: "right" }) ? "default" : "outline"}
           size="sm"
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          onClick={() =>
+            editor.chain().focus().updateAttributes("paragraph", { textAlign: "right" }).run()
+          }
         >
           <TextAlignRight className="h-4 w-4" />
         </Button>

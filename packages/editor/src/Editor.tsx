@@ -23,9 +23,8 @@ export default function Editor({
   };
 
   const handleSave = () => {
-    if (onSave) {
-      onSave(content);
-    }
+    if (!content.trim()) return;
+    onSave?.(content);
   };
 
   return (
