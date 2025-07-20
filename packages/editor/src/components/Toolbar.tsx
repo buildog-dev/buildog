@@ -80,7 +80,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
   }
 
   return (
-    <div className="border-b p-2 flex flex-wrap gap-1 sticky top-0 z-10">
+    <div className="border-b p-2 flex flex-wrap gap-1 sticky top-0 z-10 justify-center">
       {/* Undo / Redo */}
       <div className="flex gap-1 border-r pr-2 mr-2">
         <Button

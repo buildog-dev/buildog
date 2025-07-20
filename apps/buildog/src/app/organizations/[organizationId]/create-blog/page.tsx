@@ -88,7 +88,7 @@ export default function Page() {
         {/* Main Editor Area */}
         <div className="space-y-4">
           <div>
-            <Tiptap content={content} onChange={setContent} />
+            <Tiptap content={content} onChange={setContent} autoFocus={true} />
           </div>
         </div>
       </div>

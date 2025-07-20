@@ -2,6 +2,7 @@
 .prose-editor-content .ProseMirror {
   outline: none;
   padding: 1rem;
+  font-size: medium;
 }
 
 .prose-editor-content .ProseMirror:empty:before,
@@ -79,15 +80,15 @@
 
 /* Code styles */
 .prose-editor-content .ProseMirror code {
-  background-color: #f8f9fa;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.875em;
-  color: #e83e8c;
+  background-color: #23272e;
+  color: #e0e0e0;
+  padding: 0.15em 0.35em;
+  border-radius: 0.25em;
+  font-size: 0.95em;
 }
 .dark .prose-editor-content .ProseMirror code {
   background-color: #374151;
-  color: #fbbf24;
+  color: #e9ecef;
 }
 .prose-editor-content .ProseMirror pre {
   background: #0d1117;
@@ -190,7 +191,7 @@
   margin: 0.5rem 0;
 }
 
-/* Heading styles - Override Tailwind prose styles */
+/* Heading styles */
 .prose-editor-content .ProseMirror h1,
 .prose-editor-content .ProseMirror h2,
 .prose-editor-content .ProseMirror h3,
@@ -208,23 +209,23 @@
   line-height: 2.5rem !important;
 }
 .prose-editor-content .ProseMirror h2 {
-  font-size: 1.875rem !important; /* 30px */
+  font-size: 1.875rem !important;
   line-height: 2.25rem !important;
 }
 .prose-editor-content .ProseMirror h3 {
-  font-size: 1.5rem !important; /* 24px */
+  font-size: 1.5rem !important;
   line-height: 2rem !important;
 }
 .prose-editor-content .ProseMirror h4 {
-  font-size: 1.25rem !important; /* 20px */
+  font-size: 1.25rem !important;
   line-height: 1.75rem !important;
 }
 .prose-editor-content .ProseMirror h5 {
-  font-size: 1.125rem !important; /* 18px */
+  font-size: 1.125rem !important;
   line-height: 1.75rem !important;
 }
 .prose-editor-content .ProseMirror h6 {
-  font-size: 1rem !important; /* 16px */
+  font-size: 1rem !important;
   line-height: 1.5rem !important;
 }
 .prose-editor-content .ProseMirror h1:first-child,
@@ -255,24 +256,4 @@
 /* Focus styles */
 .prose-editor-content .ProseMirror-focused {
   outline: none;
-}
-
-/* Bubble menu styles */
-.prose-editor-content .tippy-box[data-theme~="light"] {
-  background-color: white;
-  color: black;
-  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-}
-.prose-editor-content .tippy-box[data-theme~="light"] .tippy-arrow {
-  color: white;
-}
-.dark .prose-editor-content .tippy-box[data-theme~="light"] {
-  background-color: #374151;
-  color: #e5e7eb;
-  border: 1px solid #4b5563;
-}
-.dark .prose-editor-content .tippy-box[data-theme~="light"] .tippy-arrow {
-  color: #374151;
 }

@@ -20,6 +20,7 @@ type TiptapProps = {
   onChange?: (content: JSONContent) => void;
   editable?: boolean;
   placeholder?: string;
+  autoFocus?: boolean;
 };
 
 const Tiptap = ({
@@ -27,6 +28,7 @@ const Tiptap = ({
   onChange,
   editable = true,
   placeholder = "Start writing...",
+  autoFocus = false,
 }: TiptapProps): JSX.Element => {
   const extensions = useMemo(
     () => [
@@ -75,6 +77,7 @@ const Tiptap = ({
     content,
     editable,
     immediatelyRender: false,
+    autofocus: autoFocus,
     onUpdate: ({ editor }) => {
       const jsonContent = editor.getJSON();
       console.log("Editor JSON:", jsonContent);
