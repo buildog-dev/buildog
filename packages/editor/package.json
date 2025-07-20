@@ -29,6 +29,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tanstack/react-table": "^8.19.3",
+    "@tiptap/core": "^3.0.7",
     "@tiptap/extension-color": "^3.0.7",
     "@tiptap/extension-highlight": "^3.0.7",
     "@tiptap/extension-horizontal-rule": "^3.0.7",

@@ -1,13 +1,15 @@
 "use client";
 
-import { Editor } from "@tiptap/react";
-import { Button } from "@ui/components/ui/button";
+import type { Editor } from "@tiptap/react";
+import type { AnyExtension } from "@tiptap/core";
+import { useState, useMemo, useCallback } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@ui/components/ui/dropdown-menu";
+import { Button } from "@ui/components/ui/button";
 import {
   TextB,
   TextItalic,
@@ -33,22 +35,211 @@ import {
   ListBullets,
   ListChecks,
 } from "@phosphor-icons/react";
-import { useState } from "react";
 import { LinkDialog } from "./LinkDialog";
 import { ImageDialog } from "./ImageDialog";
+
+type ExtensionName =
+  | "bold"
+  | "italic"
+  | "strike"
+  | "underline"
+  | "code"
+  | "highlight"
+  | "blockquote"
+  | "bulletList"
+  | "orderedList"
+  | "taskList"
+  | "heading"
+  | "link"
+  | "image"
+  | "table"
+  | "horizontalRule"
+  | "textAlign";
 
 interface ToolbarProps {
   editor: Editor | null;
 }
 
+const StyleButtons = ({
+  editor,
+  showBold,
+  showItalic,
+  showStrike,
+  showUnderline,
+  showCode,
+  showHighlight,
+}: {
+  editor: Editor;
+  showBold: boolean;
+  showItalic: boolean;
+  showStrike: boolean;
+  showUnderline: boolean;
+  showCode: boolean;
+  showHighlight: boolean;
+}) => {
+  const canBold = editor.can().chain().focus().toggleBold().run();
+  const canItalic = editor.can().chain().focus().toggleItalic().run();
+  const canStrike = editor.can().chain().focus().toggleStrike().run();
+  const canUnderline = editor.can().chain().focus().toggleUnderline().run();
+  const canCode = editor.can().chain().focus().toggleCode().run();
+  const canHighlight = editor.can().chain().focus().toggleHighlight().run();
+
+  return (
+    <div className="flex gap-1 border-r pr-2 mr-2">
+      {showBold && (
+        <Button
+          variant={editor.isActive("bold") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          disabled={!canBold}
+        >
+          <TextB />
+        </Button>
+      )}
+      {showItalic && (
+        <Button
+          variant={editor.isActive("italic") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          disabled={!canItalic}
+        >
+          <TextItalic />
+        </Button>
+      )}
+      {showStrike && (
+        <Button
+          variant={editor.isActive("strike") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          disabled={!canStrike}
+        >
+          <TextStrikethrough />
+        </Button>
+      )}
+      {showUnderline && (
+        <Button
+          variant={editor.isActive("underline") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          disabled={!canUnderline}
+        >
+          <TextUnderline />
+        </Button>
+      )}
+      {showCode && (
+        <Button
+          variant={editor.isActive("code") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleCode().run()}
+          disabled={!canCode}
+        >
+          <Code />
+        </Button>
+      )}
+      {showHighlight && (
+        <Button
+          variant={editor.isActive("highlight") ? "default" : "outline"}
+          size="sm"
+          onClick={() => editor.chain().focus().toggleHighlight().run()}
+          disabled={!canHighlight}
+        >
+          <Highlighter />
+        </Button>
+      )}
+    </div>
+  );
+};
+
+const ListDropdown = ({
+  editor,
+  showBulletList,
+  showOrderedList,
+  showTaskList,
+}: {
+  editor: Editor;
+  showBulletList: boolean;
+  showOrderedList: boolean;
+  showTaskList: boolean;
+}) => (
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline" size="sm">
+        {editor.isActive("bulletList") ? (
+          <ListBullets />
+        ) : editor.isActive("orderedList") ? (
+          <ListNumbers />
+        ) : editor.isActive("taskList") ? (
+          <ListChecks />
+        ) : (
+          <ListBullets />
+        )}
+        <CaretDown />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      {showBulletList && (
+        <DropdownMenuItem
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+        >
+          <ListBullets className="mr-2" /> Bullet List
+        </DropdownMenuItem>
+      )}
+      {showOrderedList && (
+        <DropdownMenuItem
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        >
+          <ListNumbers className="mr-2" /> Ordered List
+        </DropdownMenuItem>
+      )}
+      {showTaskList && (
+        <DropdownMenuItem
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleTaskList().run()}
+        >
+          <ListChecks className="mr-2" /> Task List
+        </DropdownMenuItem>
+      )}
+    </DropdownMenuContent>
+  </DropdownMenu>
+);
+
+const TextAlignButtons = ({ editor }: { editor: Editor }) => (
+  <div className="flex gap-1 border-r pr-2 mr-2">
+    <Button
+      variant={editor.isActive({ textAlign: "left" }) ? "default" : "outline"}
+      size="sm"
+      onClick={() => editor.chain().focus().setTextAlign("left").run()}
+    >
+      <TextAlignLeft />
+    </Button>
+    <Button
+      variant={editor.isActive({ textAlign: "center" }) ? "default" : "outline"}
+      size="sm"
+      onClick={() => editor.chain().focus().setTextAlign("center").run()}
+    >
+      <TextAlignCenter />
+    </Button>
+    <Button
+      variant={editor.isActive({ textAlign: "right" }) ? "default" : "outline"}
+      size="sm"
+      onClick={() => editor.chain().focus().setTextAlign("right").run()}
+    >
+      <TextAlignRight />
+    </Button>
+  </div>
+);
+
 export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
   if (!editor) return null;
 
-  // helper to check if an extension is enabled
-  const hasExtension = (name: string) =>
-    editor.extensionManager.extensions.some((ext: any) => ext.name === name);
+  const hasExtension = useCallback(
+    (name: ExtensionName): boolean =>
+      editor.extensionManager.extensions.some((ext: AnyExtension) => ext.name === name),
+    [editor.extensionManager.extensions]
+  );
 
-  // dialog state
   const [isLinkDialogOpen, setLinkDialogOpen] = useState(false);
   const [isImageDialogOpen, setImageDialogOpen] = useState(false);
 
@@ -68,16 +259,23 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
   const showTable = hasExtension("table");
   const showHorizontalRule = hasExtension("horizontalRule");
   const showTextAlign = hasExtension("textAlign");
+
   const canUndo = editor.can().undo();
   const canRedo = editor.can().redo();
 
-  let headingLevels: number[] = [1, 2, 3];
-  if (showHeading) {
-    const headingExt = editor.extensionManager.extensions.find((e: any) => e.name === "heading");
-    if (headingExt && headingExt.options && Array.isArray(headingExt.options.levels)) {
-      headingLevels = headingExt.options.levels;
-    }
-  }
+  const headingLevels: Array<1 | 2 | 3> = [1, 2, 3];
+
+  const activeHeading = headingLevels.find((level: 1 | 2 | 3) =>
+    editor.isActive("heading", { level })
+  );
+
+  const canBlockquote = editor.can().chain().focus().toggleBlockquote().run();
+  const canInsertTable = editor
+    .can()
+    .chain()
+    .focus()
+    .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+    .run();
 
   return (
     <div className="border-b p-2 flex flex-wrap gap-1 sticky top-0 z-10 justify-center">
@@ -89,7 +287,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
           onClick={() => editor.commands.undo()}
           disabled={!canUndo}
         >
-          <ArrowCounterClockwise />
+          <ArrowCounterClockwise className="h-4 w-4" />
         </Button>
         <Button
           variant="outline"
@@ -97,34 +295,23 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
           onClick={() => editor.commands.redo()}
           disabled={!canRedo}
         >
-          <ArrowClockwise />
+          <ArrowClockwise className="h-4 w-4" />
         </Button>
       </div>
-
-      {/* Heading Dropdown */}
+      {/* Heading */}
       {showHeading && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
-              {headingLevels
-                .map((level) =>
-                  editor.isActive("heading", { level: level as 1 | 2 | 3 }) ? `H${level}` : null
-                )
-                .find(Boolean) || "H"}{" "}
-              <CaretDown />
+              {activeHeading ? `H${activeHeading}` : "H"} <CaretDown className="ml-1  h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {headingLevels.map((level) => (
+            {headingLevels.map((level: 1 | 2 | 3) => (
               <DropdownMenuItem
+                className="flex items-center gap-2 cursor-pointer"
                 key={`h${level}`}
-                onClick={() =>
-                  editor
-                    .chain()
-                    .focus()
-                    .toggleHeading({ level: level as 1 | 2 | 3 })
-                    .run()
-                }
+                onClick={() => editor.chain().focus().toggleHeading({ level }).run()}
               >
                 {level === 1 ? <TextHOne /> : level === 2 ? <TextHTwo /> : <TextHThree />}
                 Heading {level}
@@ -134,105 +321,25 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
         </DropdownMenu>
       )}
 
-      {/* Text Style Buttons */}
-      <div className="flex gap-1 border-r pr-2 mr-2">
-        {showBold && (
-          <Button
-            variant={editor.isActive("bold") ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            disabled={!editor.can().chain().focus().toggleBold().run()}
-          >
-            <TextB />
-          </Button>
-        )}
-        {showItalic && (
-          <Button
-            variant={editor.isActive("italic") ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            disabled={!editor.can().chain().focus().toggleItalic().run()}
-          >
-            <TextItalic />
-          </Button>
-        )}
-        {showStrike && (
-          <Button
-            variant={editor.isActive("strike") ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            disabled={!editor.can().chain().focus().toggleStrike().run()}
-          >
-            <TextStrikethrough />
-          </Button>
-        )}
-        {showUnderline && (
-          <Button
-            variant={editor.isActive("underline") ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            disabled={!editor.can().chain().focus().toggleUnderline().run()}
-          >
-            <TextUnderline />
-          </Button>
-        )}
-        {showCode && (
-          <Button
-            variant={editor.isActive("code") ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleCode().run()}
-            disabled={!editor.can().chain().focus().toggleCode().run()}
-          >
-            <Code />
-          </Button>
-        )}
-        {showHighlight && (
-          <Button
-            variant={editor.isActive("highlight") ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHighlight().run()}
-            disabled={!editor.can().chain().focus().toggleHighlight().run()}
-          >
-            <Highlighter />
-          </Button>
-        )}
-      </div>
+      {/* Styles */}
+      <StyleButtons
+        editor={editor}
+        showBold={showBold}
+        showItalic={showItalic}
+        showStrike={showStrike}
+        showUnderline={showUnderline}
+        showCode={showCode}
+        showHighlight={showHighlight}
+      />
 
-      {/* Lists Dropdown */}
+      {/* Lists */}
       {(showBulletList || showOrderedList || showTaskList) && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
-              {editor.isActive("bulletList") ? (
-                <ListBullets />
-              ) : editor.isActive("orderedList") ? (
-                <ListNumbers />
-              ) : editor.isActive("taskList") ? (
-                <ListChecks />
-              ) : (
-                <ListBullets />
-              )}
-              <CaretDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {showBulletList && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
-                <ListBullets className="mr-2" /> Bullet List
-              </DropdownMenuItem>
-            )}
-            {showOrderedList && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
-                <ListNumbers className="mr-2" /> Ordered List
-              </DropdownMenuItem>
-            )}
-            {showTaskList && (
-              <DropdownMenuItem onClick={() => editor.chain().focus().toggleTaskList().run()}>
-                <ListChecks className="mr-2" /> Task List
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <ListDropdown
+          editor={editor}
+          showBulletList={showBulletList}
+          showOrderedList={showOrderedList}
+          showTaskList={showTaskList}
+        />
       )}
 
       {/* Blockquote */}
@@ -242,39 +349,15 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
             variant={editor.isActive("blockquote") ? "default" : "outline"}
             size="sm"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            disabled={!editor.can().chain().focus().toggleBlockquote().run()}
+            disabled={!canBlockquote}
           >
             <Quotes />
           </Button>
         </div>
       )}
 
-      {/* Text Alignment */}
-      {showTextAlign && (
-        <div className="flex gap-1 border-r pr-2 mr-2">
-          <Button
-            variant={editor.isActive("paragraph", { textAlign: "left" }) ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          >
-            <TextAlignLeft />
-          </Button>
-          <Button
-            variant={editor.isActive("paragraph", { textAlign: "center" }) ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          >
-            <TextAlignCenter />
-          </Button>
-          <Button
-            variant={editor.isActive("paragraph", { textAlign: "right" }) ? "default" : "outline"}
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          >
-            <TextAlignRight />
-          </Button>
-        </div>
-      )}
+      {/* Text Align */}
+      {showTextAlign && <TextAlignButtons editor={editor} />}
 
       {/* Link, Image, Table */}
       {(showLink || showImage || showTable) && (
@@ -300,14 +383,7 @@ export const Toolbar = ({ editor }: ToolbarProps): JSX.Element | null => {
               onClick={() =>
                 editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
               }
-              disabled={
-                !editor
-                  .can()
-                  .chain()
-                  .focus()
-                  .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-                  .run()
-              }
+              disabled={!canInsertTable}
             >
               <Table />
             </Button>
