@@ -43,3 +43,15 @@ yarn-error.log*
 # IDE
 .idea
 
+
+# Build outputs
+*.js
+*.js.map
+*.d.ts
+
+# Keep specific files if needed
+!*.config.js
+
+# OS
+.DS_Store
+Thumbs.db

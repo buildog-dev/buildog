@@ -2,10 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Tiptap } from "@repo/editor/src";
-
-import { useParams, useRouter } from "next/navigation";
-
-//import { useAuth } from "@/components/auth-provider";
 import { Button } from "@repo/ui/components/ui/button";
 import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
@@ -20,10 +16,6 @@ import {
 } from "@repo/ui/components/ui/dialog";
 
 export default function Page() {
-  // const { user } = useAuth(); // later if needed
-  const params = useParams();
-  const router = useRouter();
-
   const [content, setContent] = useState<any>({
     type: "doc",
     content: [{ type: "paragraph" }],
@@ -73,7 +65,6 @@ export default function Page() {
               </Button>
               <Button
                 type="submit"
-                //! TODO: implement publish logic here
                 disabled={isLoading || !publishTitle.trim()}
                 className="text-white bg-black dark:text-black dark:bg-white"
               >
@@ -87,9 +78,7 @@ export default function Page() {
       <div className="grid grid-cols-1 gap-6">
         {/* Main Editor Area */}
         <div className="space-y-4">
-          <div>
-            <Tiptap content={content} onChange={setContent} autoFocus={true} />
-          </div>
+          <Tiptap content={content} onChange={setContent} autoFocus={true} />
         </div>
       </div>
     </div>

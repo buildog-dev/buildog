@@ -2,7 +2,7 @@
 
 import type { Editor } from "@tiptap/react";
 import type { AnyExtension } from "@tiptap/core";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,27 +14,27 @@ import {
   TextB,
   TextItalic,
   TextStrikethrough,
+  TextUnderline,
   Code,
-  TextHOne,
-  TextHTwo,
-  TextHThree,
+  Highlighter,
+  ListBullets,
   ListNumbers,
-  Quotes,
-  ArrowCounterClockwise,
-  ArrowClockwise,
+  ListChecks,
+  CaretDown,
   TextAlignLeft,
   TextAlignCenter,
   TextAlignRight,
-  TextUnderline,
-  Highlighter,
+  ArrowCounterClockwise,
+  ArrowClockwise,
+  TextHOne,
+  TextHTwo,
+  TextHThree,
+  Quotes,
   Link,
   Image,
   Table,
   Plus,
-  CaretDown,
-  ListBullets,
-  ListChecks,
-} from "@phosphor-icons/react";
+} from "@ui/components/react-icons";
 import { LinkDialog } from "./LinkDialog";
 import { ImageDialog } from "./ImageDialog";
 

@@ -9,6 +9,7 @@ import {
   SidebarMenu,
   SidebarGroupContent,
   SidebarMenuButton,
+  SidebarTrigger,
   SidebarFooter,
   useSidebar,
   SidebarHeader,
