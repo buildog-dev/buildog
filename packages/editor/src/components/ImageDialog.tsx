@@ -82,7 +82,6 @@ export const ImageDialog = ({ editor, isOpen, onClose }: ImageDialogProps): JSX.
     console.log("Attempting to save image with URL:", url.substring(0, 50) + "...");
     console.log("Alt text:", alt);
 
-    // Don't modify data URLs (uploaded files) or URLs that already have a protocol
     const formattedUrl =
       url.startsWith("data:") || url.startsWith("http://") || url.startsWith("https://")
         ? url
@@ -103,8 +102,7 @@ export const ImageDialog = ({ editor, isOpen, onClose }: ImageDialogProps): JSX.
       console.log("Image inserted successfully");
       handleClose();
     } catch (error) {
-      console.error("Error inserting image:", error);
-      alert("Error inserting the image. Please try again.");
+      console.log("Error: " + error);
     }
   };
 
@@ -112,7 +110,7 @@ export const ImageDialog = ({ editor, isOpen, onClose }: ImageDialogProps): JSX.
     setUrl("");
     setAlt("");
     setIsLoading(false);
-    // Clear file input
+    // clear file input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }

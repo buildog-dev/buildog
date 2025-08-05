@@ -24,11 +24,9 @@ export const LinkDialog = ({ editor, isOpen, onClose }: LinkDialogProps): JSX.El
 
   useEffect(() => {
     if (isOpen) {
-      // Get current selection or link if editing existing link
       const { from, to } = editor.state.selection;
       const selectedText = editor.state.doc.textBetween(from, to);
 
-      // Check if we're editing an existing link
       const linkMark = editor.getAttributes("link");
       if (linkMark.href) {
         setUrl(linkMark.href);
@@ -43,18 +41,14 @@ export const LinkDialog = ({ editor, isOpen, onClose }: LinkDialogProps): JSX.El
   const handleSave = () => {
     if (!url.trim()) return;
 
-    // Ensure URL has protocol
     const formattedUrl =
       url.startsWith("http://") || url.startsWith("https://") ? url : `https://${url}`;
 
     if (text.trim()) {
-      // If custom text is provided, insert it with the link
       editor.chain().focus().insertContent(`<a href="${formattedUrl}">${text}</a>`).run();
     } else {
-      // If no custom text, just set link on current selection
       editor.chain().focus().setLink({ href: formattedUrl }).run();
     }
-
     handleClose();
   };
 
